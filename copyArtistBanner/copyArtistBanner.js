@@ -1,3 +1,7 @@
+// NAME: Copy Artist Banner
+// AUTHOR: OhItsTom
+// DESCRIPTION: Copy the URL of any artists banner.
+
 (function copyArtistBanner() {
 	if (!Spicetify.ContextMenu || !Spicetify.GraphQL || !Spicetify.Platform || !Spicetify.showNotification || !Spicetify.URI) {
 		setTimeout(copyArtistBanner, 300);

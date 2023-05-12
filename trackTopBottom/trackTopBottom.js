@@ -1,3 +1,7 @@
+// NAME: Track Top Bottom
+// AUTHOR: OhItsTom
+// DESCRIPTION: Quickly move multiple tracks to the top or bottom of a playlist.
+
 (function copyArtistBanner() {
 	if (!Spicetify.showNotification || !Spicetify.Platform || !Spicetify.ContextMenu || !Spicetify.URI) {
 		setTimeout(copyArtistBanner, 300);
