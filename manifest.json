@@ -1,0 +1,16 @@
+[
+    {
+        "name": "Copy Artist Banner",
+        "description": "Copy the URL of any artists banner.",
+        "preview": "copyArtistBanner/marketplace.png",
+        "main": "copyArtistBanner/copyArtistBanner.js",
+        "readme": "copyArtistBanner/README.md"
+    },
+    {
+        "name": "Track Top Bottom",
+        "description": "Quickly move multiple tracks to the top or bottom of a playlist.",
+        "preview": "trackTopBottom/marketplace.png",
+        "main": "trackTopBottom/trackTopBottom.js",
+        "readme": "trackTopBottom/README.md"
+    }
+]
