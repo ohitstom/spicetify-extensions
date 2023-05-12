@@ -4,13 +4,15 @@
         "description": "Copy the URL of any artists banner.",
         "preview": "copyArtistBanner/marketplace.png",
         "main": "copyArtistBanner/copyArtistBanner.js",
-        "readme": "copyArtistBanner/README.md"
+        "readme": "copyArtistBanner/README.md",
+        "tags": ["contextMenu", "images", "artists"]
     },
     {
         "name": "Tracks To Edges",
         "description": "Quickly move multiple tracks to the top or bottom (edges) of a playlist.",
         "preview": "tracksToEdges/marketplace.png",
         "main": "tracksToEdges/tracksToEdges.js",
-        "readme": "tracksToEdges/README.md"
+        "readme": "tracksToEdges/README.md",
+        "tags": ["tracklist", "playlists", "ordering"]
     }
 ]
