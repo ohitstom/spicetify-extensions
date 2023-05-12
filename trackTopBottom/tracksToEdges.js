@@ -1,10 +1,10 @@
-// NAME: Track Top Bottom
+// NAME: Tracks To Edges
 // AUTHOR: OhItsTom
-// DESCRIPTION: Quickly move multiple tracks to the top or bottom of a playlist.
+// DESCRIPTION: Quickly move multiple tracks to the top or bottom (edges) of a playlist.
 
-(function copyArtistBanner() {
+(function tracksToEdges() {
 	if (!Spicetify.showNotification || !Spicetify.Platform || !Spicetify.ContextMenu || !Spicetify.URI) {
-		setTimeout(copyArtistBanner, 300);
+		setTimeout(tracksToEdges, 300);
 		return;
 	}
 
