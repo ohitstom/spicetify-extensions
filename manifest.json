@@ -7,10 +7,10 @@
         "readme": "copyArtistBanner/README.md"
     },
     {
-        "name": "Track Top Bottom",
-        "description": "Quickly move multiple tracks to the top or bottom of a playlist.",
-        "preview": "trackTopBottom/marketplace.png",
-        "main": "trackTopBottom/trackTopBottom.js",
-        "readme": "trackTopBottom/README.md"
+        "name": "Tracks To Edges",
+        "description": "Quickly move multiple tracks to the top or bottom (edges) of a playlist.",
+        "preview": "tracksToEdges/marketplace.png",
+        "main": "tracksToEdges/tracksToEdges.js",
+        "readme": "tracksToEdges/README.md"
     }
 ]

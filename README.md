@@ -3,5 +3,5 @@ Please check out the readme for each extension in its folder, it will include in
 
 ## copyArtistBanner
 ![Example](copyArtistBanner/example.png)
-## trackTopBottom
-![Example](trackTopBottom/example.png)
+## tracksToEdges
+![Example](tracksToEdges/example.png)

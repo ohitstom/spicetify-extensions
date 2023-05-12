@@ -1,4 +1,4 @@
-# trackTopBottom.js
+# tracksToEdges.js
 
 ![Example](example.png)
 *This script provides a context menu option in Spotify's desktop app that allows you to move a track to the top or bottom of a playlist.*
@@ -6,8 +6,8 @@
 ### Installation
 1. Install [Spicetify](https://spicetify.app) and set it up according to the instructions.
 2. Navigate to your Spicetify config directory via the command `spicetify config-dir`.
-3. Download trackTopBottom.js and place it in `/extensions`.
-4. Run `spicetify config extensions trackTopBottom.js` and `Spicetify apply` in terminal.
+3. Download tracksToEdges.js and place it in `/extensions`.
+4. Run `spicetify config extensions tracksToEdges.js` and `Spicetify apply` in terminal.
 
 ### Usage
 Enable "custom order" on your playlists "sort by" dropdown (top right).
