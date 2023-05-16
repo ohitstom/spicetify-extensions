@@ -1,11 +1,11 @@
 [
     {
-        "name": "Copy Artist Banner",
-        "description": "Copy the URL of any artists banner.",
-        "preview": "copyArtistBanner/marketplace.png",
-        "main": "copyArtistBanner/copyArtistBanner.js",
-        "readme": "copyArtistBanner/README.md",
-        "tags": ["contextMenu", "images", "artists"]
+        "name": "Image To Clipboard",
+        "description": "Copy the highest quality URL of almost any image.",
+        "preview": "imageToClipboard/marketplace.png",
+        "main": "imageToClipboard/imageToClipboard.js",
+        "readme": "imageToClipboard/README.md",
+        "tags": ["context", "image", "clipboard"]
     },
     {
         "name": "Tracks To Edges",
