@@ -110,7 +110,6 @@
 
 	// Check if the menu item should be enabled
 	function shouldEnable(uris) {
-		console.log(uris);
 		if (uris.length !== 1) {
 			return false;
 		}
