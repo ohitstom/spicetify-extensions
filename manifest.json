@@ -14,5 +14,53 @@
         "main": "tracksToEdges/tracksToEdges.js",
         "readme": "tracksToEdges/README.md",
         "tags": ["tracklist", "playlists", "ordering"]
+    },
+    {
+        "name": "Image To Clipboard",
+        "description": "Copy the highest quality URL of almost any image.",
+        "preview": "imageToClipboard/marketplace.png",
+        "main": "imageToClipboard/imageToClipboard.js",
+        "readme": "imageToClipboard/README.md",
+        "tags": ["context", "image", "clipboard"]
+    },
+    {
+        "name": "Tracks To Edges",
+        "description": "Quickly move multiple tracks to the top or bottom (edges) of a playlist.",
+        "preview": "tracksToEdges/marketplace.png",
+        "main": "tracksToEdges/tracksToEdges.js",
+        "readme": "tracksToEdges/README.md",
+        "tags": ["tracklist", "playlists", "ordering"]
+    },
+    {
+        "name": "Image To Clipboard",
+        "description": "Copy the highest quality URL of almost any image.",
+        "preview": "imageToClipboard/marketplace.png",
+        "main": "imageToClipboard/imageToClipboard.js",
+        "readme": "imageToClipboard/README.md",
+        "tags": ["context", "image", "clipboard"]
+    },
+    {
+        "name": "Tracks To Edges",
+        "description": "Quickly move multiple tracks to the top or bottom (edges) of a playlist.",
+        "preview": "tracksToEdges/marketplace.png",
+        "main": "tracksToEdges/tracksToEdges.js",
+        "readme": "tracksToEdges/README.md",
+        "tags": ["tracklist", "playlists", "ordering"]
+    },
+    {
+        "name": "Image To Clipboard",
+        "description": "Copy the highest quality URL of almost any image.",
+        "preview": "imageToClipboard/marketplace.png",
+        "main": "imageToClipboard/imageToClipboard.js",
+        "readme": "imageToClipboard/README.md",
+        "tags": ["context", "image", "clipboard"]
+    },
+    {
+        "name": "Tracks To Edges",
+        "description": "Quickly move multiple tracks to the top or bottom (edges) of a playlist.",
+        "preview": "tracksToEdges/marketplace.png",
+        "main": "tracksToEdges/tracksToEdges.js",
+        "readme": "tracksToEdges/README.md",
+        "tags": ["tracklist", "playlists", "ordering"]
     }
 ]
