@@ -14,5 +14,13 @@
         "main": "tracksToEdges/tracksToEdges.js",
         "readme": "tracksToEdges/README.md",
         "tags": ["tracklist", "playlists", "ordering"]
+    },
+    {
+        "name": "Immersive View",
+        "description": "Button to hide uneccesary information, providing an immersive experience.",
+        "preview": "immersiveView/marketplace.png",
+        "main": "immersiveView/immersiveView.js",
+        "readme": "immersiveView/README.md",
+        "tags": ["panels", "unique", "simple"]
     }
 ]
