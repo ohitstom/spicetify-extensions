@@ -39,36 +39,17 @@ function initImmersiveView() {
 
   // Creation of button
   var state = false;
-  const buttonLabel = () =>
-    state ? "Exit Immersive View" : "Enter Immersive View";
-  const buttonIcon = () =>
-    state ? Spicetify.SVGIcons.minimize : Spicetify.SVGIcons.fullscreen;
+  const buttonLabel = () => state ? "Exit Immersive View" : "Enter Immersive View";
+  const buttonIcon = () => state ? "minimize" : "fullscreen";
 
-  const button = document.createElement("button");
-  const setButtonIcon = () => {
-    button.innerHTML = `
-      <svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-        ${buttonIcon()}
-      </svg>
-    `;
-  };
-  const tippy = new Spicetify.Tippy(button, {
-    ...Spicetify.TippyProps,
-    content: buttonLabel(),
-    placement: "bottom",
-  });
-
-  button.className =
-    "immersive-view encore-over-media-set IAyWaeDamLJLjxuPeVKw";
-  button.onclick = function () {
+  const button = new Spicetify.Topbar.Button(buttonLabel(), buttonIcon(), () => {
     state = !state;
     tippy.setContent(buttonLabel());
     setButtonIcon();
     applyImmersiveView(state);
-  };
-
-  setButtonIcon();
-
-  const entryPoint = document.querySelector(".main-noConnection");
-  entryPoint.after(button);
+  }, false, true);
+  
+  button.tippy.setProps({
+    placement: "bottom"
+  });
 }
