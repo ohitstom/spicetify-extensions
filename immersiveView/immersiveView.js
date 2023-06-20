@@ -44,8 +44,8 @@ function initImmersiveView() {
 
   const button = new Spicetify.Topbar.Button(buttonLabel(), buttonIcon(), () => {
     state = !state;
-    tippy.setContent(buttonLabel());
-    setButtonIcon();
+    button.label = buttonLabel()
+    button.icon = buttonIcon();
     applyImmersiveView(state);
   }, false, true);
   
