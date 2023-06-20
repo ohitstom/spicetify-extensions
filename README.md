@@ -7,3 +7,5 @@ Please check out the readme for each extension in its folder, it will include in
 ![Example](tracksToEdges/example.png)
 ## immersiveView
 ![Example](immersiveView/example.png)
+## scannables
+![Example](scannables/example.png)
