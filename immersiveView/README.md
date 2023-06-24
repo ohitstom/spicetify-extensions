@@ -11,7 +11,7 @@
 
 ### Usage
 Load Spotify.
-Click on the fullscreen button next to your user profile.
+Click on the fullscreen button next to your user profile, or press `ctrl + i` to toggle on or off, and additionally `esc` to exit.
 
 ### Compatibility
 This extension should pose no compatibility issues since it is just css.

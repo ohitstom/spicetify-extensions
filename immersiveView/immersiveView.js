@@ -52,4 +52,14 @@ function initImmersiveView() {
   button.tippy.setProps({
     placement: "bottom"
   });
+
+  // Keyboard shortcut
+  Spicetify.Keyboard.registerShortcut({ key: "i", ctrl: true}, () => {
+    button.element.click()
+  });
+  Spicetify.Keyboard.registerShortcut("esc", () => {
+    if (state) {
+      button.element.click()
+    }
+  });
 }
