@@ -11,7 +11,7 @@
 
 ### Usage
 Right-click on any object that contains a uri, you should see a submenu called "Show Spotify Code".
-Click on the option to view, click outside the shown image to exit.
+Click on the option to view, click the image to copy link, click outside the shown image to exit.
 
 ### Compatibility
 Provided Spotify does not change how their scannables api works (unlikely) this extension has no compatibility concerns
