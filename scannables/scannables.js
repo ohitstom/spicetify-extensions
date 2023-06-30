@@ -59,7 +59,7 @@
         document.body.removeChild(overlay);
         document.head.removeChild(style);
       } else {
-        Spicetify.Platform.ClipboardAPI.copy(image.src);
+        Spicetify.Platform.ClipboardAPI.copy(`https://scannables.scdn.co/uri/1638/${uris[0]}`);
         document.querySelector(
           "#overlay > div > svg"
         ).innerHTML = `<path d="M378-246 154-470l43-43 181 181 384-384 43 43-427 427Z"/>`;
