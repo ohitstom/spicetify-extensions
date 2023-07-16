@@ -10,11 +10,13 @@
 
     async function moveTrack(uris, uids, contextUri, top) {
         try {
-            const tracklist = await Spicetify.Platform.PlaylistAPI.getContents(contextUri);
+            const tracklist = await Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${contextUri}`);
+            const items = tracklist.items
+            
             const modification = {
                 operation: "move",
                 rows: uids,
-                [top ? "before" : "after"]: top ? tracklist.items[0].uid : tracklist.items[tracklist.totalLength - 1].uid
+                [top ? "before" : "after"]: (top ? items[0] : items[items.length - 1]).rowId
             };
 
             Spicetify.Platform.PlaylistAPI.applyModification(contextUri, modification, true);
