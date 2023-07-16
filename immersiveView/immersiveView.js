@@ -21,12 +21,9 @@ function initImmersiveView() {
       .Root__right-sidebar {
         display: none;
       }
-      body.ylx .Root__top-container {
+      .Root__top-container {
         padding: 0 8px 0 0 !important;
         padding-top: calc(24px + var(--panel-gap)*2) !important;
-      }
-      body:not(.ylx) .main-topBar-historyButtons {
-        margin-left: 45px;
       }
       `;
       styleElement.textContent = css;
