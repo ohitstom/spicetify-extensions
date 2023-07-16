@@ -1,11 +1,11 @@
 [
     {
-        "name": "Image To Clipboard",
-        "description": "Copy the highest quality URL of almost any image.",
-        "preview": "imageToClipboard/marketplace.png",
-        "main": "imageToClipboard/imageToClipboard.js",
-        "readme": "imageToClipboard/README.md",
-        "tags": ["context", "image", "clipboard"]
+        "name": "Scannables",
+        "description": "View a scannable code for any track or playlist (like mobile).",
+        "preview": "scannables/marketplace.png",
+        "main": "scannables/scannables.js",
+        "readme": "scannables/README.md",
+        "tags": ["mobile-feature", "playlists", "tracks"]
     },
     {
         "name": "Tracks To Edges",
@@ -22,13 +22,5 @@
         "main": "immersiveView/immersiveView.js",
         "readme": "immersiveView/README.md",
         "tags": ["panels", "unique", "simple"]
-    },
-    {
-        "name": "Scannables",
-        "description": "View a scannable code for any track or playlist (like mobile).",
-        "preview": "scannables/marketplace.png",
-        "main": "scannables/scannables.js",
-        "readme": "scannables/README.md",
-        "tags": ["mobile-feature", "playlists", "tracks"]
     }
 ]
