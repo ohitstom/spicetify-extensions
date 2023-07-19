@@ -15,6 +15,8 @@
         </div>`;
 
     image.id = "image";
+    image.loading = "eager";
+    image.draggable = false;
     image.src = `https://scannables.scdn.co/uri/800/${uris[0]}`;
     overlay.id = "overlay";
     overlay.innerHTML = image.outerHTML + SVG;
@@ -34,7 +36,7 @@
           left: 0;
           width: 100%;
           height: 100%;
-          background-color: rgba(0, 0, 0, 0.5);
+          background-color: rgba(var(--spice-rgb-shadow),.7);
           display: flex;
           align-items: center;
           justify-content: center;
