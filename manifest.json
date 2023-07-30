@@ -9,7 +9,7 @@
     },
     {
         "name": "Tracks To Edges",
-        "description": "Quickly move multiple tracks to the top or bottom (edges) of a playlist.",
+        "description": "Quickly move multiple tracks to the top/bottom (edges) of a playlist.",
         "preview": "tracksToEdges/marketplace.png",
         "main": "tracksToEdges/tracksToEdges.js",
         "readme": "tracksToEdges/README.md",
@@ -22,5 +22,13 @@
         "main": "immersiveView/immersiveView.js",
         "readme": "immersiveView/README.md",
         "tags": ["panels", "unique", "simple"]
+    },
+    {
+        "name": "Pixelated Images",
+        "description": "Convert images into a pseudo pixel art.",
+        "preview": "pixelatedImages/marketplace.png",
+        "main": "pixelatedImages/pixelatedImages.js",
+        "readme": "pixelatedImages/README.md",
+        "tags": ["images", "pixelArt"]
     }
 ]

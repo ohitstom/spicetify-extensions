@@ -7,3 +7,6 @@ Please check out the readme for each extension in its folder, it will include in
 ![Example](immersiveView/example.png)
 ## scannables
 ![Example](scannables/example.png)
+
+## pixelatedImages
+![Example](pixelatedImages/example.png)
