@@ -3,6 +3,7 @@
 // DESCRIPTION: Convert images into a pseudo pixel art.
 
 (function pixelatedImages() {
+  // Element creation + Attributes
   const svgElement = document.createElementNS(
     "http://www.w3.org/2000/svg",
     "svg"
@@ -19,8 +20,8 @@
     "http://www.w3.org/2000/svg",
     "feFlood"
   );
-  feFloodElement.setAttribute("x", "4");
-  feFloodElement.setAttribute("y", "4");
+  feFloodElement.setAttribute("x", "0");
+  feFloodElement.setAttribute("y", "0");
   feFloodElement.setAttribute("height", "2");
   feFloodElement.setAttribute("width", "2");
   const feCompositeElement = document.createElementNS(
@@ -47,13 +48,19 @@
   );
   feMorphologyElement.setAttribute("operator", "dilate");
   feMorphologyElement.setAttribute("radius", "5");
-  filterElement.appendChild(feFloodElement);
-  filterElement.appendChild(feCompositeElement);
-  filterElement.appendChild(feTileElement);
-  filterElement.appendChild(feCompositeElement2);
-  filterElement.appendChild(feMorphologyElement);
+  
+  // Append to body
+  filterElement.append(
+    feFloodElement,
+    feCompositeElement,
+    feTileElement,
+    feCompositeElement2,
+    feMorphologyElement
+  );
   svgElement.appendChild(filterElement);
   document.body.appendChild(svgElement);
+  
+  // Stylesheet
   const cssStyleElement = document.createElement("style");
   cssStyleElement.textContent = `img { filter: url('#pixelate'); }`;
   document.head.appendChild(cssStyleElement);
