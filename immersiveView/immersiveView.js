@@ -25,7 +25,7 @@ function initImmersiveView() {
         display: none !important;
       }
       .Root__top-container {
-        padding: 0 8px 8px 0 !important;
+        padding: 0 8px 0 8px !important;
         padding-top: calc(24px + var(--panel-gap)*2) !important;
       }
       `;
