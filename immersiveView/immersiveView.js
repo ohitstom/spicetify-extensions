@@ -16,13 +16,16 @@ function initImmersiveView() {
       var styleElement = document.createElement("style");
       styleElement.className = "immersive-view";
       var css = `
+      .Root__top-container {
+        grid-template-columns: 0 1fr 0 !important;
+      }
       .Root__nav-bar,
       .Root__now-playing-bar,
       .Root__right-sidebar {
-        display: none;
+        display: none !important;
       }
       .Root__top-container {
-        padding: 0 8px 0 0 !important;
+        padding: 0 8px 8px 0 !important;
         padding-top: calc(24px + var(--panel-gap)*2) !important;
       }
       `;
@@ -36,27 +39,34 @@ function initImmersiveView() {
 
   // Creation of button
   var state = false;
-  const buttonLabel = () => state ? "Exit Immersive View" : "Enter Immersive View";
-  const buttonIcon = () => state ? "minimize" : "fullscreen";
+  const buttonLabel = () =>
+    state ? "Exit Immersive View" : "Enter Immersive View";
+  const buttonIcon = () => (state ? "minimize" : "fullscreen");
 
-  const button = new Spicetify.Topbar.Button(buttonLabel(), buttonIcon(), () => {
-    state = !state;
-    button.label = buttonLabel()
-    button.icon = buttonIcon();
-    applyImmersiveView(state);
-  }, false, true);
-  
+  const button = new Spicetify.Topbar.Button(
+    buttonLabel(),
+    buttonIcon(),
+    () => {
+      state = !state;
+      button.label = buttonLabel();
+      button.icon = buttonIcon();
+      applyImmersiveView(state);
+    },
+    false,
+    true
+  );
+
   button.tippy.setProps({
-    placement: "bottom"
+    placement: "bottom",
   });
 
   // Keyboard shortcut
-  Spicetify.Keyboard.registerShortcut({ key: "i", ctrl: true}, () => {
-    button.element.click()
+  Spicetify.Keyboard.registerShortcut({ key: "i", ctrl: true }, () => {
+    button.element.click();
   });
   Spicetify.Keyboard.registerShortcut("esc", () => {
     if (state) {
-      button.element.click()
+      button.element.click();
     }
   });
 }
