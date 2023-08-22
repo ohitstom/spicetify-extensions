@@ -7,7 +7,7 @@
     setTimeout(immersiveView, 300);
     return;
   }
-  await initImmersiveView();
+  initImmersiveView();
 })();
 
 function initImmersiveView() {
@@ -25,8 +25,9 @@ function initImmersiveView() {
         display: none !important;
       }
       .Root__top-container {
-        padding: 0 8px 0 8px !important;
+        padding: 8px !important;
         padding-top: calc(24px + var(--panel-gap)*2) !important;
+        gap: 0 !important;
       }
       `;
       styleElement.textContent = css;
