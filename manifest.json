@@ -5,7 +5,7 @@
         "preview": "immersiveView/marketplace.png",
         "main": "immersiveView/immersiveView.js",
         "readme": "immersiveView/README.md",
-        "tags": ["panels", "unique", "simple"]
+        "tags": ["panels", "accessibility"]
     },
     {
         "name": "Pixelated Images",
@@ -13,7 +13,7 @@
         "preview": "pixelatedImages/marketplace.png",
         "main": "pixelatedImages/pixelatedImages.js",
         "readme": "pixelatedImages/README.md",
-        "tags": ["images", "pixelArt"]
+        "tags": ["pixel art", "stylized"]
     },
     {
         "name": "Scannables",
@@ -21,7 +21,7 @@
         "preview": "scannables/marketplace.png",
         "main": "scannables/scannables.js",
         "readme": "scannables/README.md",
-        "tags": ["mobile-feature", "playlists", "tracks"]
+        "tags": ["mobile", "code"]
     },
     {
         "name": "Tracks To Edges",
@@ -29,7 +29,7 @@
         "preview": "tracksToEdges/marketplace.png",
         "main": "tracksToEdges/tracksToEdges.js",
         "readme": "tracksToEdges/README.md",
-        "tags": ["tracklist", "playlists", "ordering"]
+        "tags": ["tracklist", "ordering"]
     },
     {
         "name": "Volume Percentage",
@@ -37,6 +37,7 @@
         "preview": "volumePercentage/marketplace.png",
         "main": "volumePercentage/volumePercentage.js",
         "readme": "volumePercentage/README.md",
+        "tags": ["minimal", "audio"],
         "authors": [
             { "name": "OhItsTom", "url": "https://github.com/ohitstom" },
             { "name": "daksh2k", "url": "https://github.com/daksh2k" }
