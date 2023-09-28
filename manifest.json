@@ -1,21 +1,5 @@
 [
     {
-        "name": "Scannables",
-        "description": "View a scannable code for any track or playlist (like mobile).",
-        "preview": "scannables/marketplace.png",
-        "main": "scannables/scannables.js",
-        "readme": "scannables/README.md",
-        "tags": ["mobile-feature", "playlists", "tracks"]
-    },
-    {
-        "name": "Tracks To Edges",
-        "description": "Quickly move multiple tracks to the top/bottom (edges) of a playlist.",
-        "preview": "tracksToEdges/marketplace.png",
-        "main": "tracksToEdges/tracksToEdges.js",
-        "readme": "tracksToEdges/README.md",
-        "tags": ["tracklist", "playlists", "ordering"]
-    },
-    {
         "name": "Immersive View",
         "description": "Button to hide uneccesary information, providing an immersive experience.",
         "preview": "immersiveView/marketplace.png",
@@ -32,12 +16,27 @@
         "tags": ["images", "pixelArt"]
     },
     {
+        "name": "Scannables",
+        "description": "View a scannable code for any track or playlist (like mobile).",
+        "preview": "scannables/marketplace.png",
+        "main": "scannables/scannables.js",
+        "readme": "scannables/README.md",
+        "tags": ["mobile-feature", "playlists", "tracks"]
+    },
+    {
+        "name": "Tracks To Edges",
+        "description": "Quickly move multiple tracks to the top/bottom (edges) of a playlist.",
+        "preview": "tracksToEdges/marketplace.png",
+        "main": "tracksToEdges/tracksToEdges.js",
+        "readme": "tracksToEdges/README.md",
+        "tags": ["tracklist", "playlists", "ordering"]
+    },
+    {
         "name": "Volume Percentage",
         "description": "Display volume percentage but in a Tippy.",
         "preview": "volumePercentage/marketplace.png",
         "main": "volumePercentage/volumePercentage.js",
         "readme": "volumePercentage/README.md",
-        "tags": ["Volume", "pixelArt"]  ,
         "authors": [
             { "name": "OhItsTom", "url": "https://github.com/ohitstom" },
             { "name": "daksh2k", "url": "https://github.com/daksh2k" }
