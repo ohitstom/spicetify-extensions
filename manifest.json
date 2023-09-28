@@ -30,5 +30,17 @@
         "main": "pixelatedImages/pixelatedImages.js",
         "readme": "pixelatedImages/README.md",
         "tags": ["images", "pixelArt"]
+    },
+    {
+        "name": "Volume Percentage",
+        "description": "Display volume percentage but in a Tippy.",
+        "preview": "volumePercentage/marketplace.png",
+        "main": "volumePercentage/volumePercentage.js",
+        "readme": "volumePercentage/README.md",
+        "tags": ["Volume", "pixelArt"]  ,
+        "authors": [
+            { "name": "OhItsTom", "url": "https://github.com/ohitstom" },
+            { "name": "daksh2k", "url": "https://github.com/daksh2k" }
+        ]
     }
 ]
