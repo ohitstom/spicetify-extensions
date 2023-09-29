@@ -4,39 +4,39 @@
 
 (function tracksToEdges() {
 	if (!Spicetify.showNotification || !Spicetify.Platform || !Spicetify.ContextMenu || !Spicetify.URI) {
-		setTimeout(tracksToEdges, 300);
+		setTimeout(tracksToEdges, 200);
 		return;
 	}
 
-    async function moveTrack(uris, uids, contextUri, top) {
-        try {
-            const tracklist = await Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${contextUri}`);
-            const items = tracklist.items
-            
-            const modification = {
-                operation: "move",
-                rows: uids,
-                [top ? "before" : "after"]: (top ? items[0] : items[items.length - 1]).rowId
-            };
+	async function moveTrack(uris, uids, contextUri, top) {
+		try {
+			const tracklist = await Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${contextUri}`);
+			const items = tracklist.items;
 
-            Spicetify.Platform.PlaylistAPI.applyModification(contextUri, modification, true);
-        } catch (e) {
-            console.error(e);
-            Spicetify.showNotification("Failed to move track(s)!", true);
-        }
-    }
+			const modification = {
+				operation: "move",
+				rows: uids,
+				[top ? "before" : "after"]: (top ? items[0] : items[items.length - 1]).rowId
+			};
 
-    function shouldEnable(uris, uids, contextUri) {
-        const uriObj = Spicetify.URI.from(uris[0]);
-        return uriObj.type === Spicetify.URI.Type.TRACK && Spicetify.URI.isPlaylistV1OrV2(contextUri);
-    }
+			Spicetify.Platform.PlaylistAPI.applyModification(contextUri, modification, true);
+		} catch (e) {
+			console.error(e);
+			Spicetify.showNotification("Failed to move track(s)!", true);
+		}
+	}
 
-    new Spicetify.ContextMenu.SubMenu(
-        "Move track",
-        [
-            new Spicetify.ContextMenu.Item("Move to top", (...args) => moveTrack(...args, true)),
-            new Spicetify.ContextMenu.Item("Move to bottom", (...args) => moveTrack(...args, false))
-        ],
-        shouldEnable
-    ).register();
+	function shouldEnable(uris, uids, contextUri) {
+		const uriObj = Spicetify.URI.from(uris[0]);
+		return uriObj.type === Spicetify.URI.Type.TRACK && Spicetify.URI.isPlaylistV1OrV2(contextUri);
+	}
+
+	new Spicetify.ContextMenu.SubMenu(
+		"Move track",
+		[
+			new Spicetify.ContextMenu.Item("Move to top", (...args) => moveTrack(...args, true)),
+			new Spicetify.ContextMenu.Item("Move to bottom", (...args) => moveTrack(...args, false))
+		],
+		shouldEnable
+	).register();
 })();
