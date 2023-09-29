@@ -13,7 +13,7 @@
         "preview": "pixelatedImages/marketplace.png",
         "main": "pixelatedImages/pixelatedImages.js",
         "readme": "pixelatedImages/README.md",
-        "tags": ["pixel art", "stylized"]
+        "tags": ["pixel art", "filter"]
     },
     {
         "name": "Scannables",
