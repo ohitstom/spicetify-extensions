@@ -1,6 +1,6 @@
 // NAME: Volume Percentage
 // AUTHOR: OhItsTom
-// DESCRIPTION: Display volume percentage but in a Tippy!
+// DESCRIPTION: View/Modify volume percentage in a hoverable Tippy.
 
 (function volumePercentage() {
 	const volumeBar = document.querySelector(".main-nowPlayingBar-volumeBar .progress-bar");
