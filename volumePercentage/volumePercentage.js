@@ -1,5 +1,5 @@
 // NAME: Volume Percentage
-// AUTHOR: OhItsTom, daksh2k
+// AUTHOR: OhItsTom
 // DESCRIPTION: Display volume percentage but in a Tippy!
 
 (function volumePercentage() {
@@ -16,7 +16,7 @@
 		hideOnClick: false
 	});
 
-	// Thanks to daksh2k for the math!
+	// Thanks to daksh2k for the idea!
 	const updatePercentage = () => {
 		const currVolume = Math.round(Spicetify.Platform.PlaybackAPI._volume * 100);
 		tippyContainer.setContent(currVolume == -100 ? `` : `${currVolume}%`);
