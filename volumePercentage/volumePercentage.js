@@ -16,6 +16,7 @@
 		hideOnClick: false
 	});
 
+	// Thanks to daksh2k for the math!
 	const updatePercentage = () => {
 		const currVolume = Math.round(Spicetify.Platform.PlaybackAPI._volume * 100);
 		tippyContainer.setContent(currVolume == -100 ? `` : `${currVolume}%`);

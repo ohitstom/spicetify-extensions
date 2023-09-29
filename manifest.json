@@ -33,14 +33,10 @@
     },
     {
         "name": "Volume Percentage",
-        "description": "Display volume percentage but in a Tippy.",
+        "description": "View/Modify volume percentage in a hoverable Tippy.",
         "preview": "volumePercentage/marketplace.png",
         "main": "volumePercentage/volumePercentage.js",
         "readme": "volumePercentage/README.md",
-        "tags": ["minimal", "audio"],
-        "authors": [
-            { "name": "OhItsTom", "url": "https://github.com/ohitstom" },
-            { "name": "daksh2k", "url": "https://github.com/daksh2k" }
-        ]
+        "tags": ["minimal", "audio"]
     }
 ]
