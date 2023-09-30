@@ -1,6 +1,7 @@
 // NAME: Volume Percentage
 // AUTHOR: OhItsTom
 // DESCRIPTION: View/Modify volume percentage in a hoverable Tippy.
+// TODO: make % sign interactable and select the textbox when clicked too 
 
 (function volumePercentage() {
 	const volumeBar = document.querySelector(".main-nowPlayingBar-volumeBar .progress-bar");
@@ -11,18 +12,82 @@
 		return;
 	}
 
+	// Variables
 	const tippyContainer = Spicetify.Tippy(volumeBar, {
 		...Spicetify.TippyProps,
-		hideOnClick: false
+		hideOnClick: false,
+		interactive: true,
+		allowHTML: true,
+		onMount(instance) {
+			Spicetify.TippyProps.onMount(instance);
+			updatePercentage();
+		}
 	});
 
-	// Thanks to daksh2k for the idea!
+	function adjustWidth(input) {
+		const tmp = document.createElement("div");
+		tmp.style.cssText = getComputedStyle(input).cssText;
+		tmp.innerHTML = input.value.replace(
+			/[&<>"' ]/g,
+			match =>
+				({
+					"&": "&amp;",
+					"<": "&lt;",
+					">": "&gt;",
+					'"': "&quot;",
+					"'": "&#039;",
+					" ": "&nbsp;"
+				}[match])
+		);
+
+		input.parentNode.appendChild(tmp);
+		const width = tmp.clientWidth;
+		tmp.parentNode.removeChild(tmp);
+
+		input.style.width = `${width}px`;
+	}
+
 	const updatePercentage = () => {
 		const currVolume = Math.round(Spicetify.Platform.PlaybackAPI._volume * 100);
-		tippyContainer.setContent(currVolume == -100 ? `` : `${currVolume}%`);
+		tippyContainer.setContent(
+			currVolume === -100
+				? ``
+				: `
+            <div class="text">
+                <input id="volumeInput" type="number" value="${currVolume}">
+                <style>
+                    div.text {
+                        display: flex;
+                        align-items: center;
+                    }
+                    div.text:after {
+                        position: relative;
+                        content: '%';
+                    }
+                    div.text input {
+                        min-width:6px;
+                        max-width:23px;
+                        padding: 0;
+                        font-size: 1em;
+                        text-align: center;
+                        border: 0;
+                        background: none;
+                    }
+                    div.text input::-webkit-outer-spin-button,
+                    div.text input::-webkit-inner-spin-button {
+                        -webkit-appearance: none;
+                        margin: 0;
+                    }
+                </style>
+            </div>`
+		);
+		const volumeInput = document.querySelector("#volumeInput");
+		if (volumeInput) adjustWidth(volumeInput);
 	};
 
-	// Event listeners
+	// Event Listeners
+	Spicetify.Platform.PlaybackAPI._events.addListener("volume", updatePercentage);
+
 	volumeSlider.addEventListener(
 		"mousedown",
 		event => {
@@ -39,8 +104,24 @@
 		{ capture: true }
 	);
 
-	Spicetify.Platform.PlaybackAPI._events.addListener("volume", updatePercentage);
+	document.addEventListener("change", async e => {
+		if (e.target && e.target.id === "volumeInput") {
+			const oldVolume = Math.round(Spicetify.Platform.PlaybackAPI._volume * 100);
+			const newVolume = Math.max(0, Math.min(parseInt(e.target.value), 100));
+			const nanCheck = isNaN(newVolume) ? 0 : newVolume;
 
-	// Initialize
-	updatePercentage();
+			if (newVolume === oldVolume) {
+				e.target.value = oldVolume;
+				adjustWidth(e.target);
+			} else {
+				await Spicetify.Platform.PlaybackAPI.setVolume(nanCheck / 100);
+			}
+		}
+	});
+
+	document.addEventListener("input", e => {
+		if (e.target && e.target.id === "volumeInput") {
+			adjustWidth(e.target);
+		}
+	});
 })();
