@@ -1,7 +1,7 @@
 // NAME: Volume Percentage
 // AUTHOR: OhItsTom
 // DESCRIPTION: View/Modify volume percentage in a hoverable Tippy.
-// TODO: make % sign interactable and select the textbox when clicked too 
+// TODO: make % sign interactable and select the textbox when clicked too
 
 (function volumePercentage() {
 	const volumeBar = document.querySelector(".main-nowPlayingBar-volumeBar .progress-bar");
@@ -27,18 +27,7 @@
 	function adjustWidth(input) {
 		const tmp = document.createElement("div");
 		tmp.style.cssText = getComputedStyle(input).cssText;
-		tmp.innerHTML = input.value.replace(
-			/[&<>"' ]/g,
-			match =>
-				({
-					"&": "&amp;",
-					"<": "&lt;",
-					">": "&gt;",
-					'"': "&quot;",
-					"'": "&#039;",
-					" ": "&nbsp;"
-				}[match])
-		);
+		tmp.innerHTML = input.value;
 
 		input.parentNode.appendChild(tmp);
 		const width = tmp.clientWidth;
