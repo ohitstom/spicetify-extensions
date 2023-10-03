@@ -12,7 +12,7 @@
 		return;
 	}
 
-	// Variables
+	// Definitions
 	const tippyContainer = Spicetify.Tippy(volumeBar, {
 		...Spicetify.TippyProps,
 		hideOnClick: false,
