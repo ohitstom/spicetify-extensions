@@ -1,50 +1,58 @@
 [
-    {
-        "name": "Immersive View",
-        "description": "Button to hide uneccesary information, providing an immersive experience.",
-        "preview": "immersiveView/marketplace.png",
-        "main": "immersiveView/immersiveView.js",
-        "readme": "immersiveView/README.md",
-        "tags": ["panels", "accessibility"]
-    },
-    {
-        "name": "Pixelated Images",
-        "description": "Convert images into a pseudo pixel art.",
-        "preview": "pixelatedImages/marketplace.png",
-        "main": "pixelatedImages/pixelatedImages.js",
-        "readme": "pixelatedImages/README.md",
-        "tags": ["pixel art", "filter"]
-    },
-    {
-        "name": "Scannables",
-        "description": "View a scannable code for any track or playlist (like mobile).",
-        "preview": "scannables/marketplace.png",
-        "main": "scannables/scannables.js",
-        "readme": "scannables/README.md",
-        "tags": ["mobile", "code"]
-    },
-    {
-        "name": "Sleep Timer (beta)",
-        "description": "Pause playback after a certain amount of time (like mobile).",
-        "preview": "sleepTimer/marketplace.png",
-        "main": "sleepTimer/sleepTimer.js",
-        "readme": "sleepTimer/README.md",
-        "tags": ["recreation", "accurate"] 
-    },
-    {
-        "name": "Tracks To Edges",
-        "description": "Quickly move multiple tracks to the top/bottom (edges) of a playlist.",
-        "preview": "tracksToEdges/marketplace.png",
-        "main": "tracksToEdges/tracksToEdges.js",
-        "readme": "tracksToEdges/README.md",
-        "tags": ["tracklist", "ordering"]
-    },
-    {
-        "name": "Volume Percentage",
-        "description": "View/Modify volume percentage in a hoverable Tippy.",
-        "preview": "volumePercentage/marketplace.png",
-        "main": "volumePercentage/volumePercentage.js",
-        "readme": "volumePercentage/README.md",
-        "tags": ["minimal", "audio"]
-    }
+	{
+		"name": "Immersive View",
+		"description": "Button to hide uneccesary information, providing an immersive experience.",
+		"preview": "immersiveView/marketplace.png",
+		"main": "immersiveView/immersiveView.js",
+		"readme": "immersiveView/README.md",
+		"tags": ["panels", "accessibility"]
+	},
+	{
+		"name": "Pixelated Images",
+		"description": "Convert images into a pseudo pixel art.",
+		"preview": "pixelatedImages/marketplace.png",
+		"main": "pixelatedImages/pixelatedImages.js",
+		"readme": "pixelatedImages/README.md",
+		"tags": ["pixel art", "filter"]
+	},
+	{
+		"name": "Playbar Clock",
+		"description": "Current system time on the playbar (display settings soon).",
+		"preview": "playbarClock/marketplace.png",
+		"main": "playbarClock/systemClock.js",
+		"readme": "playbarClock/README.md",
+		"tags": ["time", "utility"]
+	},    
+	{
+		"name": "Scannables",
+		"description": "View a scannable code for any track or playlist (like mobile).",
+		"preview": "scannables/marketplace.png",
+		"main": "scannables/scannables.js",
+		"readme": "scannables/README.md",
+		"tags": ["mobile", "code"]
+	},
+	{
+		"name": "Sleep Timer (beta)",
+		"description": "Pause playback after a certain amount of time (like mobile).",
+		"preview": "sleepTimer/marketplace.png",
+		"main": "sleepTimer/sleepTimer.js",
+		"readme": "sleepTimer/README.md",
+		"tags": ["recreation", "accurate"]
+	},
+	{
+		"name": "Tracks To Edges",
+		"description": "Quickly move multiple tracks to the top/bottom (edges) of a playlist.",
+		"preview": "tracksToEdges/marketplace.png",
+		"main": "tracksToEdges/tracksToEdges.js",
+		"readme": "tracksToEdges/README.md",
+		"tags": ["tracklist", "ordering"]
+	},
+	{
+		"name": "Volume Percentage",
+		"description": "View/Modify volume percentage in a hoverable Tippy.",
+		"preview": "volumePercentage/marketplace.png",
+		"main": "volumePercentage/volumePercentage.js",
+		"readme": "volumePercentage/README.md",
+		"tags": ["minimal", "audio"]
+	}
 ]
