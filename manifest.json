@@ -24,6 +24,14 @@
         "tags": ["mobile", "code"]
     },
     {
+        "name": "Sleep Timer (beta)",
+        "description": "Pause playback after a certain amount of time (like mobile).",
+        "preview": "sleepTimer/marketplace.png",
+        "main": "sleepTimer/sleepTimer.js",
+        "readme": "sleepTimer/README.md",
+        "tags": ["recreation", "accurate"] 
+    },
+    {
         "name": "Tracks To Edges",
         "description": "Quickly move multiple tracks to the top/bottom (edges) of a playlist.",
         "preview": "tracksToEdges/marketplace.png",
