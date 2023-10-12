@@ -69,5 +69,5 @@
 	})();
 
 	// Start Clock Loop
-	setInterval(() => setTime(new Date().toLocaleTimeString()), 1000);
+	setInterval(() => setTime(new Date().toLocaleTimeString()), 300);
 })();
