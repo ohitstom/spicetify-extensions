@@ -1,7 +1,7 @@
 // NAME: Sleep Timer
 // AUTHOR: OhItsTom
 // DESCRIPTION: Pause playback after a certain amount of time.
-// TODO: stop shifting (prob unfixable without LOADS of css) + figure out tray issue (prob unfixable) + re-order sections, possibly move menuwrapper into timer timer > menu > button
+// TODO: stop shifting (prob unfixable without LOADS of css) + figure out tray issue (prob unfixable)
 
 (function sleepTimer() {
 	if (!(Spicetify.Tippy && Spicetify.Player && Spicetify.React && Spicetify.ReactDOM && Spicetify.ReactComponent && Spicetify.showNotification)) {
@@ -106,7 +106,7 @@
 				setTime(false);
 				setstopMenuItem(false);
 
-				if (pause) Spicetify.Platform.PlayerAPI.pause();
+				if (pause) Spicetify.Platform.PlayerAPI.pause(); // if restrictions are in place block until they arent
 				Spicetify.showNotification(message);
 			}, ms);
 		};
@@ -118,26 +118,22 @@
 			setstopMenuItem(true);
 		};
 
-		const formatTime = milliseconds => {
-			if (typeof milliseconds === "string") {
-				return milliseconds;
-			}
+		function formatTime(seconds) {
+			if (!isFinite(seconds)) return "EOT";
 
-			const pad = num => (num < 10 ? `0${num}` : num);
-			const totalSeconds = Math.ceil(milliseconds / 1000);
-
-			const hours = Math.floor(totalSeconds / 3600);
-			const minutes = Math.floor((totalSeconds % 3600) / 60);
-			const seconds = totalSeconds % 60;
-
-			if (hours > 0) {
-				return `${hours}:${pad(minutes)}:${pad(seconds)}`;
-			} else if (minutes > 0) {
-				return `${minutes}:${pad(seconds)}`;
-			} else {
-				return `${seconds}`;
-			}
-		};
+			let remainingSeconds = Math.ceil(seconds / 1000);
+			return [3600, 60, 1]
+				.reduce((parts, divisor, index) => {
+					const padding = parts.length === 0 ? 1 : 2;
+					if (remainingSeconds >= divisor || parts.length > 0 || index === [1, 60, 3600].length - 2) {
+						const quotient = Math.floor(remainingSeconds / divisor);
+						remainingSeconds -= quotient * divisor;
+						parts.push(quotient.toString().padStart(padding, "0"));
+					}
+					return parts;
+				}, [])
+				.join(":");
+		}
 
 		return Spicetify.React.createElement(
 			Spicetify.ReactComponent.ContextMenu,
