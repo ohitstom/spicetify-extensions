@@ -20,7 +20,8 @@
 				style: {
 					overflowWrap: "normal",
 					padding: "0",
-					paddingInline: "8px"
+					paddingInline: "8px",
+					fontWeight: "500"
 				}
 			},
 			time !== false && time

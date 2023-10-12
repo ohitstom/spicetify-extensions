@@ -19,7 +19,7 @@
 		"name": "Playbar Clock",
 		"description": "Current system time on the playbar (display settings soon).",
 		"preview": "playbarClock/marketplace.png",
-		"main": "playbarClock/systemClock.js",
+		"main": "playbarClock/playbarClock.js",
 		"readme": "playbarClock/README.md",
 		"tags": ["time", "utility"]
 	},    
