@@ -152,7 +152,8 @@
 			Spicetify.React.createElement(
 				"button",
 				{
-					className: "Button-sm-16-buttonTertiary-iconOnly-isUsingKeyboard-useBrowserDefaultFocusStyle Button-textSubdued-small-small-buttonTertiary-iconOnly-condensed-useBrowserDefaultFocusStyle",
+					className:
+						"Button-sm-16-buttonTertiary-iconOnly-isUsingKeyboard-useBrowserDefaultFocusStyle Button-textSubdued-small-small-buttonTertiary-iconOnly-condensed-useBrowserDefaultFocusStyle",
 					style: {
 						overflowWrap: "normal",
 						padding: "0",
