@@ -17,12 +17,12 @@
 	},
 	{
 		"name": "Playbar Clock",
-		"description": "Current system time on the playbar (display settings soon).",
+		"description": "Current system time on the playbar, with display options.",
 		"preview": "playbarClock/marketplace.png",
 		"main": "playbarClock/playbarClock.js",
 		"readme": "playbarClock/README.md",
 		"tags": ["time", "utility"]
-	},    
+	},
 	{
 		"name": "Scannables",
 		"description": "View a scannable code for any track or playlist (like mobile).",

@@ -13,4 +13,4 @@
 Click on the clock to modify its display settings.
 
 ### Compatibility
-0 chance of this breaking
+react so iffy
