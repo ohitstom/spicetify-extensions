@@ -24,7 +24,7 @@
 		"tags": ["time", "utility"]
 	},
 	{
-		"name": "Tracklist Queue Control",
+		"name": "Tracklist Queue Control (Alpha)",
 		"description": "Adds a button to the tracklist to add/remove a song from the queue.",
 		"preview": "queueControl/marketplace.png",
 		"main": "queueControl/queueControl.js",
@@ -40,7 +40,7 @@
 		"tags": ["mobile", "code"]
 	},
 	{
-		"name": "Sleep Timer (beta)",
+		"name": "Sleep Timer",
 		"description": "Pause playback after a certain amount of time (like mobile).",
 		"preview": "sleepTimer/marketplace.png",
 		"main": "sleepTimer/sleepTimer.js",
