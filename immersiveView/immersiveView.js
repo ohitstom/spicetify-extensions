@@ -4,7 +4,7 @@
 
 (function immersiveView() {
 	if (!document.querySelector(".main-noConnection") || !Spicetify.Topbar || !Spicetify.Keyboard) {
-		setTimeout(immersiveView, 200);
+		setTimeout(immersiveView, 10);
 		return;
 	}
 

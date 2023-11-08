@@ -32,7 +32,7 @@
 		"tags": ["mobile", "code"]
 	},
 	{
-		"name": "Sleep Timer (beta)",
+		"name": "Sleep Timer",
 		"description": "Pause playback after a certain amount of time (like mobile).",
 		"preview": "sleepTimer/marketplace.png",
 		"main": "sleepTimer/sleepTimer.js",

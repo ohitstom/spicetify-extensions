@@ -4,7 +4,7 @@
 
 (function tracksToEdges() {
 	if (!Spicetify.showNotification || !Spicetify.Platform || !Spicetify.ContextMenu || !Spicetify.URI) {
-		setTimeout(tracksToEdges, 200);
+		setTimeout(tracksToEdges, 10);
 		return;
 	}
 

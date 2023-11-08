@@ -8,7 +8,7 @@
 	const volumeSlider = document.querySelector(".main-nowPlayingBar-volumeBar .progress-bar__slider");
 
 	if (!(volumeBar && volumeSlider && Spicetify.Platform.PlaybackAPI && Spicetify.Tippy && Spicetify.TippyProps)) {
-		setTimeout(volumePercentage, 200);
+		setTimeout(volumePercentage, 10);
 		return;
 	}
 

@@ -4,7 +4,7 @@
 
 (function playbarClock() {
 	if (!(Spicetify.React && Spicetify.ReactDOM && Spicetify.ReactComponent && Spicetify.Tippy && Spicetify.TippyProps)) {
-		setTimeout(playbarClock, 200);
+		setTimeout(playbarClock, 10);
 		return;
 	}
 
@@ -16,7 +16,7 @@
 	}
 	function setConfig(key, value, message) {
 		if (value !== getConfig(key)) {
-			console.log(`[playbarClock-Config]: ${message ?? key + " ="}`, value);
+			console.debug(`[playbarClock-Config]: ${message ?? key + " ="}`, value);
 			config[key] = value;
 			localStorage.setItem("playbarClock:settings", JSON.stringify(config));
 		}
@@ -56,7 +56,7 @@
 		Spicetify.React.useEffect(() => {
 			setConfig(obj.name, state);
 			if (obj.callback) {
-				console.log(`[playbarClock-Callback]: ${obj.name}`);
+				console.debug(`[playbarClock-Callback]: ${obj.name}`);
 				callback({ state, setState, ...obj });
 			}
 		}, [state]);
