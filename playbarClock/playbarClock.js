@@ -25,19 +25,56 @@
 	// Clock Menu
 	const menuOptions = [
 		{
+			name: "Trim Hours",
+			defaultVal: true
+		},
+		{
 			name: "Show Seconds",
 			defaultVal: true,
 			divider: "after"
 		},
 		{
-			name: "12 Hour",
-			defaultVal: true
+			name: "12H",
+			defaultVal: true,
+			children: [
+				{
+					name: "12:00 -> 00:00",
+					defaultVal: false,
+					divider: "after"
+				}
+			]
 		},
 		{
-			name: "AM / PM",
+			name: "AM/PM",
 			defaultVal: true
 		}
 	];
+
+	const menuItem = Spicetify.React.memo(({ obj, state: propState, setState: propSetState }) => {
+		const [state, setState] = propState !== undefined ? [propState, propSetState] : Spicetify.React.useState(getConfig(obj.name) ?? obj.defaultVal);
+
+		Spicetify.React.useEffect(() => {
+			setConfig(obj.name, state);
+			if (obj.callback) {
+				console.log(`[playbarClock-Callback]: ${obj.name}`);
+				callback({ state, setState, ...obj });
+			}
+		}, [state]);
+
+		return Spicetify.React.createElement(
+			Spicetify.ReactComponent.MenuItem,
+			{
+				onClick: () => {
+					setState(prevState => !prevState);
+				},
+				role: "menuitemcheckbox",
+				"aria-checked": state,
+				autoClose: false,
+				...obj
+			},
+			obj.name
+		);
+	});
 
 	const menuWrapper = Spicetify.React.memo(() => {
 		return Spicetify.React.createElement(
@@ -52,30 +89,11 @@
 				}
 			}),
 			menuOptions.map(option => {
-				const { name, defaultVal, callback } = option;
-				const [state, setState] = Spicetify.React.useState(getConfig(name) ?? defaultVal);
-
-				Spicetify.React.useEffect(() => {
-					setConfig(name, state);
-					if (option.callback) {
-						console.log(`[playbarClock-Callback]: ${option.name}`);
-						callback({ state, setState, ...option });
-					}
-				}, [state]);
-
-				return Spicetify.React.createElement(
-					Spicetify.ReactComponent.MenuItem,
-					{
-						onClick: () => {
-							setState(!state);
-						},
-						role: "menuitemcheckbox",
-						"aria-checked": state,
-						autoClose: false,
-						...option
-					},
-					name
-				);
+				const [state, setState] = Spicetify.React.useState(getConfig(option.name) ?? option.defaultVal);
+				return [
+					Spicetify.React.createElement(menuItem, { obj: option, state: state, setState: setState }),
+					option["children"] && state && option["children"].map(option => Spicetify.React.createElement(menuItem, { obj: option }))
+				];
 			})
 		);
 	});
@@ -86,20 +104,16 @@
 		[time, setTime] = Spicetify.React.useState(false);
 
 		function formatTime(time) {
-			let formattedTime = time.toLocaleTimeString(undefined, {
-				hour12: getConfig("12 Hour"),
+			let formattedTime = time.toLocaleTimeString(navigator.language || navigator.languages[0], {
+				hourCycle: getConfig("12H") ? (getConfig("12:00 -> 00:00") ? "h11" : "h12") : "h23",
 				hour: "2-digit",
 				minute: "2-digit",
 				second: getConfig("Show Seconds") ? "2-digit" : undefined
 			});
 
-			if (!getConfig("AM / PM")) {
-				return formattedTime.replace(/(am|pm)/i, "");
-			} else {
-				if (!getConfig("12 Hour")) {
-					return (formattedTime += time.getHours() >= 12 ? " PM" : " AM");
-				}
-			}
+			if (getConfig("Trim Hours")) formattedTime = formattedTime.replace(/^0(?=\d)/, "");
+			if (!getConfig("12H")) formattedTime = formattedTime += time.getHours() >= 12 ? " PM" : " AM";
+			if (!getConfig("AM/PM")) formattedTime = formattedTime.replace(/(am|pm)/i, "");
 
 			return formattedTime;
 		}
