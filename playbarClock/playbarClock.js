@@ -67,7 +67,7 @@
 				onClick: () => {
 					setState(prevState => !prevState);
 				},
-				role: "menuitemcheckbox",
+				role: "menuitemradio",
 				"aria-checked": state,
 				autoClose: false,
 				...obj
