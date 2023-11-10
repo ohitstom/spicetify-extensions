@@ -14,9 +14,9 @@ Please check out the readme for each extension in its folder, it will include in
 
 ![Example](playbarClock/example.png)
 
-## queueControl
+## quickQueue
 
-![Example](queueControl/example.png)
+![Example](quickQueue/example.png)
 
 ## scannables
 
