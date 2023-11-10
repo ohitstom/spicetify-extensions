@@ -1,6 +1,7 @@
 // NAME: Quick Queue
 // AUTHOR: OhItsTom
 // DESCRIPTION: Adds a button to the tracklist to add/remove a song from the queue.
+// TODO: complete logic + prevent pileups
 
 (function quickQueue() {
 	if (
