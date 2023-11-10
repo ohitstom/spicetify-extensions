@@ -26,7 +26,7 @@
 		}
 	}
 
-	function shouldEnable(uris, uids, contextUri) {
+	function shouldAdd(uris, uids, contextUri) {
 		const uriObj = Spicetify.URI.from(uris[0]);
 		return uriObj.type === Spicetify.URI.Type.TRACK && Spicetify.URI.isPlaylistV1OrV2(contextUri);
 	}
@@ -47,9 +47,10 @@
 				"chart-down"
 			)
 		],
-		shouldEnable
-		/*`<svg data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 24 24" class="Svg-img-icon-small-textSubdued">
+		shouldAdd,
+		false,
+		`<svg data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 24 24" class="Svg-img-icon-small-textSubdued">
 			<path d="M9,3L5,6.99h3L8,14h2L10,6.99h3L9,3zM16,17.01L16,10h-2v7.01h-3L15,21l4,-3.99h-3z">
-		</svg>`*/
+		</svg>`
 	).register();
 })();

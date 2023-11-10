@@ -1,7 +1,7 @@
 // NAME: Sleep Timer
 // AUTHOR: OhItsTom
 // DESCRIPTION: Pause playback after a certain amount of time.
-// TODO: stop shifting (prob unfixable without LOADS of css) + figure out tray issue (prob unfixable)
+// TODO: all the react logic sucks, global scope vars are bad, and the code is messy. I'll fix it later.
 
 (function sleepTimer() {
 	if (!(Spicetify.Tippy && Spicetify.Player && Spicetify.React && Spicetify.ReactDOM && Spicetify.ReactComponent && Spicetify.showNotification)) {
@@ -11,6 +11,7 @@
 
 	// Global Variables
 	// + Cached States Incase of DOM Change
+	let storedTime, setStoredTime;
 	let time, setTime;
 	let referenceTime, setReferenceTime;
 	let stopMenuItem, setstopMenuItem;
@@ -46,7 +47,9 @@
 							onClick: e => {
 								startTimer(value);
 								Spicetify.showNotification(`Selected: ${key}`);
-							}
+							},
+							role: "menuitemradio",
+							"aria-checked": storedTime === value
 						},
 						key
 					);
@@ -73,6 +76,7 @@
 
 	// Timer Button
 	const Timer = Spicetify.React.memo(() => {
+		[storedTime, setStoredTime] = Spicetify.React.useState(storedTime ?? false);
 		[time, setTime] = Spicetify.React.useState(time ?? false);
 		[referenceTime, setReferenceTime] = Spicetify.React.useState(referenceTime ?? performance.now());
 		[stopMenuItem, setstopMenuItem] = Spicetify.React.useState(stopMenuItem ?? false);
@@ -103,10 +107,11 @@
 		stopTimer = (ms = 0, pause = true, message = "Timer finished!") => {
 			console.log(performance.now());
 			setTimeout(function () {
+				setStoredTime(false);
 				setTime(false);
 				setstopMenuItem(false);
 
-				if (pause) Spicetify.Platform.PlayerAPI.pause(); // if restrictions are in place block until they arent
+				if (pause) Spicetify.Platform.PlayerAPI.pause();
 				Spicetify.showNotification(message);
 			}, ms);
 		};
@@ -114,6 +119,7 @@
 		startTimer = ms => {
 			console.log(performance.now());
 			setReferenceTime(performance.now());
+			setStoredTime(ms);
 			setTime(ms);
 			setstopMenuItem(true);
 		};
