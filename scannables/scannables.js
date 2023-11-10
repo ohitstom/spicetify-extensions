@@ -4,7 +4,7 @@
 
 (function scannables() {
 	if (!Spicetify.Platform.ClipboardAPI || !Spicetify.URI || !Spicetify.ContextMenu) {
-		setTimeout(scannables, 200);
+		setTimeout(scannables, 10);
 		return;
 	}
 

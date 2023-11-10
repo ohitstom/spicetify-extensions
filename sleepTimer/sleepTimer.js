@@ -5,7 +5,7 @@
 
 (function sleepTimer() {
 	if (!(Spicetify.Tippy && Spicetify.Player && Spicetify.React && Spicetify.ReactDOM && Spicetify.ReactComponent && Spicetify.showNotification)) {
-		setTimeout(sleepTimer, 200);
+		setTimeout(sleepTimer, 10);
 		return;
 	}
 
@@ -105,7 +105,7 @@
 		}, [time]);
 
 		stopTimer = (ms = 0, pause = true, message = "Timer finished!") => {
-			console.log(performance.now());
+			console.debug(performance.now());
 			setTimeout(function () {
 				setStoredTime(false);
 				setTime(false);
@@ -117,7 +117,7 @@
 		};
 
 		startTimer = ms => {
-			console.log(performance.now());
+			console.debug(performance.now());
 			setReferenceTime(performance.now());
 			setStoredTime(ms);
 			setTime(ms);
