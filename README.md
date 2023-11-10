@@ -14,6 +14,10 @@ Please check out the readme for each extension in its folder, it will include in
 
 ![Example](playbarClock/example.png)
 
+## queueControl
+
+![Example](queueControl/example.png)
+
 ## scannables
 
 ![Example](scannables/example.png)

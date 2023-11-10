@@ -13,11 +13,11 @@
 		var overlay = document.createElement("div");
 		var image = document.createElement("img");
 		var SVG = `
-    <div class="centered">
-      <svg  width="48" height="48" viewBox="0 -960 960 960" style="fill: white;">
-        <path d="M180-81q-24 0-42-18t-18-42v-603h60v603h474v60H180Zm120-120q-24 0-42-18t-18-42v-560q0-24 18-42t42-18h440q24 0 42 18t18 42v560q0 24-18 42t-42 18H300Zm0-60h440v-560H300v560Zm0 0v-560 560Z"></path>
-      </svg>
-    </div>`;
+		<div class="centered">
+			<svg  width="48" height="48" viewBox="0 -960 960 960" style="fill: white;">
+				<path d="M180-81q-24 0-42-18t-18-42v-603h60v603h474v60H180Zm120-120q-24 0-42-18t-18-42v-560q0-24 18-42t42-18h440q24 0 42 18t18 42v560q0 24-18 42t-42 18H300Zm0-60h440v-560H300v560Zm0 0v-560 560Z"></path>
+			</svg>
+		</div>`;
 
 		image.id = "image";
 		image.loading = "eager";
@@ -82,6 +82,14 @@
 	new Spicetify.ContextMenu.Item(
 		"Show Spotify Code",
 		uris => showScannable(uris),
-		uris => shouldEnable(uris)
+		uris => shouldEnable(uris),
+		`<svg data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 16 16" class="Svg-img-icon-small-textSubdued">
+			<rect x="0" y="4.065" width="1.5" height="7.87" rx="0.75" ry="0.75"></rect>
+			<rect x="2.9" y="0" width="1.5" height="16.00" rx="0.75" ry="0.75"></rect>
+			<rect x="5.8" y="2.89" width="1.5" height="10.22" rx="0.75" ry="0.75"></rect>
+			<rect x="8.7" y="5.92" width="1.5" height="4.16" rx="0.75" ry="0.75"></rect>
+			<rect x="11.5" y="1.465" width="1.5" height="13.07" rx="0.75" ry="0.75"></rect>
+			<rect x="14.5" y="4.065" width="1.5" height="7.87" rx="0.75" ry="0.75"></rect>
+	 	</svg>`
 	).register();
 })();
