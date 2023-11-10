@@ -38,12 +38,14 @@
 				"Move to top",
 				(...args) => moveTrack(...args, true),
 				() => true,
+				//"",
 				"chart-up"
 			),
 			new Spicetify.ContextMenu.Item(
 				"Move to bottom",
 				(...args) => moveTrack(...args, false),
 				() => true,
+				//"",
 				"chart-down"
 			)
 		],
