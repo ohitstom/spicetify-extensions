@@ -3,7 +3,7 @@
 // DESCRIPTION: Button to hide uneccesary information, providing an immersive experience.
 
 (function immersiveView() {
-	if (!document.querySelector(".main-noConnection") || !Spicetify.Topbar || !Spicetify.Keyboard) {
+	if (!(document.querySelector(".main-noConnection") && Spicetify.Topbar && Spicetify.Keyboard)) {
 		setTimeout(immersiveView, 10);
 		return;
 	}
@@ -13,20 +13,20 @@
 			var styleElement = document.createElement("style");
 			styleElement.className = "immersive-view";
 			var css = `
-      .Root__top-container {
-        grid-template-columns: 0 1fr 0 !important;
-      }
-      .Root__nav-bar,
-      .Root__now-playing-bar,
-      .Root__right-sidebar {
-        display: none !important;
-      }
-      .Root__top-container {
-        padding: 8px !important;
-        padding-top: calc(24px + var(--panel-gap)*2) !important;
-        gap: 0 !important;
-      }
-      `;
+				.Root__top-container {
+					grid-template-columns: 0 1fr 0 !important;
+				}
+				.Root__nav-bar,
+				.Root__now-playing-bar,
+				.Root__right-sidebar {
+					display: none !important;
+				}
+				.Root__top-container {
+					padding: 8px !important;
+					padding-top: calc(24px + var(--panel-gap)*2) !important;
+					gap: 0 !important;
+				}
+			`;
 			styleElement.textContent = css;
 			document.head.appendChild(styleElement);
 		} else {

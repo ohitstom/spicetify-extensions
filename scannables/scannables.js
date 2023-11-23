@@ -1,9 +1,10 @@
 // NAME: Scannables
 // AUTHOR: OhItsTom
 // DESCRIPTION: View scannable code for any track or playlist.
+// TODO: use react?
 
 (function scannables() {
-	if (!Spicetify.Platform.ClipboardAPI || !Spicetify.URI || !Spicetify.ContextMenu) {
+	if (!(Spicetify.Platform.ClipboardAPI && Spicetify.URI && Spicetify.ContextMenu)) {
 		setTimeout(scannables, 10);
 		return;
 	}

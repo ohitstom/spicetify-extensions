@@ -1,10 +1,11 @@
 // NAME: Tracks To Edges
 // AUTHOR: OhItsTom
 // DESCRIPTION: Quickly move multiple tracks to the top or bottom (edges) of a playlist.
+// TODO: check Spicetify.Platform.PlaylistPermissionsAPI.getMembers(contextUri) to see if user can edit playlist
 
 (function tracksToEdges() {
-	if (!Spicetify.showNotification || !Spicetify.Platform || !Spicetify.ContextMenu || !Spicetify.URI || !Spicetify.SVGIcons) {
-		setTimeout(tracksToEdges, 200);
+	if (!(Spicetify.showNotification && Spicetify.Platform && Spicetify.ContextMenu && Spicetify.URI && Spicetify.SVGIcons)) {
+		setTimeout(tracksToEdges, 10);
 		return;
 	}
 
@@ -27,32 +28,35 @@
 	}
 
 	function shouldAdd(uris, uids, contextUri) {
-		const uriObj = Spicetify.URI.from(uris[0]);
-		return uriObj.type === Spicetify.URI.Type.TRACK && Spicetify.URI.isPlaylistV1OrV2(contextUri);
+		uris.length > 1 ? (subMenu.name = `Move ${uris.length} tracks`) : (subMenu.name = "Move track");
+		return Spicetify.URI.isPlaylistV1OrV2(contextUri);
 	}
 
-	new Spicetify.ContextMenu.SubMenu(
+	const subMenu = new Spicetify.ContextMenu.SubMenu(
 		"Move track",
 		[
 			new Spicetify.ContextMenu.Item(
-				"Move to top",
+				"To top",
 				(...args) => moveTrack(...args, true),
 				() => true,
-				//"",
+				false,
 				"chart-up"
 			),
 			new Spicetify.ContextMenu.Item(
-				"Move to bottom",
+				"To bottom",
 				(...args) => moveTrack(...args, false),
 				() => true,
-				//"",
+				false,
 				"chart-down"
 			)
 		],
 		shouldAdd,
 		false,
-		`<svg data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 24 24" class="Svg-img-icon-small-textSubdued">
-			<path d="M9,3L5,6.99h3L8,14h2L10,6.99h3L9,3zM16,17.01L16,10h-2v7.01h-3L15,21l4,-3.99h-3z">
+		`<svg data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 16 16" class="Svg-img-icon-small-textSubdued">
+		 	<path d="M9,3L5,6.99h3L8,14h2L10,6.99h3L9,3zM16,17.01L16,10h-2v7.01h-3L15,21l4,-3.99h-3z" 
+				style="transform: translate(-3px, -3px); scale: 0.9;">
+			</path>
 		</svg>`
-	).register();
+	);
+	subMenu.register();
 })();

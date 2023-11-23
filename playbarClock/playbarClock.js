@@ -1,6 +1,7 @@
 // NAME: Playbar Clock
 // AUTHOR: OhItsTom
 // DESCRIPTION: Current system time on the playbar (display settings soon).
+// TODO: remove global variables and move clock loop into component
 
 (function playbarClock() {
 	if (!(Spicetify.React && Spicetify.ReactDOM && Spicetify.ReactComponent && Spicetify.Tippy && Spicetify.TippyProps)) {
