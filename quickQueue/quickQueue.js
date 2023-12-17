@@ -1,7 +1,9 @@
 // NAME: Quick Queue
 // AUTHOR: OhItsTom
 // DESCRIPTION: Adds a button to the tracklist to add/remove a song from the queue.
-// TODO: complete basic function + prevent pileups
+// TODO:
+// figure out how to remove only one instance of a track from queue instead of all instances
+// add an option to insert to top of queue (maybe mouse middle click or right click?) - or i could just add multiple buttons for more advanced functionality
 
 (function quickQueue() {
 	if (
