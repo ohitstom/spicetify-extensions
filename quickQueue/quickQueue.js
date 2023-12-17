@@ -19,34 +19,28 @@
 		return;
 	}
 
-	const QueueButton = Spicetify.React.memo(({ uri, tippy }) => {
-		const [isQueued, setIsQueued] = Spicetify.React.useState(Spicetify.Platform.PlayerAPI.getQueue().queued.some(item => item.uri === uri));
+	const QueueButton = Spicetify.React.memo(function QueueButton({ uri, tippy, classList }) {
+		const [isQueued, setIsQueued] = Spicetify.React.useState(Spicetify.Platform.PlayerAPI._queue._queueState.queued.some(item => item.uri === uri));
 
-		Spicetify.React.useEffect(() => {
-			//Spicetify.Platform.PlayerAPI._queue._events.addListener("queue_update", e => console.debug(uri, "signal receive"));
-			return function cleanup() {
-				console.debug("exit");
-			};
-		}, [uri, tippy]);
-
-		// Initialize
+		// Effects
 		tippy.setProps({ content: isQueued ? "Remove from queue" : "Add to queue" });
+		Spicetify.Platform.PlayerAPI._queue._events.addListener("queue_update", event => {
+			setIsQueued(event.data.queued.some(item => item.uri === uri));
+		});
 
 		// Functions
 		const handleClick = function () {
 			Spicetify.showNotification(isQueued ? "Removed from queue" : "Added to queue");
-			Spicetify.Platform.PlayerAPI[isQueued ? "removeFromQueue" : "addToQueue"]([{ uri: uri }]);
 			tippy.setProps({ content: isQueued ? "Remove from queue" : "Add to queue" });
-			setIsQueued(!isQueued);
+			Spicetify.Platform.PlayerAPI[isQueued ? "removeFromQueue" : "addToQueue"]([{ uri }]);
 		};
 
 		// Render
 		return Spicetify.React.createElement(
 			"button",
 			{
-				className:
-					"Button-sm-16-buttonTertiary-iconOnly-isUsingKeyboard-useBrowserDefaultFocusStyle Button-textSubdued-small-small-buttonTertiary-iconOnly-condensed-isUsingKeyboard-useBrowserDefaultFocusStyle main-trackList-rowHeartButton",
-				"aria-checked": false,
+				className: classList,
+				"aria-checked": isQueued,
 				onClick: handleClick,
 				style: { marginRight: "8px" }
 			},
@@ -60,7 +54,7 @@
 						height: "16",
 						width: "16",
 						viewBox: "0 0 16 16",
-						className: "Svg-img-icon-small"
+						className: isQueued ? "Svg-img-icon-small-textBrightAccent" : "Svg-img-icon-small"
 					},
 					Spicetify.React.createElement("svg", {
 						dangerouslySetInnerHTML: {
@@ -96,8 +90,11 @@
 			const node = mutation.addedNodes[0];
 			if (node?.attributes?.role?.value === "row") {
 				const lastRowSection = node.firstChild.lastChild;
-				const heartButton = lastRowSection.firstChild;
-				if (heartButton && heartButton.classList.contains("main-trackList-rowHeartButton")) {
+				const entryPoint = lastRowSection.firstChild;
+				if (
+					entryPoint &&
+					(entryPoint.classList.contains("main-trackList-rowHeartButton") || entryPoint.classList.contains("main-trackList-curationButton"))
+				) {
 					const reactProps = Object.keys(node).find(k => k.startsWith("__reactProps$"));
 					const uri = findVal(node[reactProps], "uri");
 
@@ -105,12 +102,19 @@
 					queueButtonWrapper.className = "queueControl-wrapper";
 					queueButtonWrapper.style.marginRight = 0;
 
-					const queueButtonElement = lastRowSection.insertBefore(queueButtonWrapper, heartButton);
+					const queueButtonElement = lastRowSection.insertBefore(queueButtonWrapper, entryPoint);
 					const tippy = Spicetify.Tippy(queueButtonElement, {
 						...Spicetify.TippyProps,
 						hideOnClick: true
 					});
-					Spicetify.ReactDOM.render(Spicetify.React.createElement(QueueButton, { uri: uri, tippy: tippy }), queueButtonElement);
+					Spicetify.ReactDOM.render(
+						Spicetify.React.createElement(QueueButton, {
+							uri,
+							tippy,
+							classList: entryPoint.classList
+						}),
+						queueButtonElement
+					);
 				}
 			}
 		});
