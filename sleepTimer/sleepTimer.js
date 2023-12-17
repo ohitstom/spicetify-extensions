@@ -205,8 +205,8 @@
 	// DOM Manipulation
 	function waitForWidgetMounted() {
 		nowPlayingWidget = document.querySelector(".main-nowPlayingWidget-nowPlaying");
-		heart = document.querySelector(".control-button-heart");
-		if (!(nowPlayingWidget && heart)) {
+		entryPoint = document.querySelector(".main-nowPlayingWidget-nowPlaying > button:last-child");
+		if (!(nowPlayingWidget && entryPoint)) {
 			setTimeout(waitForWidgetMounted, 300);
 			return;
 		}
@@ -214,7 +214,7 @@
 		const timerContainer = document.createElement("div");
 		timerContainer.className = "sleepTimer-container";
 
-		const timerElement = nowPlayingWidget.insertBefore(timerContainer, heart);
+		const timerElement = nowPlayingWidget.insertBefore(timerContainer, entryPoint);
 		Spicetify.ReactDOM.render(Spicetify.React.createElement(Timer), timerElement);
 
 		hoverTip = Spicetify.Tippy(timerElement, {
