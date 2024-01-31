@@ -44,7 +44,10 @@
 				className: classList,
 				"aria-checked": isQueued,
 				onClick: handleClick,
-				style: { marginRight: "8px" }
+				style: {
+					marginRight: "8px",
+					opacity: isQueued ? "1" : "0"
+				}
 			},
 			Spicetify.React.createElement(
 				"span",
