@@ -46,7 +46,7 @@
 				onClick: handleClick,
 				style: {
 					marginRight: "8px",
-					opacity: isQueued ? "1" : "0"
+					opacity: isQueued && "1 !important"
 				}
 			},
 			Spicetify.React.createElement(
