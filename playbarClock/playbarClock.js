@@ -1,7 +1,6 @@
 // NAME: Playbar Clock
 // AUTHOR: OhItsTom
 // DESCRIPTION: Current system time on the playbar (display settings soon).
-// TODO: remove global variables and move clock loop into component
 
 (function playbarClock() {
 	if (!(Spicetify.React && Spicetify.ReactDOM && Spicetify.ReactComponent && Spicetify.Tippy && Spicetify.TippyProps)) {
@@ -100,9 +99,15 @@
 	});
 
 	// Clock Button
-	let time, setTime;
 	const Clock = Spicetify.React.memo(() => {
-		[time, setTime] = Spicetify.React.useState(false);
+		const [time, setTime] = Spicetify.React.useState(false);
+
+		Spicetify.React.useEffect(() => {
+			clockInterval = setInterval(() => {
+				setTime(new Date());
+			}, 300);
+			return () => clearInterval(clockInterval);
+		}, [setTime]);
 
 		function formatTime(time) {
 			let formattedTime = time.toLocaleTimeString(navigator.language || navigator.languages[0], {
@@ -151,9 +156,8 @@
 	});
 
 	// DOM Manipulation
-	let clockInterval;
 	function waitForWidgetMounted() {
-		extraControlsWidget = document.querySelector(".main-nowPlayingBar-extraControls");
+		const extraControlsWidget = document.querySelector(".main-nowPlayingBar-extraControls");
 		if (!extraControlsWidget) {
 			setTimeout(waitForWidgetMounted, 300);
 			return;
@@ -170,10 +174,6 @@
 			...Spicetify.TippyProps,
 			content: "System Clock"
 		});
-
-		// Start Clock Loop
-		if (clearInterval) clearInterval(clockInterval);
-		clockInterval = setInterval(() => setTime(new Date()), 300);
 	}
 
 	(function attachObserver() {
