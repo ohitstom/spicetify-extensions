@@ -9,6 +9,9 @@
 		return;
 	}
 
+	// Support Spicetify 2.32.2 -> https://github.com/spicetify/spicetify-cli/issues/2816
+	Spicetify.ContextMenuV2._context = Spicetify.ContextMenuV2._context ?? Spicetify.React.createContext({});
+
 	// Settings Config
 	let config = JSON.parse(localStorage.getItem("playbarClock:settings") || "{}");
 
