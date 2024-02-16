@@ -11,19 +11,21 @@
 
 	async function moveTrack(uris, uids, contextUri, top) {
 		try {
-			const tracklist = await Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${contextUri}`);
-			const items = tracklist.items;
+			const { items } = await Spicetify.Platform.PlaylistAPI.getContents(contextUri);
 
-			const modification = {
-				operation: "move",
-				rows: uids,
-				[top ? "before" : "after"]: (top ? items[0] : items[items.length - 1]).rowId
-			};
+			await Spicetify.Platform.PlaylistAPI._playlistServiceClient.modify({
+				uri: contextUri,
+				request: {
+					operation: "move",
+					rows: uids,
+					[top ? "before" : "after"]: (top ? items[0] : items[items.length - 1]).uid
+				}
+			});
 
-			Spicetify.Platform.PlaylistAPI.applyModification(contextUri, modification, true);
+			Spicetify.showNotification("Moved track(s)", false);
 		} catch (e) {
 			console.error(e);
-			Spicetify.showNotification("Failed to move track(s)!", true);
+			Spicetify.showNotification("Failed to move track(s)", true);
 		}
 	}
 
