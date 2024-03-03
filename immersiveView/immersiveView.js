@@ -3,7 +3,7 @@
 // DESCRIPTION: Button to hide uneccesary information, providing an immersive experience.
 
 (function immersiveView() {
-	if (!(document.querySelector(".main-noConnection") && Spicetify.Topbar && Spicetify.Keyboard)) {
+	if (!((document.querySelector(".main-noConnection") || document.querySelector(".main-actionButtons")) && Spicetify.Topbar && Spicetify.Keyboard)) {
 		setTimeout(immersiveView, 10);
 		return;
 	}
