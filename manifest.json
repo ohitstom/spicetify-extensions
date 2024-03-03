@@ -16,6 +16,14 @@
 		"tags": ["pixel art", "filter"]
 	},
 	{
+		"name": "No Controls",
+		"description": "Remove the minimum, maximum, and close buttons from the titlebar.",
+		"preview": "noControls/marketplace.png",
+		"main": "noControls/noControls.js",
+		"readme": "noControls/README.md",
+		"tags": ["interface", "minimalist"]
+	},
+	{
 		"name": "Playbar Clock",
 		"description": "Current system time on the playbar, with display options.",
 		"preview": "playbarClock/marketplace.png",

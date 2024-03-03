@@ -10,6 +10,10 @@ Please check out the readme for each extension in its folder, it will include in
 
 ![Example](pixelatedImages/example.png)
 
+## noControls
+
+![Example](noControls/example.png)
+
 ## playbarClock
 
 ![Example](playbarClock/example.png)
