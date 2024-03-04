@@ -11,9 +11,9 @@
 
 	async function moveTrack(uris, uids, contextUri, top) {
 		try {
-			const { items } = await Spicetify.Platform.PlaylistAPI.getContents(contextUri);
-			const { name, album } = await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks/${Spicetify.URI.from(uris[0]).id}`);
 			const { images, name: playlistName } = await Spicetify.Platform.PlaylistAPI.getMetadata(contextUri);
+			const { items } = await Spicetify.Platform.PlaylistAPI.getContents(contextUri);
+			const trackData = await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.decorateContextTracks, { uris: uris[0] });
 			const modification = {
 				operation: "move",
 				rows: uids,
@@ -31,13 +31,15 @@
 						children: Spicetify.ReactComponent.Snackbar.wrapper({
 							children: Spicetify.ReactComponent.Snackbar.simpleLayout({
 								leading: Spicetify.ReactComponent.Snackbar.styledImage({
-									src: uris.length > 1 ? images[0].url : album?.images[0]?.url,
+									src: uris.length > 1 ? images[0]?.url : trackData?.data?.tracks[0]?.albumOfTrack?.coverArt?.sources[0]?.url,
 									imageHeight: "24px",
 									imageWidth: "24px"
 								}),
 								center: Spicetify.React.createElement("div", {
 									dangerouslySetInnerHTML: {
-										__html: `Moved <b>${uris.length > 1 ? uris.length + "</b>" + " tracks" : name + "</b>"} to <b>${top ? "top" : "bottom"}</b> in`
+										__html: `Moved <b>${uris.length > 1 ? uris.length + "</b>" + " tracks" : trackData?.data?.tracks[0]?.name + "</b>"} to <b>${
+											top ? "top" : "bottom"
+										}</b> in`
 									}
 								}),
 								trailing: Spicetify.React.createElement("div", {
@@ -49,7 +51,9 @@
 						})
 				  })
 				: Spicetify.showNotification(
-						uris.length > 1 ? `Moved ${uris.length} tracks to ${top ? "top" : "bottom"}` : `Moved ${name} to ${top ? "top" : "bottom"}`,
+						uris.length > 1
+							? `Moved ${uris.length} tracks to ${top ? "top" : "bottom"}`
+							: `Moved ${trackData?.data?.tracks[0]?.name} to ${top ? "top" : "bottom"}`,
 						false
 				  );
 		} catch (e) {
