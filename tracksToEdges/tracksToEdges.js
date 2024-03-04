@@ -12,20 +12,49 @@
 	async function moveTrack(uris, uids, contextUri, top) {
 		try {
 			const { items } = await Spicetify.Platform.PlaylistAPI.getContents(contextUri);
+			const { name, album } = await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks/${Spicetify.URI.from(uris[0]).id}`);
+			const { images, name: playlistName } = await Spicetify.Platform.PlaylistAPI.getMetadata(contextUri);
+			const modification = {
+				operation: "move",
+				rows: uids,
+				[top ? "before" : "after"]: (top ? items[0] : items[items.length - 1]).uid
+			};
 
-			await Spicetify.Platform.PlaylistAPI._playlistServiceClient.modify({
+			(await Spicetify.Platform.PlaylistAPI._playlistServiceClient?.modify({
 				uri: contextUri,
-				request: {
-					operation: "move",
-					rows: uids,
-					[top ? "before" : "after"]: (top ? items[0] : items[items.length - 1]).uid
-				}
-			});
+				request: modification
+			})) ?? (await Spicetify.Platform.PlaylistAPI.applyModification(contextUri, modification, true));
 
-			Spicetify.showNotification("Moved track(s)", false);
+			Spicetify.Snackbar?.enqueueCustomSnackbar
+				? Spicetify.Snackbar.enqueueCustomSnackbar("modified-playlist", {
+						keyPrefix: "modified-playlist",
+						children: Spicetify.ReactComponent.Snackbar.wrapper({
+							children: Spicetify.ReactComponent.Snackbar.simpleLayout({
+								leading: Spicetify.ReactComponent.Snackbar.styledImage({
+									src: uris.length > 1 ? images[0].url : album?.images[0]?.url,
+									imageHeight: "24px",
+									imageWidth: "24px"
+								}),
+								center: Spicetify.React.createElement("div", {
+									dangerouslySetInnerHTML: {
+										__html: `Moved <b>${uris.length > 1 ? uris.length + "</b>" + " tracks" : name + "</b>"} to <b>${top ? "top" : "bottom"}</b> in`
+									}
+								}),
+								trailing: Spicetify.React.createElement("div", {
+									dangerouslySetInnerHTML: {
+										__html: `<b>${playlistName}</b>`
+									}
+								})
+							})
+						})
+				  })
+				: Spicetify.showNotification(
+						uris.length > 1 ? `Moved ${uris.length} tracks to ${top ? "top" : "bottom"}` : `Moved ${name} to ${top ? "top" : "bottom"}`,
+						false
+				  );
 		} catch (e) {
 			console.error(e);
-			Spicetify.showNotification("Failed to move track(s)", true);
+			Spicetify.showNotification(uris.length > 1 ? `Failed to move ${uris.length} tracks` : "Failed to move track", true);
 		}
 	}
 
