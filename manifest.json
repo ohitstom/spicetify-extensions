@@ -17,7 +17,7 @@
 	},
 	{
 		"name": "No Controls",
-		"description": "Remove the minimum, maximum, and close buttons from the titlebar (Spotify >= 1.2.32)",
+		"description": "Removes the titlebar, (Spotify >= 1.2.32)",
 		"preview": "noControls/marketplace.png",
 		"main": "noControls/noControls.js",
 		"readme": "noControls/README.md",
