@@ -142,7 +142,7 @@
 				"button",
 				{
 					className:
-						"Button-sm-16-buttonTertiary-iconOnly-isUsingKeyboard-useBrowserDefaultFocusStyle Button-small-small-buttonTertiary-iconOnly-isUsingKeyboard-useBrowserDefaultFocusStyle",
+						"Button-sm-16-buttonTertiary-iconOnly-useBrowserDefaultFocusStyle Button-small-small-buttonTertiary-iconOnly-useBrowserDefaultFocusStyle",
 					style: {
 						overflowWrap: "normal",
 						padding: "0",
