@@ -61,6 +61,7 @@
                         text-align: center;
                         border: 0;
                         background: none;
+						color: var(--spice-text);
                     }
                     div.text input::-webkit-outer-spin-button,
                     div.text input::-webkit-inner-spin-button {
