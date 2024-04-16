@@ -2,38 +2,38 @@
 
 Please check out the readme for each extension in its folder, it will include installation instructions, usage, and compatibility notes.
 
-## immersiveView
+## [immersiveView](immersiveView/README.md)
 
 ![Example](immersiveView/example.png)
 
-## pixelatedImages
+## [pixelatedImages](pixelatedImages/README.md)
 
 ![Example](pixelatedImages/example.png)
 
-## noControls
+## [noControls](noControls/README.md)
 
 ![Example](noControls/example.png)
 
-## playbarClock
+## [playbarClock](playbarClock/README.md)
 
 ![Example](playbarClock/example.png)
 
-## quickQueue
+## [quickQueue](quickQueue/README.md)
 
 ![Example](quickQueue/example.png)
 
-## scannables
+## [scannables](scannables/README.md)
 
 ![Example](scannables/example.png)
 
-## sleepTimer
+## [sleepTimer](sleepTimer/README.md)
 
 ![Example](sleepTimer/example.png)
 
-## tracksToEdges
+## [tracksToEdges](tracksToEdges/README.md)
 
 ![Example](tracksToEdges/example.png)
 
-## volumePercentage
+## [volumePercentage](volumePercentage/README.md)
 
 ![Example](volumePercentage/example.png)

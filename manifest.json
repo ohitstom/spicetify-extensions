@@ -16,6 +16,14 @@
 		"tags": ["pixel art", "filter"]
 	},
 	{
+		"name": "NPV Ambience",
+		"description": "Adds a glow to the background of the Now Playing View image.",
+		"preview": "npvAmbience/marketplace.png",
+		"main": "npvAmbience/npvAmbience.js",
+		"readme": "npvAmbience/README.md",
+		"tags": ["interface", "decoration"]
+	},
+	{
 		"name": "No Controls",
 		"description": "Removes the titlebar, (Spotify >= 1.2.32)",
 		"preview": "noControls/marketplace.png",
