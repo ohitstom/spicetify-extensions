@@ -1,6 +1,7 @@
 // NAME: NPV Ambience
 // AUTHOR: OhItsTom
 // DESCRIPTION: Adds a glow to the background of the Now Playing View Image.
+// TODO: add a settings menu for gradient size, blur amount, and saturation amount.
 
 (function npvAmbience() {
 	if (!(Spicetify.Player.data && document.head)) {
@@ -21,7 +22,7 @@
 
 	.main-nowPlayingView-nowPlayingGrid .main-nowPlayingView-coverArtContainer:first-child ~ .main-nowPlayingView-coverArtContainer {
 		width: 100%;
-		filter: blur(50px) saturate(2);
+		filter: blur(40px) saturate(2);
 		position: absolute;
 		left: 0;
 		top: 0;
