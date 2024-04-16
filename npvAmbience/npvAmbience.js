@@ -11,6 +11,14 @@
 	// Append Styling To Head
 	const style = document.createElement("style");
 	style.textContent = ` 
+	aside[aria-label="Now playing view"] {
+		--background-base: var(--spice-main) !important;
+	}
+
+	.main-nowPlayingView-gradient {
+		background: none !important;
+	}
+
 	.main-nowPlayingView-nowPlayingGrid .main-nowPlayingView-coverArtContainer:first-child ~ .main-nowPlayingView-coverArtContainer {
 		width: 100%;
 		filter: blur(50px) saturate(2);
@@ -27,7 +35,7 @@
 		transition: opacity 0.5s ease 0s;
 	  }
 
-	  .cover-art {
+	  .main-nowPlayingView-nowPlayingGrid .main-nowPlayingView-coverArtContainer:first-child ~ .main-nowPlayingView-coverArtContainer .cover-art {
 		background-color: unset;
 		background-size: cover;
 		transition: all 0.5s ease 0s;
