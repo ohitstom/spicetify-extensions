@@ -1,7 +1,7 @@
 # npvAmbience.js
 
 ![Example](example.png)
-_This script adds a colourful glow to the NPV cover art._
+_This script adds a colorful glow to the NPV cover art._
 
 ### Installation
 

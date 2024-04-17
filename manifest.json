@@ -9,7 +9,7 @@
 	},
 	{
 		"name": "NPV Ambience",
-		"description": "Adds a glow to the background of the Now Playing View image.",
+		"description": "Adds a colorful glow behind the Now Playing View image.",
 		"preview": "npvAmbience/marketplace.png",
 		"main": "npvAmbience/npvAmbience.js",
 		"readme": "npvAmbience/README.md",

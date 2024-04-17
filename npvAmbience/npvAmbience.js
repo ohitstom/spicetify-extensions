@@ -1,6 +1,6 @@
 // NAME: NPV Ambience
 // AUTHOR: OhItsTom
-// DESCRIPTION: Adds a glow to the background of the Now Playing View Image.
+// DESCRIPTION: Adds a colorful glow behind the Now Playing View image.
 // TODO: add a settings menu for gradient size, blur amount, and saturation amount.
 
 (function npvAmbience() {
