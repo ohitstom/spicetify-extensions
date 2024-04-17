@@ -8,20 +8,20 @@
 		"tags": ["panels", "accessibility"]
 	},
 	{
-		"name": "Pixelated Images",
-		"description": "Convert images into a pseudo pixel art.",
-		"preview": "pixelatedImages/marketplace.png",
-		"main": "pixelatedImages/pixelatedImages.js",
-		"readme": "pixelatedImages/README.md",
-		"tags": ["pixel art", "filter"]
-	},
-	{
 		"name": "NPV Ambience",
 		"description": "Adds a glow to the background of the Now Playing View image.",
 		"preview": "npvAmbience/marketplace.png",
 		"main": "npvAmbience/npvAmbience.js",
 		"readme": "npvAmbience/README.md",
 		"tags": ["interface", "decoration"]
+	},
+	{
+		"name": "Pixelated Images",
+		"description": "Convert images into a pseudo pixel art.",
+		"preview": "pixelatedImages/marketplace.png",
+		"main": "pixelatedImages/pixelatedImages.js",
+		"readme": "pixelatedImages/README.md",
+		"tags": ["pixel art", "filter"]
 	},
 	{
 		"name": "No Controls",
