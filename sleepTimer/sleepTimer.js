@@ -28,49 +28,53 @@
 	// Timer Menu
 	const menuWrapper = Spicetify.React.memo(() => {
 		return Spicetify.React.createElement(
-			Spicetify.ReactComponent.Menu,
-			null,
-			Spicetify.React.createElement("div", {
-				"data-popper-arrow": "",
-				className: "main-popper-arrow",
-				style: {
-					bottom: "-8px",
-					"--generic-tooltip-background-color": "var(--spice-card)"
-				}
-			}),
-			Object.entries(timeIntervals)
-				.map(([key, value], index) => {
-					return Spicetify.React.createElement(
-						Spicetify.ReactComponent.MenuItem,
-						{
-							key: index,
-							onClick: e => {
-								startTimer(value);
-								Spicetify.showNotification(`Selected: ${key}`);
+			Spicetify.ReactComponent.RemoteConfigProvider,
+			{ configuration: Spicetify.Platform.RemoteConfiguration },
+			Spicetify.React.createElement(
+				Spicetify.ReactComponent.Menu,
+				null,
+				Spicetify.React.createElement("div", {
+					"data-popper-arrow": "",
+					className: "main-popper-arrow",
+					style: {
+						bottom: "-8px",
+						"--generic-tooltip-background-color": "var(--spice-card)"
+					}
+				}),
+				Object.entries(timeIntervals)
+					.map(([key, value], index) => {
+						return Spicetify.React.createElement(
+							Spicetify.ReactComponent.MenuItem,
+							{
+								key: index,
+								onClick: e => {
+									startTimer(value);
+									Spicetify.showNotification(`Selected: ${key}`);
+								},
+								role: "menuitemradio",
+								"aria-checked": storedTime === value
 							},
-							role: "menuitemradio",
-							"aria-checked": storedTime === value
-						},
-						key
-					);
-				})
-				.concat(
-					stopMenuItem
-						? [
-								Spicetify.React.createElement(
-									Spicetify.ReactComponent.MenuItem,
-									{
-										divider: "before",
-										key: "Turn off timer",
-										onClick: e => {
-											stopTimer(0, false, "Timer stopped");
-										}
-									},
-									"Turn off timer"
-								)
-						  ]
-						: []
-				)
+							key
+						);
+					})
+					.concat(
+						stopMenuItem
+							? [
+									Spicetify.React.createElement(
+										Spicetify.ReactComponent.MenuItem,
+										{
+											divider: "before",
+											key: "Turn off timer",
+											onClick: e => {
+												stopTimer(0, false, "Timer stopped");
+											}
+										},
+										"Turn off timer"
+									)
+							  ]
+							: []
+					)
+			)
 		);
 	});
 
@@ -159,7 +163,7 @@
 				"button",
 				{
 					className:
-						"Button-sm-16-buttonTertiary-iconOnly-useBrowserDefaultFocusStyle Button-small-small-buttonTertiary-iconOnly-useBrowserDefaultFocusStyle",
+						"Button-sm-16-buttonTertiary-iconOnly-useBrowserDefaultFocusStyle Button-small-small-buttonTertiary-iconOnly-useBrowserDefaultFocusStyle Button-small-small-buttonTertiary-iconOnly-isUsingKeyboard-useBrowserDefaultFocusStyle",
 					style: {
 						overflowWrap: "normal",
 						padding: "0",

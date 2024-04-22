@@ -8,20 +8,6 @@
 		return;
 	}
 
-	// Settings Config
-	let config = JSON.parse(localStorage.getItem("playbarClock:settings") || "{}");
-
-	function getConfig(key) {
-		return config[key] ?? null;
-	}
-	function setConfig(key, value, message) {
-		if (value !== getConfig(key)) {
-			console.debug(`[playbarClock-Config]: ${message ?? key + " ="}`, value);
-			config[key] = value;
-			localStorage.setItem("playbarClock:settings", JSON.stringify(config));
-		}
-	}
-
 	// Clock Menu
 	const menuOptions = [
 		{
@@ -49,6 +35,27 @@
 			defaultVal: true
 		}
 	];
+
+	// Settings Config
+	let config = JSON.parse(localStorage.getItem("playbarClock:settings") || "{}");
+	if (Object.keys(config).length === 0) {
+		menuOptions.forEach(option => {
+			config[option.name] = option.defaultVal;
+		});
+		localStorage.setItem("playbarClock:settings", JSON.stringify(config));
+	}
+
+	function getConfig(key) {
+		return config[key] ?? null;
+	}
+
+	function setConfig(key, value, message) {
+		if (value !== getConfig(key)) {
+			console.debug(`[playbarClock-Config]: ${message ?? key + " ="}`, value);
+			config[key] = value;
+			localStorage.setItem("playbarClock:settings", JSON.stringify(config));
+		}
+	}
 
 	const menuItem = Spicetify.React.memo(({ obj, state: propState, setState: propSetState }) => {
 		const [state, setState] = propState !== undefined ? [propState, propSetState] : Spicetify.React.useState(getConfig(obj.name) ?? obj.defaultVal);
@@ -78,23 +85,27 @@
 
 	const menuWrapper = Spicetify.React.memo(() => {
 		return Spicetify.React.createElement(
-			Spicetify.ReactComponent.Menu,
-			null,
-			Spicetify.React.createElement("div", {
-				"data-popper-arrow": "",
-				className: "main-popper-arrow",
-				style: {
-					bottom: "-8px",
-					"--generic-tooltip-background-color": "var(--spice-card)"
-				}
-			}),
-			menuOptions.map(option => {
-				const [state, setState] = Spicetify.React.useState(getConfig(option.name) ?? option.defaultVal);
-				return [
-					Spicetify.React.createElement(menuItem, { obj: option, state: state, setState: setState }),
-					option["children"] && state && option["children"].map(option => Spicetify.React.createElement(menuItem, { obj: option }))
-				];
-			})
+			Spicetify.ReactComponent.RemoteConfigProvider,
+			{ configuration: Spicetify.Platform.RemoteConfiguration },
+			Spicetify.React.createElement(
+				Spicetify.ReactComponent.Menu,
+				null,
+				Spicetify.React.createElement("div", {
+					"data-popper-arrow": "",
+					className: "main-popper-arrow",
+					style: {
+						bottom: "-8px",
+						"--generic-tooltip-background-color": "var(--spice-card)"
+					}
+				}),
+				menuOptions.map(option => {
+					const [state, setState] = Spicetify.React.useState(getConfig(option.name) ?? option.defaultVal);
+					return [
+						Spicetify.React.createElement(menuItem, { obj: option, state: state, setState: setState }),
+						option["children"] && state && option["children"].map(option => Spicetify.React.createElement(menuItem, { obj: option }))
+					];
+				})
+			)
 		);
 	});
 
@@ -142,7 +153,7 @@
 				"button",
 				{
 					className:
-						"Button-sm-16-buttonTertiary-iconOnly-useBrowserDefaultFocusStyle Button-small-small-buttonTertiary-iconOnly-useBrowserDefaultFocusStyle",
+						"Button-sm-16-buttonTertiary-iconOnly-useBrowserDefaultFocusStyle Button-small-small-buttonTertiary-iconOnly-useBrowserDefaultFocusStyle Button-small-small-buttonTertiary-iconOnly-isUsingKeyboard-useBrowserDefaultFocusStyle",
 					style: {
 						overflowWrap: "normal",
 						padding: "0",

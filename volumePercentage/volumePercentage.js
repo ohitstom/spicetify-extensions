@@ -45,6 +45,9 @@
             <div class="text">
                 <input id="volumeInput" type="number" value="${currVolume}">
                 <style>
+					.volume-bar__slider-container:focus-within {
+						position: revert !important;
+					}
                     div.text {
                         display: flex;
                         align-items: center;
