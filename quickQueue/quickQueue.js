@@ -45,7 +45,7 @@
 				"aria-checked": isQueued,
 				onClick: handleClick,
 				style: {
-					marginRight: "8px",
+					marginRight: "12px",
 					opacity: isQueued ? "1" : undefined
 				}
 			},
@@ -103,6 +103,7 @@
 
 					const queueButtonWrapper = document.createElement("div");
 					queueButtonWrapper.className = "queueControl-wrapper";
+					queueButtonWrapper.style.display = "contents";
 					queueButtonWrapper.style.marginRight = 0;
 
 					const queueButtonElement = lastRowSection.insertBefore(queueButtonWrapper, entryPoint);
