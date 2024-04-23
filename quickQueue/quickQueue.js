@@ -93,7 +93,7 @@
 			const node = mutation.addedNodes[0];
 			if (node?.attributes?.role?.value === "row") {
 				const lastRowSection = node.firstChild.lastChild;
-				const entryPoint = lastRowSection.firstChild;
+				const entryPoint = lastRowSection.querySelector(":scope > button:not(:last-child)");
 				if (
 					entryPoint &&
 					(entryPoint.classList.contains("main-trackList-rowHeartButton") || entryPoint.classList.contains("main-trackList-curationButton"))
