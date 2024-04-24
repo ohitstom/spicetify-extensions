@@ -26,10 +26,9 @@
 		const buttonRef = Spicetify.React.useRef(null);
 
 		// Effects
-		let tippyInstance = null;
 		Spicetify.React.useEffect(() => {
 			if (buttonRef.current) {
-				tippyInstance = Spicetify.Tippy(buttonRef.current, {
+				const tippyInstance = Spicetify.Tippy(buttonRef.current, {
 					...Spicetify.TippyProps,
 					hideOnClick: true,
 					content: isQueued ? "Remove from queue" : "Add to queue"
@@ -49,7 +48,6 @@
 		// Functions
 		const handleClick = function () {
 			Spicetify.showNotification(isQueued ? "Removed from queue" : "Added to queue");
-			tippyInstance.setProps({ content: isQueued ? "Remove from queue" : "Add to queue" });
 			Spicetify.Platform.PlayerAPI[isQueued ? "removeFromQueue" : "addToQueue"]([{ uri }]);
 		};
 
