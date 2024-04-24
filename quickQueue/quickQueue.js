@@ -21,11 +21,27 @@
 		return;
 	}
 
-	const QueueButton = Spicetify.React.memo(function QueueButton({ uri, tippy, classList }) {
+	const QueueButton = Spicetify.React.memo(function QueueButton({ uri, classList }) {
 		const [isQueued, setIsQueued] = Spicetify.React.useState(Spicetify.Platform.PlayerAPI._queue._queueState.queued.some(item => item.uri === uri));
+		const buttonRef = Spicetify.React.useRef(null);
 
 		// Effects
-		tippy.setProps({ content: isQueued ? "Remove from queue" : "Add to queue" });
+		let tippyInstance = null;
+		Spicetify.React.useEffect(() => {
+			if (buttonRef.current) {
+				tippyInstance = Spicetify.Tippy(buttonRef.current, {
+					...Spicetify.TippyProps,
+					hideOnClick: true,
+					content: isQueued ? "Remove from queue" : "Add to queue"
+				});
+
+				return () => {
+					tippyInstance.destroy();
+				};
+			}
+		}, [isQueued]);
+
+		// Event listeners
 		Spicetify.Platform.PlayerAPI._queue._events.addListener("queue_update", event => {
 			setIsQueued(event.data.queued.some(item => item.uri === uri));
 		});
@@ -33,7 +49,7 @@
 		// Functions
 		const handleClick = function () {
 			Spicetify.showNotification(isQueued ? "Removed from queue" : "Added to queue");
-			tippy.setProps({ content: isQueued ? "Remove from queue" : "Add to queue" });
+			tippyInstance.setProps({ content: isQueued ? "Remove from queue" : "Add to queue" });
 			Spicetify.Platform.PlayerAPI[isQueued ? "removeFromQueue" : "addToQueue"]([{ uri }]);
 		};
 
@@ -41,6 +57,7 @@
 		return Spicetify.React.createElement(
 			"button",
 			{
+				ref: buttonRef,
 				className: classList,
 				"aria-checked": isQueued,
 				onClick: handleClick,
@@ -107,14 +124,9 @@
 					queueButtonWrapper.style.marginRight = 0;
 
 					const queueButtonElement = lastRowSection.insertBefore(queueButtonWrapper, entryPoint);
-					const tippy = Spicetify.Tippy(queueButtonElement, {
-						...Spicetify.TippyProps,
-						hideOnClick: true
-					});
 					Spicetify.ReactDOM.render(
 						Spicetify.React.createElement(QueueButton, {
 							uri,
-							tippy,
 							classList: entryPoint.classList
 						}),
 						queueButtonElement
