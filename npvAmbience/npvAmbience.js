@@ -16,7 +16,8 @@
 		--background-base: var(--spice-main) !important;
 	}
 
-	.main-nowPlayingView-gradient {
+	.main-nowPlayingView-gradient,
+	.IkRGajTjItEFQkRMeH6v.f2UE9n5nZcbgZrGYTU3r {
 		background: none !important;
 	}
 
