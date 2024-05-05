@@ -14,7 +14,8 @@
 			Spicetify.showNotification &&
 			Spicetify.Platform.PlayerAPI &&
 			Spicetify.Tippy &&
-			Spicetify.TippyProps
+			Spicetify.TippyProps &&
+			Spicetify.Locale._dictionary
 		)
 	) {
 		setTimeout(quickQueue, 10);
@@ -31,7 +32,9 @@
 				const tippyInstance = Spicetify.Tippy(buttonRef.current, {
 					...Spicetify.TippyProps,
 					hideOnClick: true,
-					content: isQueued ? "Remove from queue" : "Add to queue"
+					content: isQueued
+						? Spicetify.Locale._dictionary["contextmenu.remove-from-queue"] || "Remove from queue"
+						: Spicetify.Locale._dictionary["contextmenu.add-to-queue"] || "Add to queue"
 				});
 
 				return () => {
@@ -47,7 +50,7 @@
 
 		// Functions
 		const handleClick = function () {
-			Spicetify.showNotification(isQueued ? "Removed from queue" : "Added to queue");
+			Spicetify.showNotification(isQueued ? "Removed from queue" : Spicetify.Locale._dictionary["queue.added-to-queue"] || "Added to queue");
 			Spicetify.Platform.PlayerAPI[isQueued ? "removeFromQueue" : "addToQueue"]([{ uri }]);
 		};
 
