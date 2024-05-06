@@ -30,6 +30,10 @@ Please check out the readme for each extension in its folder, it will include in
 
 ![Example](sleepTimer/example.png)
 
+## [toggleDJ](toggleDJ/README.md)
+
+![Example](toggleDJ/example.png)
+
 ## [tracksToEdges](tracksToEdges/README.md)
 
 ![Example](tracksToEdges/example.png)

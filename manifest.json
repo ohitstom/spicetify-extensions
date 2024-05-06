@@ -24,6 +24,14 @@
 		"tags": ["pixel art", "filter"]
 	},
 	{
+		"name": "Toggle DJ",
+		"description": "Toggle 'Your DJ' in the 'Library' section of settings.",
+		"preview": "toggleDJ/marketplace.png",
+		"main": "toggleDJ/noControls.js",
+		"readme": "toggleDJ/README.md",
+		"tags": ["QOL"]
+	},
+	{
 		"name": "No Controls",
 		"description": "Removes the titlebar, (Spotify >= 1.2.32)",
 		"preview": "noControls/marketplace.png",
