@@ -27,7 +27,7 @@
 		"name": "Toggle DJ",
 		"description": "Toggle 'Your DJ' in the 'Library' section of settings.",
 		"preview": "toggleDJ/marketplace.png",
-		"main": "toggleDJ/noControls.js",
+		"main": "toggleDJ/toggleDJ.js",
 		"readme": "toggleDJ/README.md",
 		"tags": ["QOL"]
 	},
