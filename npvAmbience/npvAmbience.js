@@ -12,6 +12,29 @@
 	// Append Styling To Head
 	const style = document.createElement("style");
 	style.textContent = ` 
+	aside[aria-label="Now playing view"] .ZbDMGdU4aBOnrNLowNRq {
+		position: absolute;
+		width: 100%;
+		z-index: 1;
+		background: transparent;
+	}
+	
+	aside[aria-label="Now playing view"] .fAte2d0xETy7pnDUAgHY {
+		background-color: var(--spice-main) !important;
+		transition: background-color .25s, opacity .4s ease-out;
+	}
+
+	aside[aria-label="Now playing view"]:has(.ZbDMGdU4aBOnrNLowNRq) .main-nowPlayingView-nowPlayingGrid .main-nowPlayingView-coverArtContainer:first-child ~ .main-nowPlayingView-coverArtContainer {
+		padding-top: 128px;
+		left: -16px;
+		width: calc(100% + 32px);
+		transition: height 0.6s cubic-bezier(0, 0, 0, 1), opacity 0.5s;
+	}
+
+	aside[aria-label="Now playing view"]:has(.ZbDMGdU4aBOnrNLowNRq) .main-buddyFeed-scrollBarContainer {
+		padding-top: 64px;
+	}
+
 	aside[aria-label="Now playing view"] {
 		--background-base: var(--spice-main) !important;
 	}
