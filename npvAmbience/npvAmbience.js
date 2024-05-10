@@ -3,32 +3,39 @@
 // DESCRIPTION: Adds a colorful glow behind the Now Playing View image.
 // TODO: add a settings menu for gradient size, blur amount, and saturation amount.
 
-(function npvAmbience() {
-	if (!(Spicetify.Player.data && document.head)) {
-		setTimeout(npvAmbience, 10);
-		return;
+// Append Styling To Head
+const style = document.createElement("style");
+style.textContent = ` 
+	.main-nowPlayingView-coverArtContainer::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		pointer-events: none;
+		background: var(--npv-ambience-img);
+		z-index: -1;
+		filter: blur(40px) saturate(2);
+		background-position: center;
+		background-size: cover;
+		transition: height 0.6s cubic-bezier(0, 0, 0, 1), background 0.5s ease,  opacity 0.5s ease;
+		background-repeat: no-repeat;
+		opacity: var(--npv-ambience-opacity, 0);
+		height: var(--panel-width);
+		margin-top: 48px;
 	}
 
-	// Append Styling To Head
-	const style = document.createElement("style");
-	style.textContent = ` 
 	aside[aria-label="Now playing view"] .ZbDMGdU4aBOnrNLowNRq {
 		position: absolute;
 		width: 100%;
 		z-index: 1;
 		background: transparent;
 	}
-	
+
 	aside[aria-label="Now playing view"] .fAte2d0xETy7pnDUAgHY {
 		background-color: var(--spice-main) !important;
 		transition: background-color .25s, opacity .4s ease-out;
-	}
-
-	aside[aria-label="Now playing view"]:has(.ZbDMGdU4aBOnrNLowNRq) .main-nowPlayingView-nowPlayingGrid .main-nowPlayingView-coverArtContainer:first-child ~ .main-nowPlayingView-coverArtContainer {
-		padding-top: 128px;
-		left: -16px;
-		width: calc(100% + 32px);
-		transition: height 0.6s cubic-bezier(0, 0, 0, 1), opacity 0.5s;
 	}
 
 	aside[aria-label="Now playing view"]:has(.ZbDMGdU4aBOnrNLowNRq) .main-buddyFeed-scrollBarContainer {
@@ -43,86 +50,43 @@
 	.IkRGajTjItEFQkRMeH6v.f2UE9n5nZcbgZrGYTU3r {
 		background: none !important;
 	}
+`;
+document.head.appendChild(style);
 
-	.main-nowPlayingView-nowPlayingGrid .main-nowPlayingView-coverArtContainer:first-child ~ .main-nowPlayingView-coverArtContainer {
-		width: 100%;
-		filter: blur(40px) saturate(2);
-		position: absolute;
-		left: 0;
-		top: 0;
-		padding-top: 48px;
-		z-index: -1;
-		opacity: 0;
-		transition: opacity 0.5s;
-	  }
+(function npvAmbience() {
+	if (!Spicetify.Player.data) {
+		setTimeout(npvAmbience, 10);
+		return;
+	}
 
-	  .main-nowPlayingView-nowPlayingGrid .main-nowPlayingView-coverArtContainer:first-child ~ .main-nowPlayingView-coverArtContainer img {
-		transition: opacity 0.5s ease 0s;
-	  }
-
-	  .main-nowPlayingView-nowPlayingGrid .main-nowPlayingView-coverArtContainer:first-child ~ .main-nowPlayingView-coverArtContainer .cover-art {
-		background-color: unset;
-		background-size: cover;
-		transition: all 0.5s ease 0s;
-	  }
-	`;
-	document.head.appendChild(style);
-
-	// DOM Manipulation
-	let coverArtClone;
-	function waitForWidgetMounted() {
-		const npvGrid = document.querySelector(".main-nowPlayingView-nowPlayingGrid");
-		const coverArt = document.querySelector(".main-nowPlayingView-coverArtContainer");
-		if (!(npvGrid && coverArt)) {
-			setTimeout(waitForWidgetMounted, 300);
-			return;
-		}
-
-		coverArtClone = coverArt.cloneNode(true);
-		npvGrid.appendChild(coverArtClone);
-
-		const imgContainer = coverArtClone.querySelector(".cover-art");
-		imgContainer.style.backgroundImage = `url(${Spicetify.Player?.data?.item?.metadata?.image_xlarge_url})`;
-
+	// Initialization
+	document.documentElement.style.setProperty("--npv-ambience-img", `url(${Spicetify.Player.data.item.metadata.image_xlarge_url})`);
+	const initialWidth = document.documentElement.style.getPropertyValue("--panel-width");
+	if (initialWidth !== "0px") {
 		setTimeout(() => {
-			coverArtClone.style.opacity = 1;
+			document.documentElement.style.setProperty("--npv-ambience-opacity", 1);
 		}, 0);
 	}
 
-	(function attachObserver() {
-		const rightSidebar = document.querySelector(".Root__right-sidebar");
-		if (!rightSidebar) {
-			setTimeout(attachObserver, 300);
-			return;
+	// Observe Panel State
+	const root = document.documentElement;
+	let prevWidth = root.style.getPropertyValue("--panel-width");
+
+	new MutationObserver(mutations => {
+		const currentValue = mutations[0].target.style.getPropertyValue("--panel-width");
+		if (currentValue !== prevWidth) {
+			const sidebarWidth = parseInt(currentValue);
+			document.documentElement.style.setProperty("--npv-ambience-opacity", sidebarWidth > 0 ? 1 : 0);
+			prevWidth = currentValue;
 		}
-		waitForWidgetMounted();
-		const observer = new MutationObserver(mutations => {
-			mutations.forEach(mutation => {
-				console.log(mutation);
-				if (mutation.addedNodes.length > 0) {
-					const addedNodes = Array.from(mutation.addedNodes);
-					const isNPV = addedNodes.some(node => node.ariaLabel && node.ariaLabel === "Now playing view");
-					if (isNPV) {
-						waitForWidgetMounted();
-					}
-				}
-			});
-		});
-		observer.observe(rightSidebar, { childList: true });
-	})();
+	}).observe(root, { attributes: true, attributeFilter: ["style"] });
 
 	// Event Listeners
 	Spicetify.Player.addEventListener("songchange", function (e) {
-		if (coverArtClone) {
-			const imgContainer = coverArtClone.querySelector(".cover-art");
-			const img = coverArtClone.querySelector("img");
-
-			img.style.opacity = 0;
-			setTimeout(() => {
-				img.src = e.data.item.metadata.image_xlarge_url;
-				img.style.opacity = 1;
-				imgContainer.style.backgroundImage = `url(${e.data.item.metadata.image_xlarge_url})`;
-			}, 500);
-		}
+		const preloadImage = new Image();
+		preloadImage.src = e.data.item.metadata.image_xlarge_url;
+		preloadImage.onload = function () {
+			document.documentElement.style.setProperty("--npv-ambience-img", `url(${preloadImage.src})`);
+		};
 	});
 })();
