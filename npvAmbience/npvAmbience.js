@@ -6,8 +6,9 @@
 // Append Styling To Head
 const style = document.createElement("style");
 style.textContent = ` 
+	.main-nowPlayingView-coverArtContainer::before,
 	.main-nowPlayingView-coverArtContainer::after {
-		content: '';
+		content: "";
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -19,7 +20,7 @@ style.textContent = `
 		filter: blur(40px) saturate(2);
 		background-position: center;
 		background-size: cover;
-		transition: height 0.6s cubic-bezier(0, 0, 0, 1), background 0.5s ease,  opacity 0.5s ease;
+		transition: height 0.6s cubic-bezier(0, 0, 0, 1), background 0.5s ease, opacity 0.5s ease;
 		background-repeat: no-repeat;
 		opacity: var(--npv-ambience-opacity, 0);
 		height: var(--panel-width);
@@ -35,10 +36,10 @@ style.textContent = `
 
 	aside[aria-label="Now playing view"] .fAte2d0xETy7pnDUAgHY {
 		background-color: var(--spice-main) !important;
-		transition: background-color .25s, opacity .4s ease-out;
+		transition: background-color 0.25s, opacity 0.4s ease-out;
 	}
 
-	aside[aria-label="Now playing view"]:has(.ZbDMGdU4aBOnrNLowNRq) .main-buddyFeed-scrollBarContainer {
+	aside[aria-label="Now playing view"]:has(.ZbDMGdU4aBOnrNLowNRq) .main-buddyFeed-scrollBarContainer:not(:has(.main-buddyFeed-content > .main-buddyFeed-header)) {
 		padding-top: 64px;
 	}
 
