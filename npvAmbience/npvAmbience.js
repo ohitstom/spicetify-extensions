@@ -27,6 +27,10 @@ style.textContent = `
 		margin-top: 48px;
 	}
 
+	.main-nowPlayingView-coverArtContainer::after {
+		filter: blur(40px) contrast(2);
+	}
+
 	aside[aria-label="Now playing view"] .ZbDMGdU4aBOnrNLowNRq {
 		position: absolute;
 		width: 100%;
