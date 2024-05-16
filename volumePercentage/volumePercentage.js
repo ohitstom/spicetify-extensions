@@ -105,7 +105,7 @@
 	Spicetify.Platform.PlaybackAPI._events.addListener("volume", e => {
 		updatePercentage();
 
-		if (!tippyInstance.state.isVisible || (hideTimeout && !isDragging && e.data.volume !== prevVolume)) {
+		if ((!tippyInstance.state.isVisible || hideTimeout) && !isDragging && e.data.volume !== prevVolume) {
 			clearTimeout(hideTimeout);
 
 			tippyInstance.show();
