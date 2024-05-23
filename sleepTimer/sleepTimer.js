@@ -34,11 +34,16 @@
 				Spicetify.ReactComponent.Menu,
 				null,
 				Spicetify.React.createElement("div", {
-					"data-popper-arrow": "",
 					className: "main-popper-arrow",
 					style: {
 						bottom: "-8px",
-						"--generic-tooltip-background-color": "var(--spice-card)"
+						position: "absolute",
+						left: "0px",
+						backgroundColor: "var(--spice-card)",
+						width: "12px",
+						height: "12px",
+						transform: "rotate(45deg) translate(52px, -54px)",
+						zIndex: "-1"
 					}
 				}),
 				Object.entries(timeIntervals)
