@@ -23,7 +23,7 @@ style.textContent = `
 		transition: height 0.6s cubic-bezier(0, 0, 0, 1), background 0.5s ease, opacity 0.5s ease;
 		background-repeat: no-repeat;
 		opacity: var(--npv-ambience-opacity, 0);
-		height: var(--panel-width);
+		height: var(--npv-ambience-width);
 		margin-top: 48px;
 	}
 
@@ -31,19 +31,18 @@ style.textContent = `
 		filter: blur(40px) contrast(2);
 	}
 
-	aside[aria-label="Now playing view"] .ZbDMGdU4aBOnrNLowNRq {
+	aside[aria-label="Now playing view"] .ZbDMGdU4aBOnrNLowNRq, aside[aria-label="Now playing view"] .W3E0IT3_STcazjTeyOJa {
 		position: absolute;
 		width: 100%;
 		z-index: 1;
 		background: transparent;
 	}
-
-	aside[aria-label="Now playing view"] .fAte2d0xETy7pnDUAgHY {
+	aside[aria-label="Now playing view"] .fAte2d0xETy7pnDUAgHY, aside[aria-label="Now playing view"] .mdMUqcSHFw1lZIcYEblu {
 		background-color: var(--spice-main) !important;
 		transition: background-color 0.25s, opacity 0.4s ease-out;
 	}
 
-	aside[aria-label="Now playing view"]:has(.ZbDMGdU4aBOnrNLowNRq) .main-buddyFeed-scrollBarContainer:not(:has(.main-buddyFeed-content > .main-buddyFeed-header)) {
+	aside[aria-label="Now playing view"]:has(.ZbDMGdU4aBOnrNLowNRq) .main-buddyFeed-scrollBarContainer:not(:has(.main-buddyFeed-content > .main-buddyFeed-header)), aside[aria-label="Now playing view"]:has(.W3E0IT3_STcazjTeyOJa) .cZCuJDjrGA2QMXja_Sua:not(:has(.AAdBM1nhG73supMfnYX7 > .fNXmHtlrj4UVWmhQrJ_5)) {
 		padding-top: 64px;
 	}
 
@@ -59,32 +58,32 @@ style.textContent = `
 document.head.appendChild(style);
 
 (function npvAmbience() {
-	if (!Spicetify.Player.data) {
+	const rightSidebar = document.querySelector(".Root__right-sidebar");
+	if (!(Spicetify.Player.data && rightSidebar)) {
 		setTimeout(npvAmbience, 10);
 		return;
 	}
 
 	// Initialization
-	document.documentElement.style.setProperty("--npv-ambience-img", `url(${Spicetify.Player.data.item.metadata.image_xlarge_url})`);
 	const initialWidth = document.documentElement.style.getPropertyValue("--panel-width");
-	if (initialWidth !== "0px") {
+	document.documentElement.style.setProperty("--npv-ambience-width", `${parseInt(initialWidth)}px`);
+	document.documentElement.style.setProperty("--npv-ambience-img", `url(${Spicetify.Player.data.item.metadata.image_xlarge_url})`);
+
+	const realWidth = rightSidebar.offsetWidth;
+	if (realWidth !== 0) {
 		setTimeout(() => {
 			document.documentElement.style.setProperty("--npv-ambience-opacity", 1);
 		}, 0);
 	}
 
 	// Observe Panel State
-	const root = document.documentElement;
-	let prevWidth = root.style.getPropertyValue("--panel-width");
-
-	new MutationObserver(mutations => {
-		const currentValue = mutations[0].target.style.getPropertyValue("--panel-width");
-		if (currentValue !== prevWidth) {
-			const sidebarWidth = parseInt(currentValue);
-			document.documentElement.style.setProperty("--npv-ambience-opacity", sidebarWidth > 0 ? 1 : 0);
-			prevWidth = currentValue;
+	new ResizeObserver(entries => {
+		for (let entry of entries) {
+			const width = entry.contentRect.width;
+			document.documentElement.style.setProperty("--npv-ambience-opacity", width > 0 ? 1 : 0);
+			if (width > 0) document.documentElement.style.setProperty("--npv-ambience-width", `${width}px`);
 		}
-	}).observe(root, { attributes: true, attributeFilter: ["style"] });
+	}).observe(rightSidebar);
 
 	// Event Listeners
 	Spicetify.Player.addEventListener("songchange", function (e) {
