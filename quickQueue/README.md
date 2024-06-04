@@ -13,7 +13,8 @@ _This button lets you add and remove from queue in one click_
 
 ### Usage
 
-Hover over tracklist row and click add/remove from queue.
+- Hover over tracklist row and click add/remove from queue
+- Hold the shift key, or right click to play next in queue
 
 ### Compatibility
 

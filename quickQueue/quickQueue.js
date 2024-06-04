@@ -1,9 +1,6 @@
 // NAME: Quick Queue
 // AUTHOR: OhItsTom
 // DESCRIPTION: Adds a button to the tracklist to add/remove a song from the queue.
-// TODO:
-// figure out how to remove only one instance of a track from queue instead of all instances
-// add an option to insert to top of queue (maybe mouse middle click or right click?) - or i could just add multiple buttons for more advanced functionality
 
 (function quickQueue() {
 	if (
@@ -15,44 +12,79 @@
 			Spicetify.Platform.PlayerAPI &&
 			Spicetify.Tippy &&
 			Spicetify.TippyProps &&
-			Spicetify.Locale._dictionary
+			Spicetify.Locale._dictionary &&
+			Spicetify.Mousetrap
 		)
 	) {
 		setTimeout(quickQueue, 10);
 		return;
 	}
 
-	const QueueButton = Spicetify.React.memo(function QueueButton({ uri, classList }) {
+	const QueueButton = Spicetify.React.memo(({ uri, classList }) => {
 		const [isQueued, setIsQueued] = Spicetify.React.useState(Spicetify.Platform.PlayerAPI._queue._queueState.queued.some(item => item.uri === uri));
+		const [tippyInstance, setTippyInstance] = Spicetify.React.useState(null);
+		const [isShiftPressed, setIsShiftPressed] = Spicetify.React.useState(false);
 		const buttonRef = Spicetify.React.useRef(null);
 
-		// Effects
+		// Functions
+		const updateQueueState = event => setIsQueued(event.data.queued.some(item => item.uri === uri));
+		const handleKeyDown = event => event.key === "Shift" && setIsShiftPressed(true);
+		const handleKeyUp = event => event.key === "Shift" && setIsShiftPressed(false);
+
+		const handleClick = async event => {
+			if (isQueued && event.type === "contextmenu") return;
+
+			if (!isQueued && (event.type === "contextmenu" || isShiftPressed)) {
+				event.preventDefault();
+				event.stopPropagation();
+				await addToNext(uri);
+				Spicetify.showNotification("Added to next in queue");
+			} else {
+				Spicetify.Platform.PlayerAPI[isQueued ? "removeFromQueue" : "addToQueue"]([{ uri }]);
+				Spicetify.showNotification(isQueued ? "Removed from queue" : Spicetify.Locale._dictionary["queue.added-to-queue"] || "Added to queue");
+			}
+		};
+
+		const getTooltipContent = () => {
+			return isQueued
+				? Spicetify.Locale._dictionary["contextmenu.remove-from-queue"] || "Remove from queue"
+				: isShiftPressed
+				? "Play next in queue"
+				: Spicetify.Locale._dictionary["contextmenu.add-to-queue"] || "Add to queue";
+		};
+
 		Spicetify.React.useEffect(() => {
-			if (buttonRef.current) {
-				const tippyInstance = Spicetify.Tippy(buttonRef.current, {
+			Spicetify.Platform.PlayerAPI._queue._events.addListener("queue_update", updateQueueState);
+			document.addEventListener("keydown", handleKeyDown);
+			document.addEventListener("keyup", handleKeyUp);
+		}, []);
+
+		// Cleanup
+		Spicetify.React.useEffect(() => {
+			const intervalId = setInterval(function () {
+				if (!document.contains(buttonRef.current)) {
+					clearInterval(intervalId);
+					tippyInstance?.destroy();
+					document.removeEventListener("keydown", handleKeyDown);
+					document.removeEventListener("keyup", handleKeyUp);
+					Spicetify.Platform.PlayerAPI._queue._events.removeListener("queue_update", updateQueueState);
+				}
+			}, 1000);
+		}, []);
+
+		// Tooltip initialization and update
+		Spicetify.React.useEffect(() => {
+			if (buttonRef.current && !tippyInstance) {
+				const instance = Spicetify.Tippy(buttonRef.current, {
 					...Spicetify.TippyProps,
 					hideOnClick: true,
-					content: isQueued
-						? Spicetify.Locale._dictionary["contextmenu.remove-from-queue"] || "Remove from queue"
-						: Spicetify.Locale._dictionary["contextmenu.add-to-queue"] || "Add to queue"
+					content: getTooltipContent()
 				});
-
-				return () => {
-					tippyInstance.destroy();
-				};
+				setTippyInstance(instance);
+			} else if (tippyInstance) {
+				tippyInstance.setProps({ content: getTooltipContent() });
 			}
-		}, [isQueued]);
-
-		// Event listeners
-		Spicetify.Platform.PlayerAPI._queue._events.addListener("queue_update", event => {
-			setIsQueued(event.data.queued.some(item => item.uri === uri));
-		});
-
-		// Functions
-		const handleClick = function () {
-			Spicetify.showNotification(isQueued ? "Removed from queue" : Spicetify.Locale._dictionary["queue.added-to-queue"] || "Added to queue");
-			Spicetify.Platform.PlayerAPI[isQueued ? "removeFromQueue" : "addToQueue"]([{ uri }]);
-		};
+		}, [isQueued, isShiftPressed, tippyInstance]);
 
 		// Render
 		return Spicetify.React.createElement(
@@ -62,6 +94,7 @@
 				className: classList,
 				"aria-checked": isQueued,
 				onClick: handleClick,
+				onContextMenu: handleClick,
 				style: {
 					marginRight: "12px",
 					opacity: isQueued ? "1" : undefined
@@ -88,6 +121,19 @@
 			)
 		);
 	});
+
+	// modified from github.com/daksh2k/Spicetify-stuff/blob/6edf2235f8b8ec514b27a10aca4607d38b2fbb87/Extensions/playNext.js#L131
+	async function addToNext(uri) {
+		const queue = await Spicetify.Platform.PlayerAPI.getQueue();
+		if (!queue.queued.length > 0) return await Spicetify.addToQueue([{ uri }]);
+
+		await Spicetify.Platform.PlayerAPI.insertIntoQueue([{ uri }], {
+			before: {
+				uri: queue.queued[0].uri,
+				uid: queue.queued[0].uid
+			}
+		});
+	}
 
 	function findVal(object, key, max = 10) {
 		if (object[key] !== undefined || !max) {

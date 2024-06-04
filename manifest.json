@@ -49,7 +49,7 @@
 	},
 	{
 		"name": "Quick Queue",
-		"description": "Adds a button to the tracklist to add/remove a song from the queue.",
+		"description": "Adds a button to the tracklist to add/remove a song from the queue or play next.",
 		"preview": "quickQueue/marketplace.png",
 		"main": "quickQueue/quickQueue.js",
 		"readme": "quickQueue/README.md",
