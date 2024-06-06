@@ -2,6 +2,7 @@
 // AUTHOR: OhItsTom
 // DESCRIPTION: Quickly move multiple tracks to the top or bottom (edges) of a playlist.
 // TODO: check Spicetify.Platform.PlaylistPermissionsAPI.getMembers(contextUri) to see if user can edit playlist
+// TODO: pick a better image source for queue notification (currently uses the first track's album art)
 
 (function tracksToEdges() {
 	if (!(Spicetify.showNotification && Spicetify.Platform && Spicetify.ContextMenu && Spicetify.URI && Spicetify.SVGIcons)) {
@@ -11,40 +12,72 @@
 
 	async function moveTrack(uris, uids, contextUri, top) {
 		try {
-			const { images, name: playlistName } = await Spicetify.Platform.PlaylistAPI.getMetadata(contextUri);
-			const { items } = await Spicetify.Platform.PlaylistAPI.getContents(contextUri);
-			const trackData = await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.decorateContextTracks, { uris: uris[0] });
-			const modification = {
-				operation: "move",
-				rows: uids,
-				[top ? "before" : "after"]: (top ? items[0] : items[items.length - 1]).uid
-			};
+			const trackDetails = await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.decorateContextTracks, { uris: uris[0] });
+			const contextDetails = Spicetify.URI.from(contextUri);
+			const contextIsQueue = contextDetails?.id === "queue";
+			const { images, name: contextName } = contextIsQueue
+				? { images: [{ url: trackDetails?.data?.tracks[0]?.albumOfTrack?.coverArt?.sources[0]?.url }], name: "Queue" }
+				: await Spicetify.Platform.PlaylistAPI.getMetadata(contextUri);
 
-			(await Spicetify.Platform.PlaylistAPI._playlistServiceClient?.modify({
-				uri: contextUri,
-				request: modification
-			})) ?? (await Spicetify.Platform.PlaylistAPI.applyModification(contextUri, modification, true));
+			if (contextIsQueue) {
+				const queueSection = contextDetails?.args[0];
+				const items = Spicetify.Platform.PlayerAPI._queue._queueState[queueSection === "NextUp" ? "nextUp" : "queued"];
+				let position = top ? "before" : "after";
 
+				// Spotify's Queue API doesn't support moving all tracks at once - it will just remove them for some reason
+				if (items.length === uids.length) {
+					Spicetify.showNotification("Cannot move all tracks at once", true);
+					return;
+				}
+
+				// The queue api supports looping around the edges (top/bottom) so we must override this behavior to match playlist behavior
+				if (uids[0] === items[0].uid && top) {
+					uids = uids.slice(1);
+					position = "after";
+				} else if (uids[uids.length - 1] === items[items.length - 1].uid && !top) {
+					uids = uids.slice(0, -1);
+					position = "before";
+				}
+
+				Spicetify.Platform.PlayerAPI._queue.reorderQueue(
+					uids.map(uid => ({ uid })),
+					{ [position]: { uid: top ? items[0].uid : items[items.length - 1].uid } }
+				);
+			} else {
+				const { items } = await Spicetify.Platform.PlaylistAPI.getContents(contextUri);
+				const modification = {
+					operation: "move",
+					rows: uids,
+					[top ? "before" : "after"]: top ? items[0].uid : items[items.length - 1].uid
+				};
+
+				await (Spicetify.Platform.PlaylistAPI._playlistServiceClient?.modify({
+					uri: contextUri,
+					request: modification
+				}) || Spicetify.Platform.PlaylistAPI.applyModification(contextUri, modification, true));
+			}
+
+			// Success notification
 			Spicetify.Snackbar?.enqueueCustomSnackbar
 				? Spicetify.Snackbar.enqueueCustomSnackbar("modified-playlist", {
 						keyPrefix: "modified-playlist",
 						children: Spicetify.ReactComponent.Snackbar.wrapper({
 							children: Spicetify.ReactComponent.Snackbar.simpleLayout({
 								leading: Spicetify.ReactComponent.Snackbar.styledImage({
-									src: uris.length > 1 ? images[0]?.url : trackData?.data?.tracks[0]?.albumOfTrack?.coverArt?.sources[0]?.url,
+									src: uris.length > 1 ? images[0]?.url : trackDetails?.data?.tracks[0]?.albumOfTrack?.coverArt?.sources[0]?.url,
 									imageHeight: "24px",
 									imageWidth: "24px"
 								}),
 								center: Spicetify.React.createElement("div", {
 									dangerouslySetInnerHTML: {
-										__html: `Moved <b>${uris.length > 1 ? uris.length + "</b>" + " tracks" : trackData?.data?.tracks[0]?.name + "</b>"} to <b>${
+										__html: `Moved <b>${uris.length > 1 ? uris.length + "</b> tracks" : trackDetails?.data?.tracks[0]?.name + "</b>"} to <b>${
 											top ? "top" : "bottom"
 										}</b> in`
 									}
 								}),
 								trailing: Spicetify.React.createElement("div", {
 									dangerouslySetInnerHTML: {
-										__html: `<b>${playlistName}</b>`
+										__html: `<b>${contextName}</b>`
 									}
 								})
 							})
@@ -53,7 +86,7 @@
 				: Spicetify.showNotification(
 						uris.length > 1
 							? `Moved ${uris.length} tracks to ${top ? "top" : "bottom"}`
-							: `Moved ${trackData?.data?.tracks[0]?.name} to ${top ? "top" : "bottom"}`,
+							: `Moved ${trackDetails?.data?.tracks[0]?.name} to ${top ? "top" : "bottom"}`,
 						false
 				  );
 		} catch (e) {
@@ -64,7 +97,7 @@
 
 	function shouldAdd(uris, uids, contextUri) {
 		uris.length > 1 ? (subMenu.name = `Move ${uris.length} tracks`) : (subMenu.name = "Move track");
-		return Spicetify.URI.isPlaylistV1OrV2(contextUri);
+		return Spicetify.URI.isPlaylistV1OrV2(contextUri) || Spicetify.URI.from(contextUri)?.id === "queue";
 	}
 
 	const subMenu = new Spicetify.ContextMenu.SubMenu(
