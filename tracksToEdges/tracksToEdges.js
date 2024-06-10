@@ -65,8 +65,10 @@
 							children: Spicetify.ReactComponent.Snackbar.simpleLayout({
 								leading: Spicetify.ReactComponent.Snackbar.styledImage({
 									src: uris.length > 1 ? images[0]?.url : trackDetails?.data?.tracks[0]?.albumOfTrack?.coverArt?.sources[0]?.url,
-									imageHeight: "24px",
-									imageWidth: "24px"
+									style: {
+										height: "24px",
+										width: "24px"
+									}
 								}),
 								center: Spicetify.React.createElement("div", {
 									dangerouslySetInnerHTML: {
