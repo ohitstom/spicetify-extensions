@@ -32,6 +32,14 @@
 		"tags": ["QOL"]
 	},
 	{
+		"name": "Gamepad",
+		"description": "Use any gamepad to control Spotify (minus text input).",
+		"preview": "gamepad/marketplace.png",
+		"main": "gamepad/gamepad.js",
+		"readme": "gamepad/README.md",
+		"tags": ["controller"]
+	},
+	{
 		"name": "No Controls",
 		"description": "Removes the titlebar, (Spotify >= 1.2.32)",
 		"preview": "noControls/marketplace.png",

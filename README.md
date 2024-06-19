@@ -2,6 +2,10 @@
 
 Please check out the readme for each extension in its folder, it will include installation instructions, usage, and compatibility notes.
 
+## [gamepad](gamepad/README.md)
+
+![Example](gamepad/example.png)
+
 ## [immersiveView](immersiveView/README.md)
 
 ![Example](immersiveView/example.png)
