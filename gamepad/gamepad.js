@@ -44,7 +44,10 @@
 		DPadUp: () => simulateKeyPress("ArrowUp"),
 		DPadDown: () => simulateKeyPress("ArrowDown"),
 		DPadLeft: () => simulateKeyPress("ArrowLeft"),
-		DPadRight: () => simulateKeyPress("ArrowRight")
+		DPadRight: () => simulateKeyPress("ArrowRight"),
+		Start: () => Spicetify.Player.togglePlay(),
+		LStick: () => Spicetify.Player.back(),
+		RStick: () => Spicetify.Player.next()
 	};
 
 	let overlayVisible = false;
