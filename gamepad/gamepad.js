@@ -115,7 +115,7 @@
 							null,
 							Spicetify.React.createElement("li", null, "Y: Toggle Help"),
 							Spicetify.React.createElement("li", null, "A: Interact"),
-							Spicetify.React.createElement("li", null, "B: Escape / Close Keyboard"),
+							Spicetify.React.createElement("li", null, "B: Escape"),
 							Spicetify.React.createElement("li", null, "LT: Go Back"),
 							Spicetify.React.createElement("li", null, "RT: Go Forward"),
 							Spicetify.React.createElement("li", null, "LB: Previous Element"),
