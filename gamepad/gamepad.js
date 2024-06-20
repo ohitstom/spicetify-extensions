@@ -39,7 +39,7 @@
 		LB: () => emulateTab.backwards(),
 		RB: () => emulateTab(),
 		A: () => interactWithFocusedElement(),
-		B: () => escapeAction(),
+		B: () => simulateKeyPress("Escape"),
 		Y: () => toggleOverlay(),
 		DPadUp: () => simulateKeyPress("ArrowUp"),
 		DPadDown: () => simulateKeyPress("ArrowDown"),
@@ -54,17 +54,6 @@
 		const focusedElement = document.activeElement;
 		if (focusedElement && focusedElement.tabIndex >= 0) {
 			focusedElement.click();
-			if (focusedElement.tagName === "INPUT" || focusedElement.tagName === "TEXTAREA") {
-				showOnScreenKeyboard();
-			}
-		}
-	};
-
-	const escapeAction = () => {
-		if (keyboardVisible) {
-			hideOnScreenKeyboard();
-		} else {
-			simulateKeyPress("Escape");
 		}
 	};
 
