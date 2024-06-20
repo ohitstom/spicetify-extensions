@@ -8,11 +8,6 @@
 		return;
 	}
 
-	// Load emulate-tab library
-	var script = document.createElement("script");
-	script.src = "https://cdn.jsdelivr.net/npm/emulate-tab@1.2.1/dist/bundles/emulate-tab.min.js";
-	document.head.appendChild(script);
-
 	// Define gamepad button mappings and actions
 	const buttons = {
 		0: "A",
@@ -48,7 +43,6 @@
 	};
 
 	let overlayVisible = false;
-	let keyboardVisible = false;
 
 	const interactWithFocusedElement = () => {
 		const focusedElement = document.activeElement;
@@ -185,5 +179,12 @@
 	// Initialize
 	ensureFocusStyles();
 	createOverlay();
-	requestAnimationFrame(updateGamepadStatus);
+
+	// Load emulate-tab + start gamepad status update loop
+	var script = document.createElement("script");
+	script.src = "https://cdn.jsdelivr.net/npm/emulate-tab@1.2.1/dist/bundles/emulate-tab.min.js";
+	script.onload = function () {
+		requestAnimationFrame(updateGamepadStatus);
+	};
+	document.head.appendChild(script);
 })();
