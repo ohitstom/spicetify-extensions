@@ -174,17 +174,23 @@
 			html.classList.remove("no-focus-outline");
 		}
 
-		var focusedElement = document.activeElement;
-		if (focusedElement !== lastFocusedElement) {
+		if (!navigator.getGamepads()[0]) {
 			if (lastFocusedElement) {
 				lastFocusedElement.style.outline = "none";
 			}
-			lastFocusedElement = focusedElement;
-			if (focusedElement) {
-				var computedStyle = window.getComputedStyle(focusedElement);
-				var outlineStyle = computedStyle.getPropertyValue("outline-style");
-				if (outlineStyle === "none") {
-					focusedElement.style.outline = "auto";
+		} else {
+			var focusedElement = document.activeElement;
+			if (focusedElement !== lastFocusedElement) {
+				if (lastFocusedElement) {
+					lastFocusedElement.style.outline = "none";
+				}
+				lastFocusedElement = focusedElement;
+				if (focusedElement) {
+					var computedStyle = window.getComputedStyle(focusedElement);
+					var outlineStyle = computedStyle.getPropertyValue("outline-style");
+					if (outlineStyle === "none") {
+						focusedElement.style.outline = "auto";
+					}
 				}
 			}
 		}
