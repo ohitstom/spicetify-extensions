@@ -168,12 +168,20 @@
 	};
 
 	function ensureFocusStyles() {
-		setInterval(function () {
-			const html = document.querySelector("html");
-			if (html.classList.contains("no-focus-outline")) {
-				html.classList.remove("no-focus-outline");
+		const html = document.querySelector("html");
+		if (html.classList.contains("no-focus-outline")) {
+			html.classList.remove("no-focus-outline");
+		}
+
+		var focusedElement = document.activeElement;
+		if (focusedElement) {
+			var computedStyle = window.getComputedStyle(focusedElement);
+			var outlineStyle = computedStyle.getPropertyValue("outline-style");
+			if (outlineStyle === "none") {
+				focusedElement.style.outline = "auto";
 			}
-		}, 2000);
+		}
+		requestAnimationFrame(ensureFocusStyles);
 	}
 
 	// Initialize
