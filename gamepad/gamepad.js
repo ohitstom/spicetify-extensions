@@ -167,6 +167,7 @@
 		requestAnimationFrame(updateGamepadStatus);
 	};
 
+	let lastFocusedElement = null;
 	function ensureFocusStyles() {
 		const html = document.querySelector("html");
 		if (html.classList.contains("no-focus-outline")) {
@@ -174,13 +175,20 @@
 		}
 
 		var focusedElement = document.activeElement;
-		if (focusedElement) {
-			var computedStyle = window.getComputedStyle(focusedElement);
-			var outlineStyle = computedStyle.getPropertyValue("outline-style");
-			if (outlineStyle === "none") {
-				focusedElement.style.outline = "auto";
+		if (focusedElement !== lastFocusedElement) {
+			if (lastFocusedElement) {
+				lastFocusedElement.style.outline = "none";
+			}
+			lastFocusedElement = focusedElement;
+			if (focusedElement) {
+				var computedStyle = window.getComputedStyle(focusedElement);
+				var outlineStyle = computedStyle.getPropertyValue("outline-style");
+				if (outlineStyle === "none") {
+					focusedElement.style.outline = "auto";
+				}
 			}
 		}
+
 		requestAnimationFrame(ensureFocusStyles);
 	}
 
