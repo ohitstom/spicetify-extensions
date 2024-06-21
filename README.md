@@ -2,6 +2,11 @@
 
 Please check out the readme for each extension in its folder, it will include installation instructions, usage, and compatibility notes.
 
+## [spotifyBackup](spotifyBackup/README.md)
+
+![Example](spotifyBackup/example.png)
+
+
 ## [gamepad](gamepad/README.md)
 
 ![Example](gamepad/example.png)
