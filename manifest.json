@@ -44,7 +44,8 @@
 		"description": "Backup / restore application data (settings).",
 		"preview": "spotifyBackup/marketplace.png",
 		"main": "spotifyBackup/spotifyBackup.js",
-		"readme": "spotifyBackup/README.md"
+		"readme": "spotifyBackup/README.md",
+		"tags": ["settings", "preferences"]
 	},
 	{
 		"name": "No Controls",
