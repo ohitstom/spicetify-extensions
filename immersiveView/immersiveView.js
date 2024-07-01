@@ -21,12 +21,13 @@
 				.Root__right-sidebar {
 					display: none !important;
 				}
-				.Root__top-container {
+				.Root:not(.global-nav) .Root__top-container {
 					padding: 8px !important;
-				}
-				.global-nav .Root__top-container {
 					padding-top: calc(24px + var(--panel-gap)*2) !important;
 					gap: 0 !important;
+				}
+				.global-nav .Root__top-container {
+					padding: 8px !important;
 				}
 			`;
 			styleElement.textContent = css;
