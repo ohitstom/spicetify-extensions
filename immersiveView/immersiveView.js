@@ -1,6 +1,7 @@
 // NAME: Immersive View
 // AUTHORS: OhItsTom
 // DESCRIPTION: Button to hide uneccesary information, providing an immersive experience.
+// TODO: make the transition smooth with an animation
 
 (function immersiveView() {
 	if (!((document.querySelector(".main-noConnection") || document.querySelector(".main-actionButtons")) && Spicetify.Topbar && Spicetify.Keyboard)) {

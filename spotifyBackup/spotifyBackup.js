@@ -1,6 +1,7 @@
 // NAME: spotifyBackup
 // AUTHOR: OhItsTom
 // DESCRIPTION: Backup / restore application data (settings)
+// TODO: also backup/parse prefs + productstate
 
 (async function spotifyBackup() {
 	if (!(Spicetify.Platform && Spicetify.React && Spicetify.ReactDOM && Spicetify.Platform.History && Spicetify.Locale._dictionary)) {
