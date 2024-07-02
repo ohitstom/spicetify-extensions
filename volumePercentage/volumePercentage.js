@@ -40,7 +40,9 @@
 						div.text input { min-width: 1ch; max-width: 3ch; padding: 0; font-size: 1em; text-align: center; border: 0; background: none; color: var(--spice-text); }
 						div.text input::-webkit-outer-spin-button, div.text input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 					</style>
-				</div>`
+				</div>
+				<div class="main-popper-arrow" style="bottom: -8px;position: absolute;left: 0px;background-color: var(--spice-card);width: 8px;height: 8px;transform: rotate(45deg) translate(10px, -15px);"></div>
+				`
 		);
 		adjustWidth(document.querySelector("#volumeInput"));
 	};
