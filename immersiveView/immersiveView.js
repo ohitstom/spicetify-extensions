@@ -1,20 +1,25 @@
 // NAME: Immersive View
 // AUTHORS: OhItsTom
 // DESCRIPTION: Button to hide unnecessary information, providing an immersive experience.
-// TODO: make the transition smooth with an animation
 
 // Append Styling To Head
 (function initStyle() {
 	var style = document.createElement("style");
 	style.textContent = `
+        #main .Root__top-container {
+            transition: grid-template-columns 0.3s ease, column-gap 0.3s ease, padding-bottom 0.3s ease;
+        }
+			
 		#main.immersive-view-active .Root__top-container {
 			grid-template-columns: 0 1fr 0;
-			column-gap: 0px;
-			padding-bottom: 0px;
+			column-gap: 0;
+			padding-bottom: 0;
+			transition: grid-template-columns 0.3s ease, column-gap 0.3s ease, padding-bottom 0.3s ease;
 		}
 		
 		#main.immersive-view-active .Root__top-container > *:not(.Root__main-view):not(.Root__globalNav) {
-			display: none
+			display: none !important;
+			transition: display 0.3s ease;
 		}
 	`;
 	document.head.appendChild(style);
