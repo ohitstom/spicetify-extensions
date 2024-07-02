@@ -1,7 +1,24 @@
 // NAME: Immersive View
 // AUTHORS: OhItsTom
-// DESCRIPTION: Button to hide uneccesary information, providing an immersive experience.
+// DESCRIPTION: Button to hide unnecessary information, providing an immersive experience.
 // TODO: make the transition smooth with an animation
+
+// Append Styling To Head
+(function initStyle() {
+	var style = document.createElement("style");
+	style.textContent = `
+		#main.immersive-view-active .Root__top-container {
+			grid-template-columns: 0 1fr 0;
+			column-gap: 0px;
+			padding-bottom: 0px;
+		}
+		
+		#main.immersive-view-active .Root__top-container > *:not(.Root__main-view):not(.Root__globalNav) {
+			display: none
+		}
+	`;
+	document.head.appendChild(style);
+})();
 
 (function immersiveView() {
 	if (!((document.querySelector(".main-noConnection") || document.querySelector(".main-actionButtons")) && Spicetify.Topbar && Spicetify.Keyboard)) {
@@ -10,32 +27,11 @@
 	}
 
 	function applyImmersiveView(bool) {
+		var mainElement = document.getElementById("main");
 		if (bool) {
-			var styleElement = document.createElement("style");
-			styleElement.className = "immersive-view";
-			var css = `
-				.Root__top-container {
-					grid-template-columns: 0 1fr 0 !important;
-				}
-				.Root__nav-bar,
-				.Root__now-playing-bar,
-				.Root__right-sidebar {
-					display: none !important;
-				}
-				.Root:not(.global-nav) .Root__top-container {
-					padding: 8px !important;
-					padding-top: calc(24px + var(--panel-gap)*2) !important;
-					gap: 0 !important;
-				}
-				.global-nav .Root__top-container {
-					padding: 8px !important;
-				}
-			`;
-			styleElement.textContent = css;
-			document.head.appendChild(styleElement);
+			mainElement.classList.add("immersive-view-active");
 		} else {
-			var styleSheet = document.querySelector("head > style.immersive-view");
-			styleSheet.parentNode.removeChild(styleSheet);
+			mainElement.classList.remove("immersive-view-active");
 		}
 	}
 
