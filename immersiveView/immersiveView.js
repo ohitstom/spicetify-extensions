@@ -64,11 +64,11 @@
 
 	// Keyboard shortcut
 	Spicetify.Keyboard.registerShortcut({ key: "i", ctrl: true }, () => {
-		button.element.click();
+		button.element.querySelector("button").click();
 	});
 	Spicetify.Keyboard.registerShortcut("esc", () => {
 		if (state) {
-			button.element.click();
+			button.element.querySelector("button").click();
 		}
 	});
 })();
