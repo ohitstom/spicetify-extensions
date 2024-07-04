@@ -37,11 +37,11 @@
 						.volume-bar__slider-container:focus-within { position: revert !important; }
 						div.text { display: flex; align-items: center; }
 						div.text:after { content: '%'; font-variant: unicase;}
-						div.text input { min-width: 1ch; max-width: 3ch; padding: 0; font-size: 1em; text-align: center; border: 0; background: none; color: var(--spice-text); }
+						div.text input { min-width: 1ch; max-width: 3ch; padding: 0; font-size: 1em; text-align: center; border: 0; background: none; color: var(--spice-text); z-index: 1; outline: none !important; height: 1em; }
 						div.text input::-webkit-outer-spin-button, div.text input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 					</style>
 				</div>
-				<div class="main-popper-arrow" style="bottom: -8px;position: absolute;left: 0px;background-color: var(--spice-card);width: 8px;height: 8px;transform: rotate(45deg) translate(10px, -15px);"></div>
+				<div class="main-popper-arrow" style="bottom: -4px; position: absolute; left: calc(50% - 4px); background-color: var(--spice-card); width: 8px; height: 8px; transform: rotate(45deg); z-index: 0;"></div>
 				`
 		);
 		adjustWidth(document.querySelector("#volumeInput"));
