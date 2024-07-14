@@ -5,7 +5,7 @@
 
 // Append Styling To Head
 (function initStyle() {
-	var style = document.createElement("style");
+	const style = document.createElement("style");
 	style.textContent = ` 
 		.main-nowPlayingView-coverArtContainer::before,
 		.main-nowPlayingView-coverArtContainer::after {
@@ -68,7 +68,7 @@
 
 	// Initialization
 	const initialWidth = document.documentElement.style.getPropertyValue("--panel-width");
-	document.documentElement.style.setProperty("--npv-ambience-width", `${parseInt(initialWidth)}px`);
+	document.documentElement.style.setProperty("--npv-ambience-width", `${Number.parseInt(initialWidth)}px`);
 	document.documentElement.style.setProperty("--npv-ambience-img", `url(${Spicetify.Player.data.item.metadata.image_xlarge_url})`);
 
 	const realWidth = rightSidebar.offsetWidth;
@@ -80,7 +80,7 @@
 
 	// Observe Panel State
 	new ResizeObserver(entries => {
-		for (let entry of entries) {
+		for (const entry of entries) {
 			const width = entry.contentRect.width;
 			document.documentElement.style.setProperty("--npv-ambience-opacity", width > 0 ? 1 : 0);
 			if (width > 0) document.documentElement.style.setProperty("--npv-ambience-width", `${width}px`);
@@ -88,10 +88,10 @@
 	}).observe(rightSidebar);
 
 	// Event Listeners
-	Spicetify.Player.addEventListener("songchange", function (e) {
+	Spicetify.Player.addEventListener("songchange", e => {
 		const preloadImage = new Image();
 		preloadImage.src = e.data.item.metadata.image_xlarge_url;
-		preloadImage.onload = function () {
+		preloadImage.onload = () => {
 			document.documentElement.style.setProperty("--npv-ambience-img", `url(${preloadImage.src})`);
 		};
 	});
