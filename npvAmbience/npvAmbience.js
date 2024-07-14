@@ -39,8 +39,9 @@
 			background: transparent;
 		}
 		aside[aria-label="Now playing view"] .fAte2d0xETy7pnDUAgHY, aside[aria-label="Now playing view"] .mdMUqcSHFw1lZIcYEblu {
-			background-color: var(--spice-main) !important;
-			transition: background-color 0.25s, opacity 0.4s ease-out;
+			background-color: rgb(var(--spice-rgb-main), 0.75) !important;
+    	backdrop-filter: blur(1rem);
+			transition: background-color 0.25s, backdrop-filter 0.25s, opacity 0.4s ease-out;
 		}
 
 		aside[aria-label="Now playing view"]:has(.ZbDMGdU4aBOnrNLowNRq) .main-buddyFeed-scrollBarContainer:not(:has(.main-buddyFeed-content > .main-buddyFeed-header)), aside[aria-label="Now playing view"]:has(.W3E0IT3_STcazjTeyOJa) .cZCuJDjrGA2QMXja_Sua:not(:has(.AAdBM1nhG73supMfnYX7 > .fNXmHtlrj4UVWmhQrJ_5)) {
