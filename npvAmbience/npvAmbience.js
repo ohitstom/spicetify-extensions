@@ -5,7 +5,7 @@
 
 // Append Styling To Head
 (function initStyle() {
-	var style = document.createElement("style");
+	const style = document.createElement("style");
 	style.textContent = ` 
 		.main-nowPlayingView-coverArtContainer::before,
 		.main-nowPlayingView-coverArtContainer::after {
@@ -37,10 +37,12 @@
 			width: 100%;
 			z-index: 1;
 			background: transparent;
+			transition: background-color 0.25s, backdrop-filter 0.5s, opacity 0.4s ease-out;
 		}
 		aside[aria-label="Now playing view"] .fAte2d0xETy7pnDUAgHY, aside[aria-label="Now playing view"] .mdMUqcSHFw1lZIcYEblu {
-			background-color: var(--spice-main) !important;
-			transition: background-color 0.25s, opacity 0.4s ease-out;
+			background-color: rgba(var(--spice-rgb-main), 0.2) !important;
+			backdrop-filter: blur(24px) saturate(140%);
+			border-bottom: 1px solid rgba(var(--spice-rgb-selected-row),0.2);
 		}
 
 		aside[aria-label="Now playing view"]:has(.ZbDMGdU4aBOnrNLowNRq) .main-buddyFeed-scrollBarContainer:not(:has(.main-buddyFeed-content > .main-buddyFeed-header)), aside[aria-label="Now playing view"]:has(.W3E0IT3_STcazjTeyOJa) .cZCuJDjrGA2QMXja_Sua:not(:has(.AAdBM1nhG73supMfnYX7 > .fNXmHtlrj4UVWmhQrJ_5)) {
@@ -68,7 +70,7 @@
 
 	// Initialization
 	const initialWidth = document.documentElement.style.getPropertyValue("--panel-width");
-	document.documentElement.style.setProperty("--npv-ambience-width", `${parseInt(initialWidth)}px`);
+	document.documentElement.style.setProperty("--npv-ambience-width", `${Number.parseInt(initialWidth)}px`);
 	document.documentElement.style.setProperty("--npv-ambience-img", `url(${Spicetify.Player.data.item.metadata.image_xlarge_url})`);
 
 	const realWidth = rightSidebar.offsetWidth;
@@ -80,7 +82,7 @@
 
 	// Observe Panel State
 	new ResizeObserver(entries => {
-		for (let entry of entries) {
+		for (const entry of entries) {
 			const width = entry.contentRect.width;
 			document.documentElement.style.setProperty("--npv-ambience-opacity", width > 0 ? 1 : 0);
 			if (width > 0) document.documentElement.style.setProperty("--npv-ambience-width", `${width}px`);
@@ -88,10 +90,10 @@
 	}).observe(rightSidebar);
 
 	// Event Listeners
-	Spicetify.Player.addEventListener("songchange", function (e) {
+	Spicetify.Player.addEventListener("songchange", e => {
 		const preloadImage = new Image();
 		preloadImage.src = e.data.item.metadata.image_xlarge_url;
-		preloadImage.onload = function () {
+		preloadImage.onload = () => {
 			document.documentElement.style.setProperty("--npv-ambience-img", `url(${preloadImage.src})`);
 		};
 	});
