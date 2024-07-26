@@ -110,7 +110,7 @@
 					viewBox: "0 0 16 16",
 					className: isQueued ? "Svg-img-icon-small-textBrightAccent" : "Svg-img-icon-small",
 					style: {
-						fill: isQueued ? undefined : "var(--text-subdued)"
+						fill: isQueued ? "var(--text-bright-accent)" : "var(--text-subdued)"
 					},
 					dangerouslySetInnerHTML: {
 						__html: isQueued
@@ -152,29 +152,35 @@
 		return undefined;
 	}
 
-	const observer = new MutationObserver(function (mutationList) {
+	const observer = new MutationObserver(mutationList => {
 		mutationList.forEach(mutation => {
 			const node = mutation.addedNodes[0];
-			if (node?.attributes?.role?.value === "row") {
-				const lastRowSection = node.firstChild.lastChild;
-				const entryPoint = lastRowSection.querySelector(":scope > button:not(:last-child):has([data-encore-id])");
-				if (entryPoint) {
-					const reactProps = Object.keys(node).find(k => k.startsWith("__reactProps$"));
-					const uri = findVal(node[reactProps], "uri");
+			if (!node) return;
 
-					const queueButtonWrapper = document.createElement("div");
-					queueButtonWrapper.className = "queueControl-wrapper";
-					queueButtonWrapper.style.display = "contents";
-					queueButtonWrapper.style.marginRight = 0;
+			const role = node.attributes?.role?.value;
+			if (role === "row" || role === "presentation") {
+				const lastRowSection = role === "presentation" ? node.firstChild?.firstChild?.lastChild : node.firstChild?.lastChild;
 
-					const queueButtonElement = lastRowSection.insertBefore(queueButtonWrapper, entryPoint);
-					Spicetify.ReactDOM.render(
-						Spicetify.React.createElement(QueueButton, {
-							uri,
-							classList: entryPoint.classList
-						}),
-						queueButtonElement
-					);
+				if (lastRowSection) {
+					const entryPoint = lastRowSection.querySelector(":scope > button:not(:last-child):has([data-encore-id])");
+					if (entryPoint) {
+						const reactPropsKey = Object.keys(node).find(k => k.startsWith("__reactProps$"));
+						const uri = findVal(node[reactPropsKey], "uri");
+
+						const queueButtonWrapper = document.createElement("div");
+						queueButtonWrapper.className = "queueControl-wrapper";
+						queueButtonWrapper.style.display = "contents";
+						queueButtonWrapper.style.marginRight = 0;
+
+						const queueButtonElement = lastRowSection.insertBefore(queueButtonWrapper, entryPoint);
+						Spicetify.ReactDOM.render(
+							Spicetify.React.createElement(QueueButton, {
+								uri,
+								classList: entryPoint.classList
+							}),
+							queueButtonElement
+						);
+					}
 				}
 			}
 		});
