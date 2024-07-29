@@ -154,17 +154,19 @@
 
 	const observer = new MutationObserver(mutationList => {
 		mutationList.forEach(mutation => {
-			const node = mutation.addedNodes[0];
-			if (!node) return;
+			mutation.addedNodes.forEach(node => {
+				const nodeMatch =
+					node.attributes?.role?.value === "row"
+						? node.firstChild?.lastChild
+						: node.firstChild?.attributes?.role?.value === "row"
+						? node.firstChild?.firstChild.lastChild
+						: null;
 
-			const role = node.attributes?.role?.value;
-			if (role === "row" || role === "presentation") {
-				const lastRowSection = role === "presentation" ? node.firstChild?.firstChild?.lastChild : node.firstChild?.lastChild;
+				if (nodeMatch) {
+					const entryPoint = nodeMatch.querySelector(":scope > button:not(:last-child):has([data-encore-id])");
 
-				if (lastRowSection) {
-					const entryPoint = lastRowSection.querySelector(":scope > button:not(:last-child):has([data-encore-id])");
 					if (entryPoint) {
-						const reactPropsKey = Object.keys(node).find(k => k.startsWith("__reactProps$"));
+						const reactPropsKey = Object.keys(node).find(key => key.startsWith("__reactProps$"));
 						const uri = findVal(node[reactPropsKey], "uri");
 
 						const queueButtonWrapper = document.createElement("div");
@@ -172,7 +174,7 @@
 						queueButtonWrapper.style.display = "contents";
 						queueButtonWrapper.style.marginRight = 0;
 
-						const queueButtonElement = lastRowSection.insertBefore(queueButtonWrapper, entryPoint);
+						const queueButtonElement = nodeMatch.insertBefore(queueButtonWrapper, entryPoint);
 						Spicetify.ReactDOM.render(
 							Spicetify.React.createElement(QueueButton, {
 								uri,
@@ -182,7 +184,7 @@
 						);
 					}
 				}
-			}
+			});
 		});
 	});
 
