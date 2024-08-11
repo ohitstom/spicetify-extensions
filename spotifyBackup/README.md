@@ -16,6 +16,7 @@ Navigate to Spotify settings, scroll to "Storage", backup your settings to clipb
 
 #### Gist Integration Setup
 This part of the extension allows the user to automatically backup and restore to a cloud source - in this example GitHubs Gists.
+Please note Gist has a limited file upload of 1MB, if your application data exceeds this value please manually backup and restore your data.
 
 ##### Github Token
 There should be no security issues with storing your GitHub access token in localstorage assuming you setup permissions to the token correctly, however if you want to be on the safe side make a throw away GitHub account.
