@@ -41,7 +41,7 @@
 	},
 	{
 		"name": "Spotify Backup",
-		"description": "Backup / restore application data (settings).",
+		"description": "Backup / restore application data (settings) + to the cloud (Gist).",
 		"preview": "spotifyBackup/marketplace.png",
 		"main": "spotifyBackup/spotifyBackup.js",
 		"readme": "spotifyBackup/README.md",

@@ -14,6 +14,25 @@ _This script allows you to backup / restore application data (settings)._
 
 Navigate to Spotify settings, scroll to "Storage", backup your settings to clipboard - and import them on your secondary device.
 
+#### Gist Integration Setup
+This part of the extension allows the user to automatically backup and restore to a cloud source - in this example GitHubs Gists.
+
+##### Github Token
+There should be no security issues with storing your GitHub access token in localstorage assuming you setup permissions to the token correctly, however if you want to be on the safe side make a throw away GitHub account.
+
+1. Head over to https://github.com/settings/tokens
+2. Generate a new **classic** token:
+![alt text](readme-1.png)
+3. Copy the token:
+![alt text](readme-2.png)
+
+##### Gist ID
+1. Head over to https://gist.github.com/
+2. Create a secret Gist like so:
+![alt text](readme-3.png)
+3. Copy the ID from the search bar:
+![alt text](readme-4.png)
+
 ### Compatibility
 
 Relies on platform methods, and css map / dom structure.
