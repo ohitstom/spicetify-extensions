@@ -2,6 +2,7 @@
 
 Please check out the readme for each extension in its folder, it will include installation instructions, usage, and compatibility notes.
 
+[![](https://data.jsdelivr.com/v1/package/gh/ohitstom/spicetify-extensions/badge)](https://www.jsdelivr.com/package/gh/ohitstom/spicetify-extensions)
 ## [spotifyBackup](spotifyBackup/README.md)
 
 ![Example](spotifyBackup/example.png)
