@@ -107,9 +107,9 @@
 			}
 		} else {
 			try {
-				const response = await fetch(`https://api.github.com/gists/${gistId}`, {
+				const response = await fetch(`https://api.github.com/gists/${getConfig("gistId")}`, {
 					headers: {
-						Authorization: `token ${gistToken}`
+						Authorization: `token ${getConfig("gistToken")}`
 					}
 				});
 
