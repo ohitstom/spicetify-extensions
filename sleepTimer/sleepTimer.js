@@ -168,7 +168,7 @@
 				"button",
 				{
 					className:
-						"Button-sm-16-buttonTertiary-iconOnly-useBrowserDefaultFocusStyle Button-small-small-buttonTertiary-iconOnly-useBrowserDefaultFocusStyle Button-small-small-buttonTertiary-iconOnly-isUsingKeyboard-useBrowserDefaultFocusStyle",
+						"Button-sm-16-buttonTertiary-iconOnly-useBrowserDefaultFocusStyle Button-small-small-buttonTertiary-iconOnly-useBrowserDefaultFocusStyle Button-small-small-buttonTertiary-iconOnly-isUsingKeyboard-useBrowserDefaultFocusStyle Button-buttonTertiary-small-small-iconOnly-useBrowserDefaultFocusStyle Button-buttonTertiary-small-small-iconOnly-isUsingKeyboard-useBrowserDefaultFocusStyle",
 					style: {
 						overflowWrap: "normal",
 						padding: "0",
