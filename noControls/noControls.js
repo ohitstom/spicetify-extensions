@@ -3,7 +3,7 @@
 // DESCRIPTION: Remove the minimum, maximum, and close buttons from the titlebar.
 
 (async function noControls() {
-	if (!Spicetify.CosmosAsync) {
+	if (!Spicetify.CosmosAsync || !Spicetify.Platform.UpdateAPI) {
 		setTimeout(noControls, 10);
 		return;
 	}
