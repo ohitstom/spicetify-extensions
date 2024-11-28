@@ -27,10 +27,10 @@
 	if (Spicetify.Platform.UpdateAPI._updateUiClient?.setButtonsVisibility) {
 		Spicetify.Platform.UpdateAPI._updateUiClient.setButtonsVisibility(false);
 	}
-	
+
 	window.addEventListener("beforeunload", () => {
 		if (Spicetify.Platform.UpdateAPI._updateUiClient?.setButtonsVisibility) {
-			Spicetify.Platform.UpdateAPI._updateUiClient.setButtonsVisibility(true);
+			Spicetify.Platform.UpdateAPI._updateUiClient.setButtonsVisibility({ showButtons: true });
 		}
 	});
 
