@@ -27,6 +27,12 @@
 	if (Spicetify.Platform.UpdateAPI._updateUiClient?.setButtonsVisibility) {
 		Spicetify.Platform.UpdateAPI._updateUiClient.setButtonsVisibility(false);
 	}
+	
+	window.addEventListener("beforeunload", () => {
+		if (Spicetify.Platform.UpdateAPI._updateUiClient?.setButtonsVisibility) {
+			Spicetify.Platform.UpdateAPI._updateUiClient.setButtonsVisibility(true);
+		}
+	});
 
 	// Spotify functions < 1.2.51
 	await Spicetify.CosmosAsync.post("sp://messages/v1/container/control", {
