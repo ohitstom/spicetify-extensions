@@ -265,7 +265,7 @@
 							"button",
 							{
 								className:
-									"Button-small-buttonSecondary-useBrowserDefaultFocusStyle Button-small-buttonSecondary-isUsingKeyboard-useBrowserDefaultFocusStyle encore-text-body-small-bold x-settings-button",
+									"Button-buttonSecondary-small-useBrowserDefaultFocusStyle Button-small-buttonSecondary-useBrowserDefaultFocusStyle Button-small-buttonSecondary-isUsingKeyboard-useBrowserDefaultFocusStyle Button-buttonSecondary-small-isUsingKeyboard-useBrowserDefaultFocusStyle encore-text-body-small-bold x-settings-button",
 								"data-encore-id": "buttonSecondary",
 								style: {
 									marginRight: "8px"
@@ -278,7 +278,7 @@
 							"button",
 							{
 								className:
-									"Button-small-buttonSecondary-useBrowserDefaultFocusStyle Button-small-buttonSecondary-isUsingKeyboard-useBrowserDefaultFocusStyle encore-text-body-small-bold x-settings-button",
+									"Button-buttonSecondary-small-useBrowserDefaultFocusStyle Button-small-buttonSecondary-useBrowserDefaultFocusStyle Button-small-buttonSecondary-isUsingKeyboard-useBrowserDefaultFocusStyle Button-buttonSecondary-small-isUsingKeyboard-useBrowserDefaultFocusStyle encore-text-body-small-bold x-settings-button",
 								"data-encore-id": "buttonSecondary",
 								onClick: async () => {
 									Spicetify.ReactDOM.render(
@@ -335,13 +335,22 @@
 					Spicetify.React.createElement(
 						"div",
 						{ className: "x-settings-secondColumn" },
-						Spicetify.React.createElement(Spicetify.ReactComponent.Toggle, {
-							value: gistEnabled,
-							disabled: false,
-							onSelected: () => {
-								setGistEnabled(!gistEnabled);
-							}
-						})
+						Spicetify.React.createElement(
+							"label",
+							{ className: "x-toggle-wrapper" },
+							Spicetify.React.createElement("input", {
+								id: "settings.canvasVideos",
+								className: "x-toggle-input",
+								type: "checkbox",
+								checked: gistEnabled,
+								onChange: () => setGistEnabled(!gistEnabled)
+							}),
+							Spicetify.React.createElement(
+								"span",
+								{ className: "x-toggle-indicatorWrapper" },
+								Spicetify.React.createElement("span", { className: "x-toggle-indicator" })
+							)
+						)
 					)
 				]
 			),

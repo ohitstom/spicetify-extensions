@@ -47,6 +47,13 @@
 			fetchData();
 		}, []);
 
+		async function handleToggle() {
+			const newState = !state;
+			await interfaceDJ(newState);
+			setState(newState);
+			Spicetify.showNotification(newState ? "DJ enabled" : "DJ disabled");
+		}
+
 		return Spicetify.React.createElement("div", { className: "x-settings-row" }, [
 			Spicetify.React.createElement("div", { className: "x-settings-firstColumn" }, [
 				Spicetify.React.createElement(
@@ -60,22 +67,21 @@
 				)
 			]),
 			Spicetify.React.createElement("div", { className: "x-settings-secondColumn" }, [
-				Spicetify.React.createElement("label", { className: "x-toggle-wrapper" }, [
+				Spicetify.React.createElement(
+					"label",
+					{ className: "x-toggle-wrapper" },
 					Spicetify.React.createElement("input", {
-						className: "x-toggle-input",
-						id: "global.settings.autoplayInfo",
-						type: "checkbox"
+						type: "checkbox",
+						checked: state,
+						onChange: handleToggle,
+						className: "x-toggle-input"
 					}),
-					Spicetify.React.createElement(Spicetify.ReactComponent.Toggle, {
-						value: state,
-						disabled: false,
-						onSelected: async () => {
-							const newState = !state;
-							await interfaceDJ(newState);
-							setState(newState);
-						}
-					})
-				])
+					Spicetify.React.createElement(
+						"span",
+						{ className: "x-toggle-indicatorWrapper" },
+						Spicetify.React.createElement("span", { className: "x-toggle-indicator" })
+					)
+				)
 			])
 		]);
 	});
