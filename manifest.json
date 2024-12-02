@@ -1,11 +1,11 @@
 [
 	{
 		"name": "Immersive View",
-		"description": "Button to hide uneccesary information, providing an immersive experience.",
+		"description": "Button to hide uneccesary information, providing an immersive experience  (customizable).",
 		"preview": "immersiveView/marketplace.png",
 		"main": "immersiveView/immersiveView.js",
 		"readme": "immersiveView/README.md",
-		"tags": ["panels", "accessibility"]
+		"tags": ["panels", "accessibility", "customize"]
 	},
 	{
 		"name": "NPV Ambience",

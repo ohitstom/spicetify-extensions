@@ -14,6 +14,7 @@ _This script adds a toggle button next to your user profile that removes unecces
 
 Load Spotify.
 Click on the fullscreen button next to your user profile, or press `ctrl + i` to toggle on or off, and additionally `esc` to exit.
+To customize your immersiveView experience right click the fullscreen button, this will bring up this extensions settings menu!
 
 ### Compatibility
 
