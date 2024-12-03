@@ -1,4 +1,4 @@
-// NAME: spotifyBackup
+// NAME: Spotify Backup
 // AUTHOR: OhItsTom
 // DESCRIPTION: Backup / restore application data (settings) + to the cloud (Gist).
 // TODO: also backup/parse prefs + productstate + simplify overall code
