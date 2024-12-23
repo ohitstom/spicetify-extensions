@@ -2,10 +2,9 @@
 // AUTHORS: OhItsTom
 // DESCRIPTION: Remove the minimum, maximum, and close buttons from the titlebar.
 // TODO: instead of using intervals, fetch the current height and stop iterating if we are attempting to set it to the same value.
-// TODO: or exit iterations once the main view is loaded, and add a fullscreen event listener to re-hide the controls after going inside and then outside of fullscreen mode.
 
 (async function noControls() {
-	if (!Spicetify.CosmosAsync || !Spicetify.Platform.UpdateAPI) {
+	if (!Spicetify.CosmosAsync || !Spicetify.Platform.UpdateAPI || !Spicetify.Platform.ControlMessageAPI) {
 		setTimeout(noControls, 10);
 		return;
 	}
@@ -19,35 +18,55 @@
     `;
 	document.head.appendChild(style);
 
-	// Set an interval to periodically send the post request to enforce the height
-	const intervalId = setInterval(removeControls, 100);
+	// Function to check and apply the titlebar
+	const checkAndApplyTitlebar = API => {
+		if (API) {
+			if (API._updateUiClient?.updateTitlebarHeight) {
+				API._updateUiClient.updateTitlebarHeight({ height: 1 });
+			}
 
-	// Function to remove controls
-	function removeControls() {
-		// Spotify functions < 1.2.51
+			if (API._updateUiClient?.setButtonsVisibility) {
+				API._updateUiClient.setButtonsVisibility(false);
+			}
+
+			window.addEventListener("beforeunload", () => {
+				if (API._updateUiClient?.setButtonsVisibility) {
+					API._updateUiClient.setButtonsVisibility({ showButtons: true });
+				}
+			});
+		}
+
 		Spicetify.CosmosAsync.post("sp://messages/v1/container/control", {
 			type: "update_titlebar",
 			height: "1px"
 		});
+	};
 
-		// Spotify functions >= 1.2.51
-		if (Spicetify.Platform.UpdateAPI._updateUiClient?.updateTitlebarHeight) {
-			Spicetify.Platform.UpdateAPI._updateUiClient.updateTitlebarHeight({
-				height: 1
-			});
-		}
+	// Apply titlebar initially
+	checkAndApplyTitlebar(Spicetify.Platform.ControlMessageAPI); // Spotify >= 1.2.53
+	checkAndApplyTitlebar(Spicetify.Platform.UpdateAPI); // Spotify >= 1.2.51
 
-		if (Spicetify.Platform.UpdateAPI._updateUiClient?.setButtonsVisibility) {
-			Spicetify.Platform.UpdateAPI._updateUiClient.setButtonsVisibility(false);
-		}
+	// Ensure the titlebar is hidden (spotify likes to change it back sometimes on loadup)
+	async function enforceHeight() {
+		checkAndApplyTitlebar(Spicetify.Platform.ControlMessageAPI);
+		checkAndApplyTitlebar(Spicetify.Platform.UpdateAPI);
 	}
 
-	// Remove our changes when the user navigates away
-	window.addEventListener("beforeunload", () => {
-		clearInterval(intervalId);
+	const intervalId = setInterval(enforceHeight, 100); // Every 100ms
+	setTimeout(() => {
+		clearInterval(intervalId); // Stop after 10 seconds <- need a better killswitch idk mainview ready or something
+	}, 10000);
 
-		if (Spicetify.Platform.UpdateAPI._updateUiClient?.setButtonsVisibility) {
-			Spicetify.Platform.UpdateAPI._updateUiClient.setButtonsVisibility({ showButtons: true });
-		}
-	});
+	// Detect fullscreen changes and apply titlebar hiding
+	const handleFullscreenChange = () => {
+		// When the app goes fullscreen or exits fullscreen
+		checkAndApplyTitlebar(Spicetify.Platform.ControlMessageAPI);
+		checkAndApplyTitlebar(Spicetify.Platform.UpdateAPI);
+	};
+
+	// Add event listener for fullscreen change
+	document.addEventListener("fullscreenchange", handleFullscreenChange);
+	document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+	document.addEventListener("mozfullscreenchange", handleFullscreenChange);
+	document.addEventListener("msfullscreenchange", handleFullscreenChange);
 })();
