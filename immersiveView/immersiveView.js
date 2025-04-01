@@ -110,6 +110,8 @@
 	let state = false;
 	let settings = {
 		enableAtStartup: false,
+		currentState: false,
+		maintainStateOnRestart: false,
 		hideControls: false,
 		hideTopbar: true,
 		hideLibrary: true,
@@ -133,8 +135,8 @@
 	loadSettings();
 
 	// Apply settings if enabled at startup
-	if (settings.enableAtStartup) {
-		state = true;
+	if (settings.enableAtStartup || (settings.maintainStateOnRestart && settings.currentState)) {
+		state = settings.currentState = true;
 		updateClasses();
 	}
 
@@ -142,7 +144,8 @@
 	function updateClasses() {
 		const mainElement = document.getElementById("main");
 		if (!mainElement) return;
-
+		settings.currentState = state;
+		saveSettings();
 		if (state) {
 			mainElement.classList.add("immersive-view-active");
 			Object.keys(settings).forEach(async key => {
@@ -322,14 +325,14 @@
 			setLocalSettings(updatedSettings);
 			settings[key] = updatedSettings[key];
 			saveSettings();
-			if (key === "enableAtStartup") return; // No immediate effect for this setting
+			if (key === "enableAtStartup" || key === "maintainStateOnRestart") return; // No immediate effect for these settings
 			updateClasses();
 		};
 
 		return Spicetify.React.createElement(
 			"div",
 			{ className: "immersive-view-settings" },
-			["enableAtStartup", "hideControls", "hideTopbar", "hideLibrary", "hideRightPanel", "hidePlaybar"].map(key => {
+			["enableAtStartup", "maintainStateOnRestart", "hideControls", "hideTopbar", "hideLibrary", "hideRightPanel", "hidePlaybar"].map(key => {
 				// Check if the current setting is "hideControls"
 				const isHideControls = key === "hideControls"; // This should be defined here
 
@@ -342,6 +345,7 @@
 						key
 							.replace("hide", "Hide ")
 							.replace("enable", "Enable ")
+							.replace("maintain", "Maintain ")
 							.replace(/([A-Z])/g, " $1")
 							.trim()
 					),
@@ -360,7 +364,6 @@
 								value: settings.customHeight, // Use customHeight instead of customCSS
 								onChange: value => {
 									settings.customHeight = value; // Update customHeight directly
-									saveSettings();
 									updateClasses();
 								}
 							})
