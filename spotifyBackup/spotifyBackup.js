@@ -102,7 +102,7 @@
 				let parsedBackupData = JSON.parse(await Spicetify.Platform.ClipboardAPI.paste());
 				restoreData(parsedBackupData);
 			} catch (error) {
-				Spicetify.showNotification("Failed to restore data.", true);
+				Spicetify.showNotification("Failed to restore data from clipboard.", true);
 				console.error("Local restore failed:", error);
 			}
 		} else {
