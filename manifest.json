@@ -49,7 +49,7 @@
 	},
 	{
 		"name": "No Controls",
-		"description": "Removes the titlebar, (Spotify >= 1.2.32)",
+		"description": "Removes the titlebar, (Spotify >= 1.2.32). F8 to re enable",
 		"preview": "noControls/marketplace.png",
 		"main": "noControls/noControls.js",
 		"readme": "noControls/README.md",

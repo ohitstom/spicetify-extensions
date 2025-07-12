@@ -1,5 +1,5 @@
 // NAME: No Controls
-// AUTHORS: OhItsTom
+// AUTHORS: OhItsTom, Podpah
 // DESCRIPTION: Remove the minimum, maximum, and close buttons from the titlebar.
 // TODO: instead of using intervals, fetch the current height and stop iterating if we are attempting to set it to the same value.
 
@@ -52,7 +52,7 @@
 		checkAndApplyTitlebar(Spicetify.Platform.UpdateAPI);
 	}
 
-	const intervalId = setInterval(enforceHeight, 100); // Every 100ms
+	let intervalId = setInterval(enforceHeight, 100); // Every 100ms
 	setTimeout(() => {
 		clearInterval(intervalId); // Stop after 10 seconds <- need a better killswitch idk mainview ready or something
 	}, 10000);
@@ -63,6 +63,33 @@
 		checkAndApplyTitlebar(Spicetify.Platform.ControlMessageAPI);
 		checkAndApplyTitlebar(Spicetify.Platform.UpdateAPI);
 	};
+
+    	// Add in event listening for F8 pressed to re enable
+	let titlebarEnabled = false;
+	document.addEventListener("keydown", (event) => {
+		if (event.key !== "F8") return;
+		titlebarEnabled = !titlebarEnabled;
+		if (titlebarEnabled) {
+			clearInterval(intervalId);
+			if (true) {
+				Spicetify.CosmosAsync.post(
+					"sp://messages/v1/container/control",
+					{
+						type: "update_titlebar",
+						height: "30px",
+					}
+				);
+			}
+		} else {
+		checkAndApplyTitlebar(Spicetify.Platform.ControlMessageAPI);
+		checkAndApplyTitlebar(Spicetify.Platform.UpdateAPI);
+		intervalId = setInterval(() => {
+			checkAndApplyTitlebar(Spicetify.Platform.ControlMessageAPI);
+			checkAndApplyTitlebar(Spicetify.Platform.UpdateAPI);
+		}, 100);
+		setTimeout(() => clearInterval(intervalId), 10000);
+		}
+	});
 
 	// Add event listener for fullscreen change
 	document.addEventListener("fullscreenchange", handleFullscreenChange);
