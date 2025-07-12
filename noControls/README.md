@@ -3,6 +3,8 @@
 ![Example](example.png)
 _This script removes the minimum, maximum, and close buttons from the titlebar._
 
+If you need to to re enable the titlebar you can press F8 or follow the installation guide and change the event key for the toggle
+
 ### Installation
 
 1. Install [Spicetify](https://spicetify.app) and set it up according to the instructions.
