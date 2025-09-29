@@ -173,61 +173,86 @@
 		return undefined;
 	}
 
+	// Resilient way to grab React props attached by Spotify
+	function getReactProps(element, maxDepth = 4) {
+		let current = element;
+		let depth = 0;
+		while (current && depth <= maxDepth) {
+			try {
+				const keys = Object.getOwnPropertyNames(current);
+				const reactKey = keys.find(k => k.startsWith("__reactProps$"));
+				if (reactKey && current[reactKey]) {
+					return current[reactKey];
+				}
+			} catch (_) {
+				// ignore
+			}
+			current = current.parentElement;
+			depth++;
+		}
+		return null;
+	}
+
 	const observer = new MutationObserver(mutationList => {
 		mutationList.forEach(mutation => {
-			mutation.addedNodes.forEach(node => {
-				const nodeMatch =
-					node.attributes?.role?.value === "row"
-						? node.firstChild?.lastChild
-						: node.firstChild?.attributes?.role?.value === "row"
-						? node.firstChild?.firstChild.lastChild
-						: null;
+		mutation.addedNodes.forEach(node => {
+			if (!(node instanceof Element)) return;
 
-				if (nodeMatch) {
-				const entryPoint = nodeMatch.querySelector(":scope > button:not(:last-child):has([data-encore-id])");
+			// Find the nearest row and key cells robustly, even when individual buttons are added later
+			const rowEl = node.getAttribute?.("role") === "row"
+				? node
+				: node.closest?.('[role="row"]') || node.querySelector?.('[role="row"]');
+			if (!rowEl) return;
 
-				if (entryPoint) {
-						const reactPropsKey = Object.keys(node).find(key => key.startsWith("__reactProps$"));
-						const uri = findVal(node[reactPropsKey], "uri");
+			const actionsCell = node.closest?.('.main-trackList-rowSectionEnd[role="gridcell"]')
+				|| rowEl.querySelector?.('.main-trackList-rowSectionEnd[role="gridcell"]');
+			if (!actionsCell) return;
 
-					// Decide insertion target
-					let insertionParent = nodeMatch;
-					let referenceNode = entryPoint;
+			// Avoid duplicate injection per row
+			if (rowEl.querySelector('.queueControl-wrapper')) return;
 
-					if (placeLeftSide) {
-						const rowGrid = nodeMatch.parentElement;
-						const startCell = rowGrid?.querySelector(':scope > .main-trackList-rowSectionStart[role="gridcell"]');
-						const coverImg = startCell?.querySelector(':scope img');
-						if (startCell) {
-							// Avoid duplicate injection in the left cell
-							if (!startCell.querySelector(':scope > .queueControl-wrapper')) {
-								insertionParent = startCell;
-								// If a cover image exists, insert before it. Otherwise insert at the start cell's beginning (some views like albums don't have them)
-								referenceNode = coverImg || startCell.firstElementChild;
-							}
-						}
-					}
+			// Choose a stable entry point: prefer first direct action button
+			const entryPoint = actionsCell.querySelector(':scope > button[data-encore-id]')
+				|| actionsCell.querySelector(':scope > button');
+			if (!entryPoint) return;
 
-					// Avoid duplicate injection in the right cell as well
-					if (insertionParent.querySelector(':scope > .queueControl-wrapper')) return;
+			// Derive URI from React props attached to relevant elements
+			const reactProps = getReactProps(actionsCell) || getReactProps(rowEl) || getReactProps(entryPoint) || getReactProps(node);
+			const uri = findVal(reactProps || {}, "uri");
 
-					const queueButtonWrapper = document.createElement("div");
-					queueButtonWrapper.className = "queueControl-wrapper";
-					queueButtonWrapper.style.display = "contents";
-					queueButtonWrapper.style.marginRight = 0;
+			// Decide insertion target
+			let insertionParent = actionsCell;
+			let referenceNode = entryPoint;
 
-					const queueButtonElement = insertionParent.insertBefore(queueButtonWrapper, referenceNode);
-					Spicetify.ReactDOM.render(
-						Spicetify.React.createElement(QueueButton, {
-							uri,
-							classList: entryPoint.classList,
-							leftSide: placeLeftSide
-						}),
-						queueButtonElement
-					);
-					}
+			if (placeLeftSide) {
+				const startCell = rowEl.querySelector('.main-trackList-rowSectionStart[role="gridcell"]');
+				const coverImg = startCell?.querySelector(':scope img');
+				// Avoid duplicate injection in the left cell
+				if (startCell && !startCell.querySelector(':scope > .queueControl-wrapper')) {
+					insertionParent = startCell;
+					// If a cover image exists, insert before it. Otherwise insert at the start cell's beginning (some views like albums don't have them)
+					referenceNode = coverImg || startCell.firstElementChild;
 				}
-			});
+			}
+
+			// Avoid duplicate injection in the right cell as well
+			if (insertionParent.querySelector(':scope > .queueControl-wrapper')) return;
+
+			const queueButtonWrapper = document.createElement("div");
+			queueButtonWrapper.className = "queueControl-wrapper";
+			queueButtonWrapper.style.display = "contents";
+			queueButtonWrapper.style.marginRight = 0;
+
+			const queueButtonElement = insertionParent.insertBefore(queueButtonWrapper, referenceNode);
+			Spicetify.ReactDOM.render(
+				Spicetify.React.createElement(QueueButton, {
+					uri,
+					classList: entryPoint.classList,
+					leftSide: placeLeftSide
+				}),
+				queueButtonElement
+			);
+		});
 		});
 	});
 
