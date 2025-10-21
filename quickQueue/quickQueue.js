@@ -216,11 +216,37 @@
 				|| actionsCell.querySelector(':scope > button');
 			if (!entryPoint) return;
 
-			// Derive URI from React props attached to relevant elements
-			const reactProps = getReactProps(actionsCell) || getReactProps(rowEl) || getReactProps(entryPoint) || getReactProps(node);
-			const uri = findVal(reactProps || {}, "uri");
+			// Derive URI from React props
+			const rowReactProps = getReactProps(rowEl);
+			let uri;
+			
+			// Working path for Spotify 1.2.74.477
+			try {
+				if (rowReactProps?.children?.ref?.current) {
+					const refCurrent = rowReactProps.children.ref.current;
+					const fiberKey = Object.keys(refCurrent).find(k => k.startsWith("__reactFiber$"));
+					if (fiberKey) {
+						const targetUri = refCurrent[fiberKey]?.return?.return?.return?.pendingProps?.uri;
+						if (targetUri?.startsWith?.("spotify:")) {
+							uri = targetUri;
+						}
+					}
+				}
+			} catch (_) {
+				console.error("Quick Queue: Failed to get URI from React props", rowReactProps);
+			}
+			
+			// Fallback
+			if (!uri) {
+				uri = findVal(rowReactProps || {}, "uri");
+			}
+			
+			if (!uri) {
+				console.error("Quick Queue: Failed to find URI", rowReactProps);
+				return;
+			}
 
-			// Decide insertion target
+		    // Decide insertion target
 			let insertionParent = actionsCell;
 			let referenceNode = entryPoint;
 
