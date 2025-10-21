@@ -26,4 +26,4 @@ _This button lets you add and remove from queue in one click_
 - **Spotify**
   - `1.2.50.335` (earlier versions may work, but not guaranteed)
   - `1.2.63.394`
-  - `1.2.74.477` (last known working version) or later 
+  - `1.2.74.477` (last known working version) or later
