@@ -1,6 +1,7 @@
 ## Information
 
-### 🛠️ Recommended Versions
+### 🛠️ Minimum Recommended Versions
+*Repo was going to be archived long ago, but (naturally or due to contribution) some extensions are supported past these listed versions, but i have stopped personal development on the date of the releases below:*
 
 | Software | Version | Link |
 | :--- | :--- | :--- |
