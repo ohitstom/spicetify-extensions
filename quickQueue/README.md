@@ -1,7 +1,7 @@
 # quickQueue.js
 
 ![Example](example.png)
-_This script adds a button next to the heart button on tracklist rows_
+_This script adds a button next to the heart button or alternatively on the left on tracklist rows_
 _This button lets you add and remove from queue in one click_
 
 ### Installation
@@ -15,8 +15,11 @@ _This button lets you add and remove from queue in one click_
 
 - Hover over tracklist row and click add/remove from queue
 - Hold the shift key, or right click to play next in queue
+- Use the option in the menu to change the position of the button
 
-### Compatibility
+![Settings](https://github.com/user-attachments/assets/d272efc4-b78c-4005-98e1-7cd2bbb5a55e)
 
-Relies on a lot of Spicetify wrapper functions and platform apis, could very easily break.
-Also relies on css maps, and reactprop trees staying the same.
+
+**Note**: This extension relies on Spicetify wrapper functions, platform APIs, CSS maps, and React prop trees. Breaking changes in future Spotify or Spicetify updates may affect functionality. For best results, use the recommended tested versions
+
+- **Spotify**: `1.2.63.394` (earlier versions may work, but not guaranteed) to latest (last known working version is `1.2.74.477`)
