@@ -1,6 +1,6 @@
 ## Information
 
-### 🛠️ Minimum Recommended Versions
+### 🛠️ Recommended Versions ⚠️
 *Repo was going to be archived long ago, but (naturally or due to contribution) some extensions are supported past these listed versions, but i have stopped personal development on the date of the releases below:*
 
 | Software | Version | Link |
@@ -8,7 +8,7 @@
 | **Spicetify** | `v2.38.5` | [View Releases](https://github.com/spicetify/spicetify-cli/releases) |
 | **Spotify** | `1.2.51` | [Check Compatibility](https://docs.google.com/spreadsheets/d/1wztO1L4zvNykBRw7X4jxP8pvo11oQjT0O5DvZ_-S4Ok/edit#gid=803394557&range=D2) |
 
-Please check out the readme for each extension in its folder, it will include installation instructions, usage, and compatibility notes.
+Please check out the readme for each extension in its folder, it will include installation instructions, usage, *supported versions, and compatibility notes.
 
 [![](https://data.jsdelivr.com/v1/package/gh/ohitstom/spicetify-extensions/badge)](https://www.jsdelivr.com/package/gh/ohitstom/spicetify-extensions)
 ## [spotifyBackup](spotifyBackup/README.md)
