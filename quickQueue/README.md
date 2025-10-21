@@ -19,7 +19,10 @@ _This button lets you add and remove from queue in one click_
 
 ![Settings](https://github.com/user-attachments/assets/d272efc4-b78c-4005-98e1-7cd2bbb5a55e)
 
+### Compatibility
 
 **Note**: This extension relies on Spicetify wrapper functions, platform APIs, CSS maps, and React prop trees. Breaking changes in future Spotify or Spicetify updates may affect functionality. For best results, use the recommended tested versions
 
-- **Spotify**: `1.2.63.394` (earlier versions may work, but not guaranteed) to latest (last known working version is `1.2.74.477`)
+- **Spotify**:
+  - `1.2.63.394` (earlier versions may work, but not guaranteed) 
+  - or latest (last known working version is `1.2.74.477`)
