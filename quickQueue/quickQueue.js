@@ -189,6 +189,12 @@
 					if (entryPoint) {
 						const reactPropsKey = Object.keys(node).find(key => key.startsWith("__reactProps$"));
 						const rowReactProps = node[reactPropsKey];
+
+						if (!rowReactProps) {
+							console.error("Quick Queue: Failed to find React props", node);
+							return;
+						}
+
 						let uri;
 						
 						// Working path for Spotify 1.2.74.477
@@ -209,7 +215,7 @@
 						
 						// Fallback
 						if (!uri) {
-							uri = findVal(rowReactProps || {}, "uri");
+							uri = findVal(rowReactProps, "uri");
 						}
 						
 						if (!uri) {
