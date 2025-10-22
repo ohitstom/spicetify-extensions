@@ -20,7 +20,28 @@
 		return;
 	}
 
-	const QueueButton = Spicetify.React.memo(({ uri, classList }) => {
+	// Settings
+	const STORAGE_KEY_PLACE_LEFT = "quickQueue.placeLeftSide";
+	let placeLeftSide = Spicetify.LocalStorage.get(STORAGE_KEY_PLACE_LEFT) === "1";
+
+	try {
+		if (Spicetify.Menu?.Item) {
+			new Spicetify.Menu.Item(
+				"Quick Queue: Button on the left",
+				placeLeftSide,
+				self => {
+					placeLeftSide = !placeLeftSide;
+					self.setState(placeLeftSide);
+					Spicetify.LocalStorage.set(STORAGE_KEY_PLACE_LEFT, placeLeftSide ? "1" : "0");
+					Spicetify.showNotification(`Quick Queue placement is now ${placeLeftSide ? "on the left" : "in the right column"}`);
+				}
+			).register();
+		}
+	} catch (error) {
+		// no-op: menu might not be available in all environments
+	}
+
+	const QueueButton = Spicetify.React.memo(({ uri, classList, leftSide }) => {
 		const [isQueued, setIsQueued] = Spicetify.React.useState(Spicetify.Platform.PlayerAPI._queue._queueState.queued.some(item => item.uri === uri));
 		const [tippyInstance, setTippyInstance] = Spicetify.React.useState(null);
 		const [isShiftPressed, setIsShiftPressed] = Spicetify.React.useState(false);
@@ -167,18 +188,73 @@
 
 					if (entryPoint) {
 						const reactPropsKey = Object.keys(node).find(key => key.startsWith("__reactProps$"));
-						const uri = findVal(node[reactPropsKey], "uri");
+						const rowReactProps = node[reactPropsKey];
+
+						if (!rowReactProps) {
+							console.error("Quick Queue: Failed to find React props", node);
+							return;
+						}
+
+						let uri;
+						
+						// Working path for Spotify 1.2.74.477
+						try {
+							if (rowReactProps?.children?.ref?.current) {
+								const refCurrent = rowReactProps.children.ref.current;
+								const fiberKey = Object.keys(refCurrent).find(k => k.startsWith("__reactFiber$"));
+								if (fiberKey) {
+									const targetUri = refCurrent[fiberKey]?.return?.return?.return?.pendingProps?.uri;
+									if (targetUri?.startsWith?.("spotify:")) {
+										uri = targetUri;
+									}
+								}
+							}
+						} catch (_) {
+							console.error("Quick Queue: Failed to get URI from React props", rowReactProps);
+						}
+						
+						// Fallback
+						if (!uri) {
+							uri = findVal(rowReactProps, "uri");
+						}
+						
+						if (!uri) {
+							console.error("Quick Queue: Failed to find URI", rowReactProps);
+							return;
+						}
+
+						// Decide insertion target
+						let insertionParent = nodeMatch;
+						let referenceNode = entryPoint;
+
+						if (placeLeftSide) {
+							const rowGrid = nodeMatch.parentElement;
+							const startCell = rowGrid?.querySelector(':scope > .main-trackList-rowSectionStart[role="gridcell"]');
+							const coverImg = startCell?.querySelector(':scope img');
+							if (startCell) {
+								// Avoid duplicate injection in the left cell
+								if (!startCell.querySelector(':scope > .queueControl-wrapper')) {
+									insertionParent = startCell;
+									// If a cover image exists, insert before it. Otherwise insert at the start cell's beginning (some views like albums don't have them)
+									referenceNode = coverImg || startCell.firstElementChild;
+								}
+							}
+						}
+
+						// Avoid duplicate injection in the right cell as well
+						if (insertionParent.querySelector(':scope > .queueControl-wrapper')) return;
 
 						const queueButtonWrapper = document.createElement("div");
 						queueButtonWrapper.className = "queueControl-wrapper";
 						queueButtonWrapper.style.display = "contents";
 						queueButtonWrapper.style.marginRight = 0;
 
-						const queueButtonElement = nodeMatch.insertBefore(queueButtonWrapper, entryPoint);
+						const queueButtonElement = insertionParent.insertBefore(queueButtonWrapper, referenceNode);
 						Spicetify.ReactDOM.render(
 							Spicetify.React.createElement(QueueButton, {
 								uri,
-								classList: entryPoint.classList
+								classList: entryPoint.classList,
+								leftSide: placeLeftSide
 							}),
 							queueButtonElement
 						);
