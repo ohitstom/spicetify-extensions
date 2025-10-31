@@ -249,7 +249,15 @@
 						queueButtonWrapper.style.display = "contents";
 						queueButtonWrapper.style.marginRight = 0;
 
-						const queueButtonElement = insertionParent.insertBefore(queueButtonWrapper, referenceNode);
+						// Safely insert: only use insertBefore if the reference node belongs to the same parent
+						let queueButtonElement;
+						if (referenceNode && referenceNode.parentNode === insertionParent) {
+							queueButtonElement = insertionParent.insertBefore(queueButtonWrapper, referenceNode);
+						} else if (insertionParent.firstChild) {
+							queueButtonElement = insertionParent.insertBefore(queueButtonWrapper, insertionParent.firstChild);
+						} else {
+							queueButtonElement = insertionParent.appendChild(queueButtonWrapper);
+						}
 						Spicetify.ReactDOM.render(
 							Spicetify.React.createElement(QueueButton, {
 								uri,
