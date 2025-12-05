@@ -57,7 +57,7 @@
 				const response = await fetch(`https://api.github.com/gists/${getConfig("gistId")}`, {
 					method: "PATCH",
 					headers: {
-						Authorization: `token ${getConfig("gistToken")}`,
+						Authorization: `Bearer ${getConfig("gistToken")}`,
 						"Content-Type": "application/json"
 					},
 					body: JSON.stringify({
@@ -109,7 +109,7 @@
 			try {
 				const response = await fetch(`https://api.github.com/gists/${getConfig("gistId")}`, {
 					headers: {
-						Authorization: `token ${getConfig("gistToken")}`
+						Authorization: `Bearer ${getConfig("gistToken")}`
 					}
 				});
 
