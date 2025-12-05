@@ -45,7 +45,7 @@
 	function sanitizeBackupData() {
 		const data = {};
 		for (let key in localStorage) {
-			if (localStorage.hasOwnProperty(key)) {
+			if (Object.prototype.hasOwnProperty.call(localStorage, key)) {
 				data[key] = localStorage[key];
 			}
 		}
@@ -160,19 +160,22 @@
 
 			localStorage.clear();
 			for (let key in parsedBackupData) {
-				if (parsedBackupData.hasOwnProperty(key)) {
+				if (Object.prototype.hasOwnProperty.call(parsedBackupData, key)) {
 					localStorage.setItem(key, parsedBackupData[key]);
 				}
 			}
 
 			// Restore GitHub token if it was removed during backup
-			if (currentGistToken && parsedBackupData["spotifyBackup:settings"]) {
+			if (currentGistToken) {
 				try {
-					const settings = JSON.parse(parsedBackupData["spotifyBackup:settings"]);
-					if (!settings.gistToken) {
-						settings.gistToken = currentGistToken;
-						if (currentGistId) settings.gistId = currentGistId;
-						localStorage.setItem("spotifyBackup:settings", JSON.stringify(settings));
+					const restoredSettings = localStorage.getItem("spotifyBackup:settings");
+					if (restoredSettings) {
+						const settings = JSON.parse(restoredSettings);
+						if (!settings.gistToken) {
+							settings.gistToken = currentGistToken;
+							if (currentGistId) settings.gistId = currentGistId;
+							localStorage.setItem("spotifyBackup:settings", JSON.stringify(settings));
+						}
 					}
 				} catch (error) {
 					console.error("Error restoring GitHub token:", error);
