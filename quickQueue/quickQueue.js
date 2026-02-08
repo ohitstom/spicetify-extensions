@@ -156,22 +156,27 @@
 		});
 	}
 
-	function findVal(object, key, max = 10) {
-		if (object[key] !== undefined || !max) {
-			return object[key];
-		}
+    function findUri(obj, seen = new WeakSet()) {
+        if (!obj || typeof obj !== "object" || seen.has(obj)) return undefined;
+        seen.add(obj);
 
-		for (const k in object) {
-			if (object[k] && typeof object[k] === "object") {
-				const value = findVal(object[k], key, --max);
-				if (value !== undefined) {
-					return value;
-				}
-			}
-		}
+        if (obj.uri?.startsWith("spotify:")) return obj.uri;
 
-		return undefined;
-	}
+        for (const key in obj) {
+            const val = obj[key];
+            if (Array.isArray(val)) {
+                for (const item of val) {
+                    const found = findUri(item, seen);
+                    if (found) return found;
+                }
+            } else if (typeof val === "object") {
+                const found = findUri(val, seen);
+                if (found) return found;
+            }
+        }
+        return undefined;
+    }
+
 
 	const observer = new MutationObserver(mutationList => {
 		mutationList.forEach(mutation => {
@@ -197,26 +202,7 @@
 
 						let uri;
 						
-						// Working path for Spotify 1.2.74.477
-						try {
-							if (rowReactProps?.children?.ref?.current) {
-								const refCurrent = rowReactProps.children.ref.current;
-								const fiberKey = Object.keys(refCurrent).find(k => k.startsWith("__reactFiber$"));
-								if (fiberKey) {
-									const targetUri = refCurrent[fiberKey]?.return?.return?.return?.pendingProps?.uri;
-									if (targetUri?.startsWith?.("spotify:")) {
-										uri = targetUri;
-									}
-								}
-							}
-						} catch (_) {
-							console.error("Quick Queue: Failed to get URI from React props", rowReactProps);
-						}
-						
-						// Fallback
-						if (!uri) {
-							uri = findVal(rowReactProps, "uri");
-						}
+						uri = findUri(rowReactProps);
 						
 						if (!uri) {
 							console.error("Quick Queue: Failed to find URI", rowReactProps);
