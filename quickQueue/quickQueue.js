@@ -1,19 +1,13 @@
-// NAME: Quick Queue
-// AUTHOR: OhItsTom
-// DESCRIPTION: Adds a button to the tracklist to add/remove a song from the queue.
+// NAME: Quick Queue (Refactored Vanilla DOM Edition)
+// AUTHOR: OhItsTom, Refactored for 1.2.86
+// DESCRIPTION: Adds a button to the tracklist to add/remove a song from the queue. Bypasses broken React hooks.
 
 (function quickQueue() {
 	if (
 		!(
-			Spicetify.React &&
-			Spicetify.ReactDOM &&
-			Spicetify.SVGIcons &&
-			Spicetify.showNotification &&
+			Spicetify.Platform &&
 			Spicetify.Platform.PlayerAPI &&
-			Spicetify.Tippy &&
-			Spicetify.TippyProps &&
-			Spicetify.Locale._dictionary &&
-			Spicetify.Mousetrap
+			Spicetify.showNotification
 		)
 	) {
 		setTimeout(quickQueue, 10);
@@ -37,116 +31,12 @@
 				}
 			).register();
 		}
-	} catch (error) {
-		// no-op: menu might not be available in all environments
-	}
+	} catch (error) {}
 
-	const QueueButton = Spicetify.React.memo(({ uri, classList, leftSide }) => {
-		const [isQueued, setIsQueued] = Spicetify.React.useState(Spicetify.Platform.PlayerAPI._queue._queueState.queued.some(item => item.uri === uri));
-		const [tippyInstance, setTippyInstance] = Spicetify.React.useState(null);
-		const [isShiftPressed, setIsShiftPressed] = Spicetify.React.useState(false);
-		const buttonRef = Spicetify.React.useRef(null);
-
-		// Functions
-		const updateQueueState = event => setIsQueued(event.data.queued.some(item => item.uri === uri));
-		const handleKeyDown = event => event.key === "Shift" && setIsShiftPressed(true);
-		const handleKeyUp = event => event.key === "Shift" && setIsShiftPressed(false);
-
-		const handleClick = async event => {
-			if (isQueued && event.type === "contextmenu") return;
-
-			if (!isQueued && (event.type === "contextmenu" || isShiftPressed)) {
-				event.preventDefault();
-				event.stopPropagation();
-				await addToNext(uri);
-				Spicetify.showNotification("Added to next in queue");
-			} else {
-				Spicetify.Platform.PlayerAPI[isQueued ? "removeFromQueue" : "addToQueue"]([{ uri }]);
-				Spicetify.showNotification(isQueued ? "Removed from queue" : Spicetify.Locale._dictionary["queue.added-to-queue"] || "Added to queue");
-			}
-		};
-
-		const getTooltipContent = () => {
-			return isQueued
-				? Spicetify.Locale._dictionary["contextmenu.remove-from-queue"] || "Remove from queue"
-				: isShiftPressed
-				? "Play next in queue"
-				: Spicetify.Locale._dictionary["contextmenu.add-to-queue"] || "Add to queue";
-		};
-
-		Spicetify.React.useEffect(() => {
-			Spicetify.Platform.PlayerAPI._queue._events.addListener("queue_update", updateQueueState);
-			document.addEventListener("keydown", handleKeyDown);
-			document.addEventListener("keyup", handleKeyUp);
-		}, []);
-
-		// Cleanup
-		Spicetify.React.useEffect(() => {
-			const intervalId = setInterval(function () {
-				if (!document.contains(buttonRef.current)) {
-					clearInterval(intervalId);
-					tippyInstance?.destroy();
-					document.removeEventListener("keydown", handleKeyDown);
-					document.removeEventListener("keyup", handleKeyUp);
-					Spicetify.Platform.PlayerAPI._queue._events.removeListener("queue_update", updateQueueState);
-				}
-			}, 1000);
-		}, []);
-
-		// Tooltip initialization and update
-		Spicetify.React.useEffect(() => {
-			if (buttonRef.current && !tippyInstance) {
-				const instance = Spicetify.Tippy(buttonRef.current, {
-					...Spicetify.TippyProps,
-					hideOnClick: true,
-					content: getTooltipContent()
-				});
-				setTippyInstance(instance);
-			} else if (tippyInstance) {
-				tippyInstance.setProps({ content: getTooltipContent() });
-			}
-		}, [isQueued, isShiftPressed, tippyInstance]);
-
-		// Render
-		return Spicetify.React.createElement(
-			"button",
-			{
-				ref: buttonRef,
-				className: classList,
-				"aria-checked": isQueued,
-				onClick: handleClick,
-				onContextMenu: handleClick,
-				style: {
-					marginRight: "12px",
-					opacity: isQueued ? "1" : undefined
-				}
-			},
-			Spicetify.React.createElement(
-				"span",
-				{ className: "Wrapper-sm-only Wrapper-small-only" },
-				Spicetify.React.createElement("svg", {
-					role: "img",
-					height: "16",
-					width: "16",
-					viewBox: "0 0 16 16",
-					className: isQueued ? "Svg-img-icon-small-textBrightAccent" : "Svg-img-icon-small",
-					style: {
-						fill: isQueued ? "var(--text-bright-accent)" : "var(--text-subdued)"
-					},
-					dangerouslySetInnerHTML: {
-						__html: isQueued
-							? `<path d="M5.25 3v-.917C5.25.933 6.183 0 7.333 0h1.334c1.15 0 2.083.933 2.083 2.083V3h4.75v1.5h-.972l-1.257 9.544A2.25 2.25 0 0 1 11.041 16H4.96a2.25 2.25 0 0 1-2.23-1.956L1.472 4.5H.5V3h4.75zm1.5-.917V3h2.5v-.917a.583.583 0 0 0-.583-.583H7.333a.583.583 0 0 0-.583.583zM2.986 4.5l1.23 9.348a.75.75 0 0 0 .744.652h6.08a.75.75 0 0 0 .744-.652L13.015 4.5H2.985z"></path>`
-							: `<path d="M16 15H2v-1.5h14V15zm0-4.5H2V9h14v1.5zm-8.034-6A5.484 5.484 0 0 1 7.187 6H13.5a2.5 2.5 0 0 0 0-5H7.966c.159.474.255.978.278 1.5H13.5a1 1 0 1 1 0 2H7.966zM2 2V0h1.5v2h2v1.5h-2v2H2v-2H0V2h2z"></path>`
-					}
-				})
-			)
-		);
-	});
-
-	// modified from github.com/daksh2k/Spicetify-stuff/blob/6edf2235f8b8ec514b27a10aca4607d38b2fbb87/Extensions/playNext.js#L131
+	// Helper to insert next in queue
 	async function addToNext(uri) {
 		const queue = await Spicetify.Platform.PlayerAPI.getQueue();
-		if (!queue.queued.length > 0) return await Spicetify.addToQueue([{ uri }]);
+		if (!queue.queued.length > 0) return await Spicetify.Platform.PlayerAPI.addToQueue([{ uri }]);
 
 		await Spicetify.Platform.PlayerAPI.insertIntoQueue([{ uri }], {
 			before: {
@@ -156,124 +46,139 @@
 		});
 	}
 
-	function findVal(object, key, max = 10) {
-		if (object[key] !== undefined || !max) {
-			return object[key];
+	// --- VANILLA DOM BUTTON GENERATOR ---
+	function createVanillaButton(uri, nativeClasses) {
+		const btn = document.createElement("button");
+		btn.className = nativeClasses;
+		btn.style.marginRight = "12px";
+
+		const span = document.createElement("span");
+		span.className = "Wrapper-sm-only Wrapper-small-only";
+
+		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		svg.setAttribute("role", "img");
+		svg.setAttribute("height", "16");
+		svg.setAttribute("width", "16");
+		svg.setAttribute("viewBox", "0 0 16 16");
+
+		// Visual State Manager
+		const updateVisuals = () => {
+			const isQueued = Spicetify.Platform.PlayerAPI._queue._queueState.queued.some(item => item.uri === uri);
+			
+			svg.setAttribute("class", isQueued ? "Svg-img-icon-small-textBrightAccent" : "Svg-img-icon-small");
+			svg.style.fill = isQueued ? "var(--text-bright-accent)" : "var(--text-subdued)";
+			btn.style.opacity = isQueued ? "1" : "";
+			btn.setAttribute("aria-checked", isQueued);
+
+			svg.innerHTML = isQueued
+				? `<path d="M5.25 3v-.917C5.25.933 6.183 0 7.333 0h1.334c1.15 0 2.083.933 2.083 2.083V3h4.75v1.5h-.972l-1.257 9.544A2.25 2.25 0 0 1 11.041 16H4.96a2.25 2.25 0 0 1-2.23-1.956L1.472 4.5H.5V3h4.75zm1.5-.917V3h2.5v-.917a.583.583 0 0 0-.583-.583H7.333a.583.583 0 0 0-.583.583zM2.986 4.5l1.23 9.348a.75.75 0 0 0 .744.652h6.08a.75.75 0 0 0 .744-.652L13.015 4.5H2.985z"></path>`
+				: `<path d="M16 15H2v-1.5h14V15zm0-4.5H2V9h14v1.5zm-8.034-6A5.484 5.484 0 0 1 7.187 6H13.5a2.5 2.5 0 0 0 0-5H7.966c.159.474.255.978.278 1.5H13.5a1 1 0 1 1 0 2H7.966zM2 2V0h1.5v2h2v1.5h-2v2H2v-2H0V2h2z"></path>`;
+		};
+
+		// Initial render
+		updateVisuals();
+
+		// Subscribe to Spotify Queue API to auto-update icon
+		const onQueueUpdate = () => updateVisuals();
+		Spicetify.Platform.PlayerAPI._queue._events.addListener("queue_update", onQueueUpdate);
+
+		// Native Event Listeners
+		btn.addEventListener("click", async (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+
+			const isQueued = Spicetify.Platform.PlayerAPI._queue._queueState.queued.some(item => item.uri === uri);
+
+			if (e.shiftKey && !isQueued) {
+				await addToNext(uri);
+				Spicetify.showNotification("Added to next in queue");
+			} else {
+				if (isQueued) {
+					Spicetify.Platform.PlayerAPI.removeFromQueue([{ uri }]);
+					Spicetify.showNotification("Removed from queue");
+				} else {
+					Spicetify.Platform.PlayerAPI.addToQueue([{ uri }]);
+					Spicetify.showNotification("Added to queue");
+				}
+			}
+		});
+
+		// Tippy Tooltip Fallback
+		if (Spicetify.Tippy) {
+			Spicetify.Tippy(btn, {
+				...Spicetify.TippyProps,
+				content: () => {
+					 const isQ = Spicetify.Platform.PlayerAPI._queue._queueState.queued.some(item => item.uri === uri);
+					 return isQ ? "Remove from queue" : "Add to queue";
+				}
+			});
 		}
 
-		for (const k in object) {
-			if (object[k] && typeof object[k] === "object") {
-				const value = findVal(object[k], key, --max);
-				if (value !== undefined) {
-					return value;
-				}
+		span.appendChild(svg);
+		btn.appendChild(span);
+		return btn;
+	}
+
+	// --- CORE INJECTION LOGIC ---
+	function injectQueueButton(row) {
+		if (row.nodeType !== 1 || row.classList.contains('main-yourLibraryX-listItem') || row.children.length === 0) return;
+
+		let moreButton = row.querySelector('[data-testid="more-button"]');
+		
+		// If 'More' button is culled by hover state, anchor to the explicit track actions container
+		const actionContainer = moreButton ? moreButton.parentElement : row.querySelector('.main-trackList-rowSectionEnd');
+		if (!actionContainer || actionContainer.querySelector('.queueControl-wrapper')) return;
+
+		// Extract URI using the mapped 1.2.86 Fiber Path
+		let uri = undefined;
+		const reactPropsKey = Object.keys(row).find(key => key.startsWith("__reactProps$"));
+		if (reactPropsKey && row[reactPropsKey]) {
+			uri = row[reactPropsKey]?.children?.props?.children?.props?.children?.props?.value?.item?.uri;
+		}
+
+		if (!uri || !uri.includes("spotify:track:")) return;
+
+		let insertionParent = actionContainer;
+		let referenceNode = moreButton;
+
+		if (placeLeftSide) {
+			const startCell = row.querySelector('.main-trackList-rowSectionStart[role="gridcell"]');
+			if (startCell) {
+				if (startCell.querySelector('.queueControl-wrapper')) return; 
+				insertionParent = startCell;
+				referenceNode = startCell.querySelector('img') || startCell.firstElementChild;
 			}
 		}
 
-		return undefined;
+		// Build and inject custom UI wrapper
+		const queueButtonWrapper = document.createElement("div");
+		queueButtonWrapper.className = "queueControl-wrapper";
+		queueButtonWrapper.style.display = "contents";
+
+		insertionParent.insertBefore(queueButtonWrapper, referenceNode);
+
+		// GENERATE AND APPEND VANILLA BUTTON (Stealing native button CSS from hardcoded classes to bypass missing hover state)
+		const nativeClassString = "e-10180-legacy-button e-10180-legacy-button-tertiary e-10180-overflow-wrap-anywhere e-10180-button-tertiary--icon-only-small e-10180-button-tertiary--icon-only e-10180-button-tertiary--condensed e-10180-button-tertiary--text-subdued encore-internal-color-text-subdued";
+		const nativeBtn = createVanillaButton(uri, moreButton ? moreButton.classList.value : nativeClassString);
+		queueButtonWrapper.appendChild(nativeBtn);
 	}
 
+	// 1. INITIALIZATION: Sweep the DOM
+	document.querySelectorAll('[role="row"]').forEach(injectQueueButton);
+
+	// 2. OBSERVER: Watch for virtual DOM mutations
 	const observer = new MutationObserver(mutationList => {
-		mutationList.forEach(mutation => {
-			mutation.addedNodes.forEach(node => {
-				const nodeMatch =
-					node.attributes?.role?.value === "row"
-						? node.firstChild?.lastChild
-						: node.firstChild?.attributes?.role?.value === "row"
-						? node.firstChild?.firstChild.lastChild
-						: null;
-
-				if (nodeMatch) {
-					const entryPoint = nodeMatch.querySelector(":scope > button:not(:last-child):has([data-encore-id])");
-
-					if (entryPoint) {
-						const reactPropsKey = Object.keys(node).find(key => key.startsWith("__reactProps$"));
-						const rowReactProps = node[reactPropsKey];
-
-						if (!rowReactProps) {
-							console.error("Quick Queue: Failed to find React props", node);
-							return;
-						}
-
-						let uri;
-						
-						// Working path for Spotify 1.2.74.477
-						try {
-							if (rowReactProps?.children?.ref?.current) {
-								const refCurrent = rowReactProps.children.ref.current;
-								const fiberKey = Object.keys(refCurrent).find(k => k.startsWith("__reactFiber$"));
-								if (fiberKey) {
-									const targetUri = refCurrent[fiberKey]?.return?.return?.return?.pendingProps?.uri;
-									if (targetUri?.startsWith?.("spotify:")) {
-										uri = targetUri;
-									}
-								}
-							}
-						} catch (_) {
-							console.error("Quick Queue: Failed to get URI from React props", rowReactProps);
-						}
-						
-						// Fallback
-						if (!uri) {
-							uri = findVal(rowReactProps, "uri");
-						}
-						
-						if (!uri) {
-							console.error("Quick Queue: Failed to find URI", rowReactProps);
-							return;
-						}
-
-						// Decide insertion target
-						let insertionParent = nodeMatch;
-						let referenceNode = entryPoint;
-
-						if (placeLeftSide) {
-							const rowGrid = nodeMatch.parentElement;
-							const startCell = rowGrid?.querySelector(':scope > .main-trackList-rowSectionStart[role="gridcell"]');
-							const coverImg = startCell?.querySelector(':scope img');
-							if (startCell) {
-								// Avoid duplicate injection in the left cell
-								if (!startCell.querySelector(':scope > .queueControl-wrapper')) {
-									insertionParent = startCell;
-									// If a cover image exists, insert before it. Otherwise insert at the start cell's beginning (some views like albums don't have them)
-									referenceNode = coverImg || startCell.firstElementChild;
-								}
-							}
-						}
-
-						// Avoid duplicate injection in the right cell as well
-						if (insertionParent.querySelector(':scope > .queueControl-wrapper')) return;
-
-						const queueButtonWrapper = document.createElement("div");
-						queueButtonWrapper.className = "queueControl-wrapper";
-						queueButtonWrapper.style.display = "contents";
-						queueButtonWrapper.style.marginRight = 0;
-
-						// Safely insert: only use insertBefore if the reference node belongs to the same parent
-						let queueButtonElement;
-						if (referenceNode && referenceNode.parentNode === insertionParent) {
-							queueButtonElement = insertionParent.insertBefore(queueButtonWrapper, referenceNode);
-						} else if (insertionParent.firstChild) {
-							queueButtonElement = insertionParent.insertBefore(queueButtonWrapper, insertionParent.firstChild);
-						} else {
-							queueButtonElement = insertionParent.appendChild(queueButtonWrapper);
-						}
-						Spicetify.ReactDOM.render(
-							Spicetify.React.createElement(QueueButton, {
-								uri,
-								classList: entryPoint.classList,
-								leftSide: placeLeftSide
-							}),
-							queueButtonElement
-						);
-					}
+		for (const mutation of mutationList) {
+			for (const node of mutation.addedNodes) {
+				if (node.nodeType !== 1) continue;
+				if (node.getAttribute("role") === "row") {
+					injectQueueButton(node);
+				} else {
+					node.querySelectorAll('[role="row"]').forEach(injectQueueButton);
 				}
-			});
-		});
+			}
+		}
 	});
 
-	observer.observe(document, {
-		subtree: true,
-		childList: true
-	});
+	observer.observe(document, { subtree: true, childList: true });
 })();
