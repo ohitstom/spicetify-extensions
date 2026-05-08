@@ -49,8 +49,8 @@
 			border-bottom: 1px solid rgba(var(--spice-rgb-selected-row),0.2);
 		}
 
-		.Root__right-sidebar aside:has(.main-nowPlayingView-headerContainer) .main-nowPlayingView-mainWrapper {
-			padding-top: 64px;
+		.Root__right-sidebar aside:has(.main-nowPlayingView-headerContainer) .main-nowPlayingView-mainContainer {
+		    padding-top: 64px;
 		}
 		/*  */
 
