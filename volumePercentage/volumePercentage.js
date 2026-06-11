@@ -3,8 +3,25 @@
 // DESCRIPTION: View/Modify volume percentage in a hoverable Tippy.
 
 (function volumePercentage() {
-	const volumeBar = document.querySelector(".main-nowPlayingBar-volumeBar .progress-bar");
-	const volumeSlider = document.querySelector(".main-nowPlayingBar-volumeBar .progress-bar__slider");
+	const volumeBarSelectors = [
+		".main-nowPlayingBar-volumeBar .progress-bar",
+		".main-nowPlayingBar-volumeBar .x-progressBar-progressBarBg",
+	]
+	const volumeSliderSelectors = [
+		".main-nowPlayingBar-volumeBar .progress-bar__slider",
+	]
+
+	// Attempt queries on a list of possible selectors
+	const getFirstElement = (selectors) => {
+    	for (const selector of selectors) {
+        	const element = document.querySelector(selector);
+        	if (element) return element;
+    	}
+    	return null;
+	};
+
+	const volumeBar = getFirstElement(volumeBarSelectors);
+	const volumeSlider = getFirstElement(volumeSliderSelectors);
 
 	if (!(volumeBar && volumeSlider && Spicetify.Platform.PlaybackAPI && Spicetify.Tippy && Spicetify.TippyProps)) {
 		setTimeout(volumePercentage, 10);

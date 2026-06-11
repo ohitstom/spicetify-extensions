@@ -32,22 +32,69 @@
 			filter: blur(40px) contrast(2);
 		}
 
-		.Root__right-sidebar aside .ZbDMGdU4aBOnrNLowNRq, .Root__right-sidebar aside .W3E0IT3_STcazjTeyOJa {
+		/* compatibility: since spotify 1.2.87; spicetify v2.42.2 */
+		.Root__right-sidebar aside .main-nowPlayingView-headerContainer {
 			position: absolute;
 			width: 100%;
 			z-index: 1;
 			background: transparent;
 			transition: background-color 0.25s, backdrop-filter 0.5s, opacity 0.4s ease-out;
 		}
-		.Root__right-sidebar aside .fAte2d0xETy7pnDUAgHY, .Root__right-sidebar aside .mdMUqcSHFw1lZIcYEblu {
+
+		.Root__right-sidebar aside .main-nowPlayingView-headerContainer.BEeVmHj340c0PYHe {
+			height: 63px;
 			background-color: rgba(var(--spice-rgb-main), 0.2) !important;
-			backdrop-filter: blur(24px) saturate(140%);
+			backdrop-filter: blur(24px) saturate(140%) brightness(0.6);
 			border-bottom: 1px solid rgba(var(--spice-rgb-selected-row),0.2);
 		}
 
-		.Root__right-sidebar aside:has(.ZbDMGdU4aBOnrNLowNRq) .main-buddyFeed-scrollBarContainer:not(:has(.main-buddyFeed-content > .main-buddyFeed-header)), .Root__right-sidebar aside:has(.W3E0IT3_STcazjTeyOJa) .cZCuJDjrGA2QMXja_Sua:not(:has(.AAdBM1nhG73supMfnYX7 > .fNXmHtlrj4UVWmhQrJ_5)) {
+		.Root__right-sidebar aside:has(.main-nowPlayingView-headerContainer) .main-nowPlayingView-mainContainer {
+		    padding-top: 64px;
+		}
+		/*  */
+
+		/* compatibility: spotify<1.2.87; spicetify<v2.43.2 ("<", not "=<") */
+		.Root__right-sidebar aside .xjf0Pj3YnoegOkJUpaPS {
+			position: absolute;
+			width: 100%;
+			z-index: 1;
+			background: transparent;
+			transition: background-color 0.25s, backdrop-filter 0.5s, opacity 0.4s ease-out;
+		}
+
+		.Root__right-sidebar aside .xjf0Pj3YnoegOkJUpaPS.EnViFhuIR5WVeEopJHu3 {
+			height: 63px;
+			background-color: rgba(var(--spice-rgb-main), 0.2) !important;
+			backdrop-filter: blur(24px) saturate(140%) brightness(0.6);
+			border-bottom: 1px solid rgba(var(--spice-rgb-selected-row),0.2);
+		}
+
+		.Root__right-sidebar aside:has(.xjf0Pj3YnoegOkJUpaPS) .wfJD_yK4h7xnpTmrh62U {
 			padding-top: 64px;
 		}
+		/*  */
+
+		/* compatibility: spotify=1.2.51; spicetify v2.38.5 */
+		.Root__right-sidebar aside .W3E0IT3_STcazjTeyOJa, .Root__right-sidebar aside .ZbDMGdU4aBOnrNLowNRq {
+			position: absolute;
+			width: 100%;
+			z-index: 1;
+			background: transparent;
+			transition: background-color 0.25s, backdrop-filter 0.5s, opacity 0.4s ease-out;
+		}
+
+		.Root__right-sidebar aside .W3E0IT3_STcazjTeyOJa.mdMUqcSHFw1lZIcYEblu, .Root__right-sidebar aside .ZbDMGdU4aBOnrNLowNRq.fAte2d0xETy7pnDUAgHY {
+			height: 63px;
+			background-color: rgba(var(--spice-rgb-main), 0.2) !important;
+			backdrop-filter: blur(24px) saturate(140%) brightness(0.6);
+			border-bottom: 1px solid rgba(var(--spice-rgb-selected-row),0.2);
+		}
+
+		.Root__right-sidebar aside:has(.W3E0IT3_STcazjTeyOJa) .zduvaX0Ioxqd5ypeWoAf, .Root__right-sidebar aside:has(.ZbDMGdU4aBOnrNLowNRq) .main-buddyFeed-scrollBarContainer:not(:has(.main-buddyFeed-content > .main-buddyFeed-header)) {
+			padding-top: 64px;
+		}
+		/*  */
+
 
 		.Root__right-sidebar aside {
 			--background-base: var(--spice-main) !important;
