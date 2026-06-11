@@ -32,6 +32,29 @@
 			filter: blur(40px) contrast(2);
 		}
 
+
+		/* compatibility: since spotify 1.2.87; spicetify v2.42.2 */
+		.Root__right-sidebar aside .main-nowPlayingView-headerContainer {
+			position: absolute;
+			width: 100%;
+			z-index: 1;
+			background: transparent;
+			transition: background-color 0.25s, backdrop-filter 0.5s, opacity 0.4s ease-out;
+		}
+
+		.Root__right-sidebar aside .main-nowPlayingView-headerContainer.BEeVmHj340c0PYHe {
+			height: 63px;
+			background-color: rgba(var(--spice-rgb-main), 0.2) !important;
+			backdrop-filter: blur(24px) saturate(140%) brightness(0.6);
+			border-bottom: 1px solid rgba(var(--spice-rgb-selected-row),0.2);
+		}
+
+		.Root__right-sidebar aside:has(.main-nowPlayingView-headerContainer) .main-nowPlayingView-mainContainer {
+		    padding-top: 64px;
+		}
+		/*  */
+
+		/* compatibility: spotify<1.2.87; spicetify<v2.43.2 ("<", not "=<") */
 		.Root__right-sidebar aside .xjf0Pj3YnoegOkJUpaPS {
 			position: absolute;
 			width: 100%;
@@ -50,7 +73,7 @@
 		.Root__right-sidebar aside:has(.xjf0Pj3YnoegOkJUpaPS) .wfJD_yK4h7xnpTmrh62U {
 			padding-top: 64px;
 		}
-		
+		/*  */
 
 		/* compatibility: spotify=1.2.51; spicetify v2.38.5 */
 		.Root__right-sidebar aside .W3E0IT3_STcazjTeyOJa {
