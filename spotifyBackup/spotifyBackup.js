@@ -156,7 +156,6 @@
 		try {
 			// Preserve current GitHub token before clearing
 			const currentGistToken = getConfig("gistToken");
-			const currentGistId = getConfig("gistId");
 
 			localStorage.clear();
 			for (let key in parsedBackupData) {
@@ -173,7 +172,6 @@
 						const settings = JSON.parse(restoredSettings);
 						if (!settings.gistToken) {
 							settings.gistToken = currentGistToken;
-							if (currentGistId) settings.gistId = currentGistId;
 							localStorage.setItem("spotifyBackup:settings", JSON.stringify(settings));
 						}
 					}

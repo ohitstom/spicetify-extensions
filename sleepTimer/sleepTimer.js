@@ -215,7 +215,7 @@
 	function waitForWidgetMounted() {
 		// Try multiple selectors for compatibility with different Spotify versions
 		nowPlayingWidget = document.querySelector(".main-nowPlayingWidget-nowPlaying") || document.querySelector(".main-nowPlayingBar-left");
-		entryPoint = nowPlayingWidget && (nowPlayingWidget.querySelector("button:last-child") || nowPlayingWidget.querySelector("a:last-child"));
+		entryPoint = nowPlayingWidget && (nowPlayingWidget.querySelector(":scope > button:last-child") || nowPlayingWidget.querySelector(":scope > a:last-child"));
 		
 		if (!(nowPlayingWidget && entryPoint)) {
 			setTimeout(waitForWidgetMounted, 300);
