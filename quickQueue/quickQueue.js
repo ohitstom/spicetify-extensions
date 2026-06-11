@@ -156,14 +156,14 @@
 		});
 	}
 
-	function findVal(object, key, max = 10) {
+	function findVal(object, key, max = 15) {
 		if (object[key] !== undefined || !max) {
 			return object[key];
 		}
 
 		for (const k in object) {
 			if (object[k] && typeof object[k] === "object") {
-				const value = findVal(object[k], key, --max);
+				const value = findVal(object[k], key, max - 1);
 				if (value !== undefined) {
 					return value;
 				}
@@ -207,6 +207,19 @@
 									if (targetUri?.startsWith?.("spotify:")) {
 										uri = targetUri;
 									}
+								}
+							}
+							
+							// Fallback for newer Spotify versions (walk up the fiber from the row node)
+							if (!uri) {
+								const fiberKey = Object.keys(node).find(k => k.startsWith("__reactFiber$"));
+								let fiber = node[fiberKey];
+								while (fiber && !uri) {
+									const targetUri = fiber.pendingProps?.uri;
+									if (typeof targetUri === "string" && targetUri.startsWith("spotify:")) {
+										uri = targetUri;
+									}
+									fiber = fiber.return;
 								}
 							}
 						} catch (_) {
