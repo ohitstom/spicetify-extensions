@@ -163,7 +163,8 @@
 						overflowWrap: "normal",
 						padding: "0",
 						paddingInline: "8px",
-						fontWeight: "500"
+						fontWeight: "500",
+						backgroundColor: "transparent"
 					}
 				},
 				time !== false && formatTime(time)

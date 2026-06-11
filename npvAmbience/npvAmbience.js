@@ -32,7 +32,6 @@
 			filter: blur(40px) contrast(2);
 		}
 
-
 		/* compatibility: since spotify 1.2.87; spicetify v2.42.2 */
 		.Root__right-sidebar aside .main-nowPlayingView-headerContainer {
 			position: absolute;
@@ -76,7 +75,7 @@
 		/*  */
 
 		/* compatibility: spotify=1.2.51; spicetify v2.38.5 */
-		.Root__right-sidebar aside .W3E0IT3_STcazjTeyOJa {
+		.Root__right-sidebar aside .W3E0IT3_STcazjTeyOJa, .Root__right-sidebar aside .ZbDMGdU4aBOnrNLowNRq {
 			position: absolute;
 			width: 100%;
 			z-index: 1;
@@ -84,20 +83,20 @@
 			transition: background-color 0.25s, backdrop-filter 0.5s, opacity 0.4s ease-out;
 		}
 
-		.Root__right-sidebar aside .W3E0IT3_STcazjTeyOJa.mdMUqcSHFw1lZIcYEblu {
+		.Root__right-sidebar aside .W3E0IT3_STcazjTeyOJa.mdMUqcSHFw1lZIcYEblu, .Root__right-sidebar aside .ZbDMGdU4aBOnrNLowNRq.fAte2d0xETy7pnDUAgHY {
 			height: 63px;
 			background-color: rgba(var(--spice-rgb-main), 0.2) !important;
 			backdrop-filter: blur(24px) saturate(140%) brightness(0.6);
 			border-bottom: 1px solid rgba(var(--spice-rgb-selected-row),0.2);
 		}
 
-		.Root__right-sidebar aside:has(.W3E0IT3_STcazjTeyOJa) .zduvaX0Ioxqd5ypeWoAf {
+		.Root__right-sidebar aside:has(.W3E0IT3_STcazjTeyOJa) .zduvaX0Ioxqd5ypeWoAf, .Root__right-sidebar aside:has(.ZbDMGdU4aBOnrNLowNRq) .main-buddyFeed-scrollBarContainer:not(:has(.main-buddyFeed-content > .main-buddyFeed-header)) {
 			padding-top: 64px;
 		}
 		/*  */
 
 
-		. Root__right-sidebar aside {
+		.Root__right-sidebar aside {
 			--background-base: var(--spice-main) !important;
 		}
 

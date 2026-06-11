@@ -42,6 +42,27 @@
 	}
 
 	// Backup / Restore functions
+	function sanitizeBackupData() {
+		const data = {};
+		for (let key in localStorage) {
+			if (Object.prototype.hasOwnProperty.call(localStorage, key)) {
+				data[key] = localStorage[key];
+			}
+		}
+		// Parse spotifyBackup:settings and exclude sensitive data
+		if (data["spotifyBackup:settings"]) {
+			try {
+				const settings = JSON.parse(data["spotifyBackup:settings"]);
+				// Remove GitHub token to prevent GitHub from auto-revoking it
+				delete settings.gistToken;
+				data["spotifyBackup:settings"] = JSON.stringify(settings);
+			} catch (error) {
+				console.error("Error sanitizing backup data:", error);
+			}
+		}
+		return data;
+	}
+
 	async function performBackup() {
 		if (!getConfig("gistEnabled")) {
 			Spicetify.Platform.ClipboardAPI.copy(localStorage)
@@ -54,6 +75,7 @@
 				});
 		} else {
 			try {
+				const sanitizedData = sanitizeBackupData();
 				const response = await fetch(`https://api.github.com/gists/${getConfig("gistId")}`, {
 					method: "PATCH",
 					headers: {
@@ -63,7 +85,7 @@
 					body: JSON.stringify({
 						files: {
 							"spotify-backup.json": {
-								content: JSON.stringify(localStorage)
+								content: JSON.stringify(sanitizedData)
 							}
 						}
 					})
@@ -132,12 +154,32 @@
 
 	function restoreData(parsedBackupData) {
 		try {
+			// Preserve current GitHub token before clearing
+			const currentGistToken = getConfig("gistToken");
+
 			localStorage.clear();
 			for (let key in parsedBackupData) {
-				if (parsedBackupData.hasOwnProperty(key)) {
+				if (Object.prototype.hasOwnProperty.call(parsedBackupData, key)) {
 					localStorage.setItem(key, parsedBackupData[key]);
 				}
 			}
+
+			// Restore GitHub token if it was removed during backup
+			if (currentGistToken) {
+				try {
+					const restoredSettings = localStorage.getItem("spotifyBackup:settings");
+					if (restoredSettings) {
+						const settings = JSON.parse(restoredSettings);
+						if (!settings.gistToken) {
+							settings.gistToken = currentGistToken;
+							localStorage.setItem("spotifyBackup:settings", JSON.stringify(settings));
+						}
+					}
+				} catch (error) {
+					console.error("Error restoring GitHub token:", error);
+				}
+			}
+
 			Spicetify.showNotification("Data restored successfully");
 			window.location.reload();
 		} catch (error) {
