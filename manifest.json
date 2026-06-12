@@ -1,106 +1,223 @@
 [
-	{
-		"name": "Immersive View",
-		"description": "Button to hide uneccesary information, providing an immersive experience  (customizable).",
-		"preview": "immersiveView/marketplace.png",
-		"main": "immersiveView/immersiveView.js",
-		"readme": "immersiveView/README.md",
-		"tags": ["panels", "accessibility", "customize"]
-	},
-	{
-		"name": "NPV Ambience",
-		"description": "Adds a colorful glow behind the Now Playing View image.",
-		"preview": "npvAmbience/marketplace.png",
-		"main": "npvAmbience/npvAmbience.js",
-		"readme": "npvAmbience/README.md",
-		"tags": ["interface", "decoration"]
-	},
-	{
-		"name": "Pixelated Images",
-		"description": "Convert images into a pseudo pixel art.",
-		"preview": "pixelatedImages/marketplace.png",
-		"main": "pixelatedImages/pixelatedImages.js",
-		"readme": "pixelatedImages/README.md",
-		"tags": ["pixel art", "filter"]
-	},
-	{
-		"name": "Toggle DJ",
-		"description": "Toggle 'Your DJ' in the 'Library' section of settings.",
-		"preview": "toggleDJ/marketplace.png",
-		"main": "toggleDJ/toggleDJ.js",
-		"readme": "toggleDJ/README.md",
-		"tags": ["QOL"]
-	},
-	{
-		"name": "Gamepad",
-		"description": "Use any gamepad to control Spotify (minus text input).",
-		"preview": "gamepad/marketplace.png",
-		"main": "gamepad/gamepad.js",
-		"readme": "gamepad/README.md",
-		"tags": ["controller"]
-	},
-	{
-		"name": "Spotify Backup",
-		"description": "Backup / restore application data (settings) + to the cloud (Gist).",
-		"preview": "spotifyBackup/marketplace.png",
-		"main": "spotifyBackup/spotifyBackup.js",
-		"readme": "spotifyBackup/README.md",
-		"tags": ["settings", "preferences"]
-	},
-	{
-		"name": "No Controls",
-		"description": "Removes the titlebar, (Spotify >= 1.2.32). F8 to re enable",
-		"preview": "noControls/marketplace.png",
-		"main": "noControls/noControls.js",
-		"readme": "noControls/README.md",
-		"tags": ["interface", "minimalist"]
-	},
-	{
-		"name": "Playbar Clock",
-		"description": "Current system time on the playbar, with display options.",
-		"preview": "playbarClock/marketplace.png",
-		"main": "playbarClock/playbarClock.js",
-		"readme": "playbarClock/README.md",
-		"tags": ["time", "utility"]
-	},
-	{
-		"name": "Quick Queue",
-		"description": "Adds a button to the tracklist to add/remove a song from the queue or play next.",
-		"preview": "quickQueue/marketplace.png",
-		"main": "quickQueue/quickQueue.js",
-		"readme": "quickQueue/README.md",
-		"tags": ["songs", "utility"]
-	},
-	{
-		"name": "Scannables",
-		"description": "View a scannable code for any track or playlist (like mobile).",
-		"preview": "scannables/marketplace.png",
-		"main": "scannables/scannables.js",
-		"readme": "scannables/README.md",
-		"tags": ["mobile", "code"]
-	},
-	{
-		"name": "Sleep Timer",
-		"description": "Pause playback after a certain amount of time (like mobile).",
-		"preview": "sleepTimer/marketplace.png",
-		"main": "sleepTimer/sleepTimer.js",
-		"readme": "sleepTimer/README.md",
-		"tags": ["recreation", "accurate"]
-	},
-	{
-		"name": "Tracks To Edges",
-		"description": "Quickly move multiple tracks to the top/bottom (edges) of a playlist.",
-		"preview": "tracksToEdges/marketplace.png",
-		"main": "tracksToEdges/tracksToEdges.js",
-		"readme": "tracksToEdges/README.md",
-		"tags": ["tracklist", "ordering"]
-	},
-	{
-		"name": "Volume Percentage",
-		"description": "View/Modify volume percentage in a hoverable Tippy.",
-		"preview": "volumePercentage/marketplace.png",
-		"main": "volumePercentage/volumePercentage.js",
-		"readme": "volumePercentage/README.md",
-		"tags": ["minimal", "audio"]
-	}
+    {
+        "name": "Immersive View",
+        "description": "Button to hide uneccesary information, providing an immersive experience  (customizable).",
+        "preview": "immersiveView/marketplace.png",
+        "main": "immersiveView/immersiveView.js",
+        "readme": "immersiveView/README.md",
+        "tags": ["panels", "accessibility", "customize"]
+    },
+    {
+        "name": "Immersive View (Historical)",
+        "description": "Button to hide uneccesary information, providing an immersive experience  (customizable). (Tuned for a specific Spotify/Spicetify version setup in the GitHub README. Will not receive updates.)",
+        "preview": "immersiveView/marketplace.png",
+        "main": "immersiveView/immersiveView.js",
+        "readme": "immersiveView/README.md",
+        "tags": ["panels", "accessibility", "customize", "historical"],
+        "branch": "historical"
+    },
+    {
+        "name": "NPV Ambience",
+        "description": "Adds a colorful glow behind the Now Playing View image.",
+        "preview": "npvAmbience/marketplace.png",
+        "main": "npvAmbience/npvAmbience.js",
+        "readme": "npvAmbience/README.md",
+        "tags": ["interface", "decoration"]
+    },
+    {
+        "name": "NPV Ambience (Historical)",
+        "description": "Adds a colorful glow behind the Now Playing View image. (Tuned for a specific Spotify/Spicetify version setup in the GitHub README. Will not receive updates.)",
+        "preview": "npvAmbience/marketplace.png",
+        "main": "npvAmbience/npvAmbience.js",
+        "readme": "npvAmbience/README.md",
+        "tags": ["interface", "decoration", "historical"],
+        "branch": "historical"
+    },
+    {
+        "name": "Pixelated Images",
+        "description": "Convert images into a pseudo pixel art.",
+        "preview": "pixelatedImages/marketplace.png",
+        "main": "pixelatedImages/pixelatedImages.js",
+        "readme": "pixelatedImages/README.md",
+        "tags": ["pixel art", "filter"]
+    },
+    {
+        "name": "Pixelated Images (Historical)",
+        "description": "Convert images into a pseudo pixel art. (Tuned for a specific Spotify/Spicetify version setup in the GitHub README. Will not receive updates.)",
+        "preview": "pixelatedImages/marketplace.png",
+        "main": "pixelatedImages/pixelatedImages.js",
+        "readme": "pixelatedImages/README.md",
+        "tags": ["pixel art", "filter", "historical"],
+        "branch": "historical"
+    },
+    {
+        "name": "Toggle DJ",
+        "description": "Toggle 'Your DJ' in the 'Library' section of settings.",
+        "preview": "toggleDJ/marketplace.png",
+        "main": "toggleDJ/toggleDJ.js",
+        "readme": "toggleDJ/README.md",
+        "tags": ["QOL"]
+    },
+    {
+        "name": "Toggle DJ (Historical)",
+        "description": "Toggle 'Your DJ' in the 'Library' section of settings. (Tuned for a specific Spotify/Spicetify version setup in the GitHub README. Will not receive updates.)",
+        "preview": "toggleDJ/marketplace.png",
+        "main": "toggleDJ/toggleDJ.js",
+        "readme": "toggleDJ/README.md",
+        "tags": ["QOL", "historical"],
+        "branch": "historical"
+    },
+    {
+        "name": "Gamepad",
+        "description": "Use any gamepad to control Spotify (minus text input).",
+        "preview": "gamepad/marketplace.png",
+        "main": "gamepad/gamepad.js",
+        "readme": "gamepad/README.md",
+        "tags": ["controller"]
+    },
+    {
+        "name": "Gamepad (Historical)",
+        "description": "Use any gamepad to control Spotify (minus text input). (Tuned for a specific Spotify/Spicetify version setup in the GitHub README. Will not receive updates.)",
+        "preview": "gamepad/marketplace.png",
+        "main": "gamepad/gamepad.js",
+        "readme": "gamepad/README.md",
+        "tags": ["controller", "historical"],
+        "branch": "historical"
+    },
+    {
+        "name": "Spotify Backup",
+        "description": "Backup / restore application data (settings) + to the cloud (Gist).",
+        "preview": "spotifyBackup/marketplace.png",
+        "main": "spotifyBackup/spotifyBackup.js",
+        "readme": "spotifyBackup/README.md",
+        "tags": ["settings", "preferences"]
+    },
+    {
+        "name": "Spotify Backup (Historical)",
+        "description": "Backup / restore application data (settings) + to the cloud (Gist). (Tuned for a specific Spotify/Spicetify version setup in the GitHub README. Will not receive updates.)",
+        "preview": "spotifyBackup/marketplace.png",
+        "main": "spotifyBackup/spotifyBackup.js",
+        "readme": "spotifyBackup/README.md",
+        "tags": ["settings", "preferences", "historical"],
+        "branch": "historical"
+    },
+    {
+        "name": "No Controls",
+        "description": "Removes the titlebar, (Spotify >= 1.2.32). F8 to re enable",
+        "preview": "noControls/marketplace.png",
+        "main": "noControls/noControls.js",
+        "readme": "noControls/README.md",
+        "tags": ["interface", "minimalist"]
+    },
+    {
+        "name": "No Controls (Historical)",
+        "description": "Removes the titlebar, (Spotify >= 1.2.32). F8 to re enable (Tuned for a specific Spotify/Spicetify version setup in the GitHub README. Will not receive updates.)",
+        "preview": "noControls/marketplace.png",
+        "main": "noControls/noControls.js",
+        "readme": "noControls/README.md",
+        "tags": ["interface", "minimalist", "historical"],
+        "branch": "historical"
+    },
+    {
+        "name": "Playbar Clock",
+        "description": "Current system time on the playbar, with display options.",
+        "preview": "playbarClock/marketplace.png",
+        "main": "playbarClock/playbarClock.js",
+        "readme": "playbarClock/README.md",
+        "tags": ["time", "utility"]
+    },
+    {
+        "name": "Playbar Clock (Historical)",
+        "description": "Current system time on the playbar, with display options. (Tuned for a specific Spotify/Spicetify version setup in the GitHub README. Will not receive updates.)",
+        "preview": "playbarClock/marketplace.png",
+        "main": "playbarClock/playbarClock.js",
+        "readme": "playbarClock/README.md",
+        "tags": ["time", "utility", "historical"],
+        "branch": "historical"
+    },
+    {
+        "name": "Quick Queue",
+        "description": "Adds a button to the tracklist to add/remove a song from the queue or play next.",
+        "preview": "quickQueue/marketplace.png",
+        "main": "quickQueue/quickQueue.js",
+        "readme": "quickQueue/README.md",
+        "tags": ["songs", "utility"]
+    },
+    {
+        "name": "Quick Queue (Historical)",
+        "description": "Adds a button to the tracklist to add/remove a song from the queue or play next. (Tuned for a specific Spotify/Spicetify version setup in the GitHub README. Will not receive updates.)",
+        "preview": "quickQueue/marketplace.png",
+        "main": "quickQueue/quickQueue.js",
+        "readme": "quickQueue/README.md",
+        "tags": ["songs", "utility", "historical"],
+        "branch": "historical"
+    },
+    {
+        "name": "Scannables",
+        "description": "View a scannable code for any track or playlist (like mobile).",
+        "preview": "scannables/marketplace.png",
+        "main": "scannables/scannables.js",
+        "readme": "scannables/README.md",
+        "tags": ["mobile", "code"]
+    },
+    {
+        "name": "Scannables (Historical)",
+        "description": "View a scannable code for any track or playlist (like mobile). (Tuned for a specific Spotify/Spicetify version setup in the GitHub README. Will not receive updates.)",
+        "preview": "scannables/marketplace.png",
+        "main": "scannables/scannables.js",
+        "readme": "scannables/README.md",
+        "tags": ["mobile", "code", "historical"],
+        "branch": "historical"
+    },
+    {
+        "name": "Sleep Timer",
+        "description": "Pause playback after a certain amount of time (like mobile).",
+        "preview": "sleepTimer/marketplace.png",
+        "main": "sleepTimer/sleepTimer.js",
+        "readme": "sleepTimer/README.md",
+        "tags": ["recreation", "accurate"]
+    },
+    {
+        "name": "Sleep Timer (Historical)",
+        "description": "Pause playback after a certain amount of time (like mobile). (Tuned for a specific Spotify/Spicetify version setup in the GitHub README. Will not receive updates.)",
+        "preview": "sleepTimer/marketplace.png",
+        "main": "sleepTimer/sleepTimer.js",
+        "readme": "sleepTimer/README.md",
+        "tags": ["recreation", "accurate", "historical"],
+        "branch": "historical"
+    },
+    {
+        "name": "Tracks To Edges",
+        "description": "Quickly move multiple tracks to the top/bottom (edges) of a playlist.",
+        "preview": "tracksToEdges/marketplace.png",
+        "main": "tracksToEdges/tracksToEdges.js",
+        "readme": "tracksToEdges/README.md",
+        "tags": ["tracklist", "ordering"]
+    },
+    {
+        "name": "Tracks To Edges (Historical)",
+        "description": "Quickly move multiple tracks to the top/bottom (edges) of a playlist. (Tuned for a specific Spotify/Spicetify version setup in the GitHub README. Will not receive updates.)",
+        "preview": "tracksToEdges/marketplace.png",
+        "main": "tracksToEdges/tracksToEdges.js",
+        "readme": "tracksToEdges/README.md",
+        "tags": ["tracklist", "ordering", "historical"],
+        "branch": "historical"
+    },
+    {
+        "name": "Volume Percentage",
+        "description": "View/Modify volume percentage in a hoverable Tippy.",
+        "preview": "volumePercentage/marketplace.png",
+        "main": "volumePercentage/volumePercentage.js",
+        "readme": "volumePercentage/README.md",
+        "tags": ["minimal", "audio"]
+    },
+    {
+        "name": "Volume Percentage (Historical)",
+        "description": "View/Modify volume percentage in a hoverable Tippy. (Tuned for a specific Spotify/Spicetify version setup in the GitHub README. Will not receive updates.)",
+        "preview": "volumePercentage/marketplace.png",
+        "main": "volumePercentage/volumePercentage.js",
+        "readme": "volumePercentage/README.md",
+        "tags": ["minimal", "audio", "historical"],
+        "branch": "historical"
+    }
 ]
