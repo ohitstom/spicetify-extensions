@@ -17,18 +17,44 @@
 		return;
 	}
 
+	function updateHidingStyle(showDJ) {
+		let styleEl = document.getElementById("toggleDJ-hide-card-style");
+		if (!showDJ) {
+			if (!styleEl) {
+				styleEl = document.createElement("style");
+				styleEl.id = "toggleDJ-hide-card-style";
+				styleEl.innerHTML = `
+					.main-card-card:has(a[href*="37i9dQZF1EYkqdzj48dyYq"]),
+					div[class*="-card__column"]:has(a[href*="37i9dQZF1EYkqdzj48dyYq"]),
+					.view-homeShortcutsGrid-shortcut:has(a[href*="37i9dQZF1EYkqdzj48dyYq"]) {
+						display: none !important;
+					}
+				`;
+				document.head.appendChild(styleEl);
+			}
+		} else {
+			if (styleEl) {
+				styleEl.remove();
+			}
+		}
+	}
+
 	// Function to interface with the DJ playlist
 	async function interfaceDJ(toggle) {
 		const rootlist = await Spicetify.Platform.RootlistAPI.getContents();
 		const DJPlaylist = "spotify:playlist:37i9dQZF1EYkqdzj48dyYq";
-		const isDJ = rootlist.items.some(item => item.type === "playlist" && item.uri === DJPlaylist);
+		const items = rootlist?.items || [];
+		const isDJ = items.some(item => item.type === "playlist" && item.uri === DJPlaylist);
 
 		if (toggle !== undefined) {
 			if (!isDJ && toggle) {
-				await Spicetify.Platform.RootlistAPI.add([DJPlaylist], true);
+				await Spicetify.Platform.RootlistAPI.applyModification({ operation: "add", uris: [DJPlaylist] });
 			} else if (isDJ && !toggle) {
 				await Spicetify.Platform.RootlistAPI.remove([{ uri: DJPlaylist }]);
 			}
+			updateHidingStyle(toggle);
+		} else {
+			updateHidingStyle(isDJ);
 		}
 
 		return isDJ;

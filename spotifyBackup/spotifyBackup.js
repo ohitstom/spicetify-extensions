@@ -121,7 +121,8 @@
 	async function handleRestore() {
 		if (!getConfig("gistEnabled")) {
 			try {
-				let parsedBackupData = JSON.parse(await Spicetify.Platform.ClipboardAPI.paste());
+				let clipboardText = await Spicetify.Platform.ClipboardAPI.paste();
+				let parsedBackupData = JSON.parse(clipboardText.trim().replace(/^\ufeff/, ''));
 				restoreData(parsedBackupData);
 			} catch (error) {
 				Spicetify.showNotification("Failed to restore data from clipboard.", true);

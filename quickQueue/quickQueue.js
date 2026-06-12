@@ -20,6 +20,9 @@
 		return;
 	}
 
+	if (window.quickQueueLoaded) return;
+	window.quickQueueLoaded = true;
+
 	// Settings
 	const STORAGE_KEY_PLACE_LEFT = "quickQueue.placeLeftSide";
 	let placeLeftSide = Spicetify.LocalStorage.get(STORAGE_KEY_PLACE_LEFT) === "1";
@@ -156,14 +159,21 @@
 		});
 	}
 
-	function findVal(object, key, max = 15) {
-		if (object[key] !== undefined || !max) {
+	function findVal(object, key, max = 10, seen = new Set()) {
+		if (object == null || typeof object !== "object" || max <= 0 || seen.has(object)) {
+			return undefined;
+		}
+
+		if (object[key] !== undefined) {
 			return object[key];
 		}
 
+		seen.add(object);
+
 		for (const k in object) {
-			if (object[k] && typeof object[k] === "object") {
-				const value = findVal(object[k], key, max - 1);
+			const child = object[k];
+			if (child && typeof child === "object") {
+				const value = findVal(child, key, max - 1, seen);
 				if (value !== undefined) {
 					return value;
 				}
@@ -176,111 +186,131 @@
 	const observer = new MutationObserver(mutationList => {
 		mutationList.forEach(mutation => {
 			mutation.addedNodes.forEach(node => {
-				const nodeMatch =
-					node.attributes?.role?.value === "row"
-						? node.firstChild?.lastChild
-						: node.firstChild?.attributes?.role?.value === "row"
-						? node.firstChild?.firstChild.lastChild
-						: null;
+				// Observed structure:
+				// Albums:    node{role=row} → firstChild{role=row} → firstChild.lastChild = action cell
+				// Playlists: node{role=row} → firstChild{role=presentation, .main-trackList-trackListRow}
+				//            props and data-sp-track-uri live on firstChild, not node
 
-				if (nodeMatch) {
-					const entryPoint = nodeMatch.querySelector(":scope > button:not(:last-child):has([data-encore-id])");
+				const isPlaylist =
+					node.attributes?.role?.value === "row" &&
+					node.firstChild?.getAttribute?.("role") === "presentation" &&
+					node.firstChild?.classList?.contains("main-trackList-trackListRow");
 
-					if (entryPoint) {
-						const reactPropsKey = Object.keys(node).find(key => key.startsWith("__reactProps$"));
-						const rowReactProps = node[reactPropsKey];
+				const propsNode = isPlaylist ? node.firstChild : node;
 
-						if (!rowReactProps) {
-							console.error("Quick Queue: Failed to find React props", node);
-							return;
-						}
+				const nodeMatch = isPlaylist
+					? node.firstChild.querySelector(".main-trackList-rowSectionEnd")
+					: node.attributes?.role?.value === "row"
+					? node.firstChild?.lastChild
+					: node.firstChild?.attributes?.role?.value === "row"
+					? node.firstChild?.firstChild.lastChild
+					: null;
 
-						let uri;
-						
-						// Working path for Spotify 1.2.74.477
-						try {
-							if (rowReactProps?.children?.ref?.current) {
-								const refCurrent = rowReactProps.children.ref.current;
-								const fiberKey = Object.keys(refCurrent).find(k => k.startsWith("__reactFiber$"));
-								if (fiberKey) {
-									const targetUri = refCurrent[fiberKey]?.return?.return?.return?.pendingProps?.uri;
-									if (targetUri?.startsWith?.("spotify:")) {
-										uri = targetUri;
-									}
+				if (!nodeMatch) return;
+
+				const entryPoint =
+					nodeMatch.querySelector(":scope > button:not(:last-child):has([data-encore-id])") ||
+					(isPlaylist ? nodeMatch.querySelector("button.main-trackList-rowMoreButton") : null);
+
+				if (!entryPoint) return;
+
+				const reactPropsKey = Object.keys(propsNode).find(key => key.startsWith("__reactProps$"));
+				const rowReactProps = propsNode[reactPropsKey];
+
+				if (!rowReactProps) {
+					console.error("Quick Queue: Failed to find React props", propsNode);
+					return;
+				}
+
+				let uri;
+
+				if (isPlaylist) {
+					// Playlist path: walk fiber upward from propsNode — URI is at depth 3
+					try {
+						const fiberKey = Object.keys(propsNode).find(k => k.startsWith("__reactFiber$"));
+						if (fiberKey) {
+							let fiber = propsNode[fiberKey];
+							for (let i = 0; i < 15 && fiber; i++) {
+								const u = fiber.pendingProps?.uri || fiber.memoizedProps?.uri;
+								if (u?.startsWith("spotify:track:")) {
+									uri = u;
+									break;
 								}
+								fiber = fiber.return;
 							}
-							
-							// Fallback for newer Spotify versions (walk up the fiber from the row node)
-							if (!uri) {
-								const fiberKey = Object.keys(node).find(k => k.startsWith("__reactFiber$"));
-								let fiber = node[fiberKey];
-								while (fiber && !uri) {
-									const targetUri = fiber.pendingProps?.uri;
-									if (typeof targetUri === "string" && targetUri.startsWith("spotify:")) {
-										uri = targetUri;
-									}
-									fiber = fiber.return;
-								}
-							}
-						} catch (_) {
-							console.error("Quick Queue: Failed to get URI from React props", rowReactProps);
 						}
-						
-						// Fallback
-						if (!uri) {
-							uri = findVal(rowReactProps, "uri");
-						}
-						
-						if (!uri) {
-							console.error("Quick Queue: Failed to find URI", rowReactProps);
-							return;
-						}
-
-						// Decide insertion target
-						let insertionParent = nodeMatch;
-						let referenceNode = entryPoint;
-
-						if (placeLeftSide) {
-							const rowGrid = nodeMatch.parentElement;
-							const startCell = rowGrid?.querySelector(':scope > .main-trackList-rowSectionStart[role="gridcell"]');
-							const coverImg = startCell?.querySelector(':scope img');
-							if (startCell) {
-								// Avoid duplicate injection in the left cell
-								if (!startCell.querySelector(':scope > .queueControl-wrapper')) {
-									insertionParent = startCell;
-									// If a cover image exists, insert before it. Otherwise insert at the start cell's beginning (some views like albums don't have them)
-									referenceNode = coverImg || startCell.firstElementChild;
+					} catch (_) {}
+				} else {
+					// Album path for Spotify 1.2.74.477: URI buried in ref.current fiber
+					try {
+						if (rowReactProps?.children?.ref?.current) {
+							const refCurrent = rowReactProps.children.ref.current;
+							const fiberKey = Object.keys(refCurrent).find(k => k.startsWith("__reactFiber$"));
+							if (fiberKey) {
+								const targetUri = refCurrent[fiberKey]?.return?.return?.return?.pendingProps?.uri;
+								if (targetUri?.startsWith?.("spotify:")) {
+									uri = targetUri;
 								}
 							}
 						}
+					} catch (_) {
+						console.error("Quick Queue: Failed to get URI from React props", rowReactProps);
+					}
 
-						// Avoid duplicate injection in the right cell as well
-						if (insertionParent.querySelector(':scope > .queueControl-wrapper')) return;
-
-						const queueButtonWrapper = document.createElement("div");
-						queueButtonWrapper.className = "queueControl-wrapper";
-						queueButtonWrapper.style.display = "contents";
-						queueButtonWrapper.style.marginRight = 0;
-
-						// Safely insert: only use insertBefore if the reference node belongs to the same parent
-						let queueButtonElement;
-						if (referenceNode && referenceNode.parentNode === insertionParent) {
-							queueButtonElement = insertionParent.insertBefore(queueButtonWrapper, referenceNode);
-						} else if (insertionParent.firstChild) {
-							queueButtonElement = insertionParent.insertBefore(queueButtonWrapper, insertionParent.firstChild);
-						} else {
-							queueButtonElement = insertionParent.appendChild(queueButtonWrapper);
-						}
-						Spicetify.ReactDOM.render(
-							Spicetify.React.createElement(QueueButton, {
-								uri,
-								classList: entryPoint.classList,
-								leftSide: placeLeftSide
-							}),
-							queueButtonElement
-						);
+					// Album fallback
+					if (!uri) {
+						uri = findVal(rowReactProps, "uri");
 					}
 				}
+
+				if (!uri) {
+					console.error("Quick Queue: Failed to find URI", rowReactProps);
+					return;
+				}
+
+				// Decide insertion target
+				let insertionParent = nodeMatch;
+				let referenceNode = entryPoint;
+
+				if (placeLeftSide) {
+					const rowGrid = nodeMatch.parentElement;
+					const startCell = rowGrid?.querySelector(':scope > .main-trackList-rowSectionStart[role="gridcell"]');
+					const coverImg = startCell?.querySelector(":scope img");
+					if (startCell) {
+						// Avoid duplicate injection in the left cell
+						if (!startCell.querySelector(":scope > .queueControl-wrapper")) {
+							insertionParent = startCell;
+							// If a cover image exists, insert before it. Otherwise insert at the start cell's beginning (some views like albums don't have them)
+							referenceNode = coverImg || startCell.firstElementChild;
+						}
+					}
+				}
+
+				// Avoid duplicate injection in the right cell as well
+				if (insertionParent.querySelector(":scope > .queueControl-wrapper")) return;
+
+				const queueButtonWrapper = document.createElement("div");
+				queueButtonWrapper.className = "queueControl-wrapper";
+				queueButtonWrapper.style.display = "contents";
+				queueButtonWrapper.style.marginRight = 0;
+
+				// Safely insert: only use insertBefore if the reference node belongs to the same parent
+				let queueButtonElement;
+				if (referenceNode && referenceNode.parentNode === insertionParent) {
+					queueButtonElement = insertionParent.insertBefore(queueButtonWrapper, referenceNode);
+				} else if (insertionParent.firstChild) {
+					queueButtonElement = insertionParent.insertBefore(queueButtonWrapper, insertionParent.firstChild);
+				} else {
+					queueButtonElement = insertionParent.appendChild(queueButtonWrapper);
+				}
+				Spicetify.ReactDOM.render(
+					Spicetify.React.createElement(QueueButton, {
+						uri,
+						classList: entryPoint.classList,
+						leftSide: placeLeftSide
+					}),
+					queueButtonElement
+				);
 			});
 		});
 	});
@@ -290,3 +320,5 @@
 		childList: true
 	});
 })();
+
+
