@@ -123,7 +123,9 @@
 			},
 			Spicetify.React.createElement(
 				"span",
-				{ className: "Wrapper-sm-only Wrapper-small-only" },
+				{
+					style: { display: "flex" }
+				},
 				Spicetify.React.createElement("svg", {
 					role: "img",
 					height: "16",
