@@ -156,27 +156,22 @@
 		});
 	}
 
-    function findUri(obj, seen = new WeakSet()) {
-        if (!obj || typeof obj !== "object" || seen.has(obj)) return undefined;
-        seen.add(obj);
-
-        if (obj.uri?.startsWith("spotify:")) return obj.uri;
-
-        for (const key in obj) {
-            const val = obj[key];
-            if (Array.isArray(val)) {
-                for (const item of val) {
-                    const found = findUri(item, seen);
-                    if (found) return found;
-                }
-            } else if (typeof val === "object") {
-                const found = findUri(val, seen);
-                if (found) return found;
-            }
-        }
-        return undefined;
-    }
-
+	function getTracklistTrackUri(tracklistElement) {
+		let values = Object.values(tracklistElement);
+		if (!values.length) {
+			console.log("Error: Could not get tracklist element");
+			return null;
+		}
+		return (
+			values[0]?.pendingProps?.children[0]?.props?.children?.props?.uri ||
+			values[0]?.pendingProps?.children[0]?.props?.children?.props?.children?.props?.uri ||
+			values[0]?.pendingProps?.children[0]?.props?.children?.props?.children?.props?.children?.props?.uri ||
+			values[0]?.pendingProps?.children[0]?.props?.children[0]?.props?.uri ||
+			values[0]?.pendingProps?.children?.props?.value?.item?.uri ||
+			values[0]?.pendingProps?.children?.props?.children?.props?.value?.item?.uri ||
+			values[0]?.pendingProps?.children?.props?.children?.props?.children?.props?.value?.item?.uri
+		);
+	}
 
 	const observer = new MutationObserver(mutationList => {
 		mutationList.forEach(mutation => {
@@ -192,20 +187,17 @@
 					const entryPoint = nodeMatch.querySelector(":scope > button:not(:last-child):has([data-encore-id])");
 
 					if (entryPoint) {
-						const reactPropsKey = Object.keys(node).find(key => key.startsWith("__reactProps$"));
-						const rowReactProps = node[reactPropsKey];
+						const trackListEle = node.querySelector(".main-trackList-trackListRow");
 
-						if (!rowReactProps) {
-							console.error("Quick Queue: Failed to find React props", node);
+						if (!trackListEle) {
+							console.error("Quick Queue: Failed to find tracklist element", node);
 							return;
 						}
 
-						let uri;
-						
-						uri = findUri(rowReactProps);
+						let uri = getTracklistTrackUri(trackListEle);
 						
 						if (!uri) {
-							console.error("Quick Queue: Failed to find URI", rowReactProps);
+							console.error("Quick Queue: Failed to find URI", trackListEle);
 							return;
 						}
 
