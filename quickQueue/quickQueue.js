@@ -123,7 +123,9 @@
 			},
 			Spicetify.React.createElement(
 				"span",
-				{ className: "Wrapper-sm-only Wrapper-small-only" },
+				{
+					style: { display: "flex" }
+				},
 				Spicetify.React.createElement("svg", {
 					role: "img",
 					height: "16",
@@ -156,27 +158,59 @@
 		});
 	}
 
-    function findUri(obj, seen = new WeakSet()) {
-        if (!obj || typeof obj !== "object" || seen.has(obj)) return undefined;
-        seen.add(obj);
+	function getTracklistTrackUri(tracklistElement) {
+		// 1. Try specific known paths first (Fast & Reliable for standard rows)
+		const values = Object.values(tracklistElement);
+		const reactProps = values.find((v) => v?.pendingProps || v?.memoizedProps);
+		const props = reactProps?.pendingProps || reactProps?.memoizedProps;
 
-        if (obj.uri?.startsWith("spotify:")) return obj.uri;
+		if (props) {
+			const specificUri =
+				props.children?.[0]?.props?.children?.props?.uri ||
+				props.children?.[0]?.props?.children?.props?.children?.props?.uri ||
+				props.children?.[0]?.props?.children?.[0]?.props?.uri ||
+				props.children?.props?.value?.item?.uri ||
+				props.value?.item?.uri;
 
-        for (const key in obj) {
-            const val = obj[key];
-            if (Array.isArray(val)) {
-                for (const item of val) {
-                    const found = findUri(item, seen);
-                    if (found) return found;
-                }
-            } else if (typeof val === "object") {
-                const found = findUri(val, seen);
-                if (found) return found;
-            }
-        }
-        return undefined;
-    }
+			if (typeof specificUri === 'string' && specificUri.startsWith("spotify:"))
+				return specificUri;
+		}
 
+		// 2. Recursive fallback (For recommendations and new structures)
+		const findUri = (obj, seen = new WeakSet()) => {
+			if (!obj || typeof obj !== "object" || seen.has(obj)) return null;
+			seen.add(obj);
+
+			if (typeof obj.uri === 'string' && obj.uri.startsWith("spotify:")) return obj.uri;
+			if (typeof obj.item?.uri === 'string' && obj.item.uri.startsWith("spotify:"))
+				return obj.item.uri;
+			if (typeof obj.value?.item?.uri === 'string' && obj.value.item.uri.startsWith("spotify:"))
+				return obj.value.item.uri;
+
+			// Check children
+			const children = obj.children || obj.props?.children;
+			if (children) {
+				if (Array.isArray(children)) {
+					for (const child of children) {
+						const result = findUri(child.props || child, seen);
+						if (result) return result;
+					}
+				} else {
+					const result = findUri(children, seen);
+					if (result) return result;
+				}
+			}
+
+			if (obj.props && obj.props !== obj) {
+				const result = findUri(obj.props, seen);
+				if (result) return result;
+			}
+
+			return null;
+		};
+
+		return findUri(props || tracklistElement);
+	}
 
 	const observer = new MutationObserver(mutationList => {
 		mutationList.forEach(mutation => {
@@ -192,20 +226,17 @@
 					const entryPoint = nodeMatch.querySelector(":scope > button:not(:last-child):has([data-encore-id])");
 
 					if (entryPoint) {
-						const reactPropsKey = Object.keys(node).find(key => key.startsWith("__reactProps$"));
-						const rowReactProps = node[reactPropsKey];
+						const trackListEle = node.querySelector(".main-trackList-trackListRow");
 
-						if (!rowReactProps) {
-							console.error("Quick Queue: Failed to find React props", node);
+						if (!trackListEle) {
+							console.error("Quick Queue: Failed to find tracklist element", node);
 							return;
 						}
 
-						let uri;
-						
-						uri = findUri(rowReactProps);
+						let uri = getTracklistTrackUri(trackListEle);
 						
 						if (!uri) {
-							console.error("Quick Queue: Failed to find URI", rowReactProps);
+							console.error("Quick Queue: Failed to find URI", trackListEle);
 							return;
 						}
 
