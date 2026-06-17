@@ -5,11 +5,6 @@
 
 ⚠️The main branch i will be accepting any and all contributions with little testing, if this cutting edge approach does not work with your setup, please utilize the recommended versions below and install the extensions from the historical branch of the repo. ⚠️
 
-| Software | Version | Link |
-| :--- | :--- | :--- |
-| **Spicetify** | `v2.38.5` | [View Releases](https://github.com/spicetify/spicetify-cli/releases) |
-| **Spotify** | `1.2.51` | [Check Compatibility](https://docs.google.com/spreadsheets/d/1wztO1L4zvNykBRw7X4jxP8pvo11oQjT0O5DvZ_-S4Ok/edit#gid=803394557&range=D2) |
-
 Please check out the readme for each extension in its folder, it will include installation instructions, usage, *supported versions, and compatibility notes.
 
 [![](https://data.jsdelivr.com/v1/package/gh/ohitstom/spicetify-extensions/badge)](https://www.jsdelivr.com/package/gh/ohitstom/spicetify-extensions)
