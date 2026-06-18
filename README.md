@@ -1,11 +1,12 @@
 ## Information
 
-### 🛠️ Recommended Versions 
-⚠️If extensions are not running as expected, check out the historical branch of this repo which has a supported versions index and more scrutinized code - you will need to downgrade your spotify setup likely. ⚠️
+#### ⚠️If extensions are not running as expected, check out the historical branch of this repo which has a supported versions index and more scrutinized code - you will need to downgrade your spotify setup likely. ⚠️
 
 Please check out the readme for each extension in its folder, it will include installation instructions, usage, *supported versions, and compatibility notes.
 
 [![](https://data.jsdelivr.com/v1/package/gh/ohitstom/spicetify-extensions/badge)](https://www.jsdelivr.com/package/gh/ohitstom/spicetify-extensions)
+
+---
 
 ## [spotifyBackup](spotifyBackup/README.md)
 ![Example](spotifyBackup/example.png)
