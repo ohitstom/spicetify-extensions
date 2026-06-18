@@ -1,7 +1,7 @@
 ## Information
 
 ### 🛠️ Recommended Versions 
-⚠️The main branch i will be accepting any and all contributions with little testing, if this cutting edge approach does not work with your setup, please utilize the the historical branch of the repo which has a supported versions index and more scrutinized code. ⚠️
+⚠️If extensions are not running as expected, check out the historical branch of this repo which has a supported versions index and more scrutinized code - you will need to downgrade your spotify setup likely. ⚠️
 
 Please check out the readme for each extension in its folder, it will include installation instructions, usage, *supported versions, and compatibility notes.
 
