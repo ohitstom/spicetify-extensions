@@ -1,9 +1,7 @@
 ## Information
 
 ### 🛠️ Recommended Versions 
-*Repo was going to be archived long ago, but (naturally or due to contribution) some extensions are supported past these listed versions, but i have stopped personal development on the date of the releases below:*
-
-⚠️The main branch i will be accepting any and all contributions with little testing, if this cutting edge approach does not work with your setup, please utilize the recommended versions below and install the extensions from the historical branch of the repo. ⚠️
+⚠️The main branch i will be accepting any and all contributions with little testing, if this cutting edge approach does not work with your setup, please utilize the the historical branch of the repo which has a supported versions index and more scrutinized code. ⚠️
 
 Please check out the readme for each extension in its folder, it will include installation instructions, usage, *supported versions, and compatibility notes.
 
