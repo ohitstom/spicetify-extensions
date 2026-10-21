@@ -14,6 +14,8 @@ _This script allows you to backup / restore application data (settings)._
 
 Navigate to Spotify settings, scroll to "Storage", backup your settings to clipboard - and import them on your secondary device.
 
+Marketplace settings and installed items are included. Wait for Marketplace to finish loading and avoid changing its settings or installed items during restore.
+
 #### Gist Integration Setup
 This extension also allows the user to automatically backup and restore to a GitHub Gist.
 Please note that Gist has a limited file upload of 1MB. If your application data exceeds this value please manually backup and restore your data.
