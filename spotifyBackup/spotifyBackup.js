@@ -95,6 +95,9 @@
 				return;
 			}
 			try {
+				const formattedData = JSON.stringify(sanitizedData, null, 2);
+				// Keep compact output if indentation would exceed the Gist API's inline-content limit.
+				const gistContent = new Blob([formattedData]).size <= 1000000 ? formattedData : dataStr;
 				const response = await fetch(`https://api.github.com/gists/${getConfig("gistId")}`, {
 					method: "PATCH",
 					headers: {
@@ -104,7 +107,7 @@
 					body: JSON.stringify({
 						files: {
 							"spotify-backup.json": {
-								content: dataStr
+								content: gistContent
 							}
 						}
 					})
