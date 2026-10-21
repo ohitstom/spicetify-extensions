@@ -63,12 +63,147 @@
 		return gist;
 	}
 
-	function sanitizeBackupData() {
+	async function waitForMarketplace() {
+		// Both legacy and IndexedDB-backed Marketplace expose export(); the latter
+		// only exposes it after storage hydration. Do not back up a partial startup state.
+		const installed =
+			Spicetify.Config?.custom_apps?.includes("marketplace") ||
+			Spicetify.Config?.extensions?.some(name => /(^|\/)marketplace\.js$/.test(name));
+		if (!installed) return;
+		if (typeof window.Marketplace?.export !== "function") Spicetify.showNotification("Waiting for Marketplace to initialize");
+		while (typeof window.Marketplace?.export !== "function") {
+			await new Promise(resolve => setTimeout(resolve, 250));
+		}
+	}
+
+	function openMarketplaceDatabase() {
+		if (!window.indexedDB) return Promise.resolve(null);
+		return new Promise((resolve, reject) => {
+			// No version argument: never upgrade a database owned by Marketplace.
+			const request = window.indexedDB.open("spicetify-marketplace");
+			let missing = false;
+			let finished = false;
+			const finish = (database, error) => {
+				if (finished) {
+					database?.close();
+					return;
+				}
+				finished = true;
+				if (error) reject(error);
+				else resolve(database);
+			};
+			request.onupgradeneeded = () => {
+				// Opening a missing database would create it. Leave legacy installs alone.
+				missing = true;
+				request.transaction.abort();
+			};
+			request.onerror = () => finish(null, missing ? null : request.error);
+			request.onblocked = () => finish(null, new Error("Marketplace database is blocked"));
+			request.onsuccess = () => {
+				const database = request.result;
+				if (!database.objectStoreNames.contains("settings")) {
+					database.close();
+					finish(null, new Error("Marketplace settings store is missing"));
+					return;
+				}
+				database.onversionchange = () => database.close();
+				finish(database);
+			};
+		});
+	}
+
+	async function restoreMarketplaceData(data, restoreLocalStorage) {
+		// Older Spotify Backup exports may have omitted Marketplace entirely.
+		// Do not erase an existing database when there is no Marketplace data to restore.
+		if (!Object.keys(data).some(key => key.startsWith("marketplace:"))) return restoreLocalStorage();
+		// IndexedDB was introduced in Marketplace 1.0.9. A downgraded legacy
+		// Marketplace may legitimately disagree with the database it left behind.
+		const version = window.Marketplace?.version?.split(".").map(Number);
+		let usesIndexedDB = version && (version[0] > 1 || (version[0] === 1 && (version[1] > 0 || version[2] >= 9)));
+		const snapshot = usesIndexedDB ? window.Marketplace.export() : null;
+		const database = await openMarketplaceDatabase();
+		if (!database) return restoreLocalStorage(); // Legacy Marketplace will migrate localStorage itself.
+		try {
+			await new Promise((resolve, reject) => {
+				const transaction = database.transaction("settings", "readwrite");
+				const store = transaction.objectStore("settings");
+				const persisted = {};
+				transaction.oncomplete = resolve;
+				transaction.onabort = () => reject(transaction.error || new Error("Marketplace restore aborted"));
+				store.openCursor().onsuccess = event => {
+					const cursor = event.target.result;
+					if (cursor) {
+						if (typeof cursor.key === "string" && cursor.key.startsWith("marketplace:")) {
+							persisted[cursor.key] = cursor.value.value;
+							cursor.delete();
+						}
+						cursor.continue();
+					} else {
+						if (snapshot) {
+							const current = window.Marketplace.export();
+							const matches = other =>
+								Object.keys(snapshot).length === Object.keys(other).length &&
+								Object.entries(snapshot).every(([key, value]) => other[key] === value);
+							// Migration can leave modern Marketplace using localStorage for
+							// this session. Verify the actual source rather than assuming the
+							// version implies a successfully migrated database.
+							const local = {};
+							for (const key of Object.keys(localStorage)) {
+								if (key.startsWith("marketplace:")) local[key] = localStorage.getItem(key);
+							}
+							if (!matches(persisted) && Object.keys(snapshot).length > 0 && matches(local)) usesIndexedDB = false;
+							if (!matches(current) || (usesIndexedDB && !matches(persisted))) {
+								transaction.abort();
+								reject(new Error("Marketplace settings changed or are still being saved; retry restore when Marketplace is idle"));
+								return;
+							}
+						}
+						// Replace Marketplace records, but preserve migration markers and other metadata.
+						for (const [key, value] of Object.entries(data)) {
+							if (key.startsWith("marketplace:")) store.put({ key, value });
+						}
+						// Keep the transaction abortable until the synchronous localStorage
+						// writes succeed, including their quota checks.
+						try {
+							restoreLocalStorage(usesIndexedDB);
+						} catch (error) {
+							transaction.abort();
+							reject(error);
+						}
+					}
+				};
+			});
+		} finally {
+			database.close();
+		}
+	}
+
+	async function sanitizeBackupData() {
+		await waitForMarketplace();
 		const data = {};
 		for (let key in localStorage) {
 			if (Object.prototype.hasOwnProperty.call(localStorage, key)) {
 				data[key] = localStorage[key];
 			}
+		}
+		if (typeof window.Marketplace?.export === "function") {
+			// Let the running Marketplace choose its backend, including after a downgrade.
+			// Replace the whole namespace so stale/deleted localStorage keys do not return.
+			const marketplaceData = window.Marketplace.export();
+			if (!marketplaceData || typeof marketplaceData !== "object" || Array.isArray(marketplaceData)) {
+				throw new Error("Invalid Marketplace export");
+			}
+			for (const key of Object.keys(data)) {
+				if (key.startsWith("marketplace:")) delete data[key];
+			}
+			for (const [key, value] of Object.entries(marketplaceData)) {
+				if (!key.startsWith("marketplace:")) continue;
+				if (typeof value !== "string") throw new Error("Invalid Marketplace setting");
+				data[key] = value;
+			}
+			// An explicit empty inventory distinguishes new empty snapshots from
+			// historical backups that omitted Marketplace entirely.
+			if (Object.keys(marketplaceData).length === 0) data["marketplace:installed-extensions"] = "[]";
 		}
 		// Parse spotifyBackup:settings and exclude sensitive data
 		if (data["spotifyBackup:settings"]) {
@@ -85,7 +220,14 @@
 	}
 
 	async function backupData() {
-		const sanitizedData = sanitizeBackupData();
+		let sanitizedData;
+		try {
+			sanitizedData = await sanitizeBackupData();
+		} catch (error) {
+			Spicetify.showNotification("Failed to read backup data", true);
+			console.error("Error while collecting backup data:", error);
+			return;
+		}
 		const dataStr = JSON.stringify(sanitizedData);
 		if (getConfig("gistEnabled")) {
 			// Check if the data is the same as the last backup
@@ -121,7 +263,7 @@
 				console.error("Error while backing up to Gist:", error);
 			}
 		} else {
-			Spicetify.Platform.ClipboardAPI.copy(dataStr)
+			await Spicetify.Platform.ClipboardAPI.copy(dataStr)
 				.then(() => {
 					Spicetify.showNotification("Copied backup data to clipboard");
 					setLastBackupTime();
@@ -134,40 +276,46 @@
 	}
 
 	async function restoreData() {
-		gist = await getGist();
-		const data = getConfig("gistEnabled") ? gist.data : JSON.parse(await Spicetify.Platform.ClipboardAPI.paste());
-		if (!data) {
-			Spicetify.showNotification("No backup data found", true);
-			return;
-		}
 		try {
-			// Preserve current GitHub token before clearing
-			const currentGistToken = getConfig("gistToken");
-
-			localStorage.clear();
-			for (let key in data) {
-				if (data.hasOwnProperty(key)) {
-					localStorage.setItem(key, data[key]);
-				}
+			gist = await getGist();
+			const data = getConfig("gistEnabled") ? gist.data : JSON.parse(await Spicetify.Platform.ClipboardAPI.paste());
+			if (!data) {
+				Spicetify.showNotification("No backup data found", true);
+				return;
 			}
-
-			// Restore GitHub token if it was removed during backup
-			if (currentGistToken) {
-				try {
-					const restoredSettings = localStorage.getItem("spotifyBackup:settings");
-					if (restoredSettings) {
-						const settings = JSON.parse(restoredSettings);
-						if (!settings.gistToken) {
-							settings.gistToken = currentGistToken;
-							localStorage.setItem("spotifyBackup:settings", JSON.stringify(settings));
-						}
+			if (typeof data !== "object" || Array.isArray(data) || Object.values(data).some(value => typeof value !== "string")) {
+				throw new Error("Invalid backup data: expected a flat object of strings");
+			}
+			const restoredConfig = JSON.parse(data["spotifyBackup:settings"] || "{}");
+			if (!restoredConfig || typeof restoredConfig !== "object" || Array.isArray(restoredConfig)) {
+				throw new Error("Invalid Spotify Backup settings");
+			}
+			if (Object.keys(data).some(key => key.startsWith("marketplace:"))) await waitForMarketplace();
+			// Backup integration settings belong to this device, not the source device.
+			const settings = { ...config, lastBackupTimestamp: gist.lastUpdate ?? new Date().toISOString() };
+			const previous = { ...localStorage };
+			let localStorageChanged = false;
+			try {
+				await restoreMarketplaceData(data, usesIndexedDB => {
+					localStorageChanged = true;
+					localStorage.clear();
+					for (const [key, value] of Object.entries(data)) {
+						// Modern Marketplace reads its database; duplicating its records can
+						// exceed localStorage's smaller quota unnecessarily.
+						if (usesIndexedDB && key.startsWith("marketplace:")) continue;
+						if (key !== "spotifyBackup:settings") localStorage.setItem(key, value);
 					}
-				} catch (error) {
-					console.error("Error restoring GitHub token:", error);
+					localStorage.setItem("spotifyBackup:settings", JSON.stringify(settings));
+				});
+			} catch (error) {
+				if (localStorageChanged) {
+					localStorage.clear();
+					for (const [key, value] of Object.entries(previous)) localStorage.setItem(key, value);
 				}
+				throw error;
 			}
+			config = settings;
 			Spicetify.showNotification("Data restored successfully");
-			setLastBackupTime(gist.lastUpdate);
 			window.location.reload();
 		} catch (error) {
 			Spicetify.showNotification("Failed to restore data.", true);
@@ -195,10 +343,10 @@
 		) {
 			if (await checkForNewBackup()) {
 				// If the local data is older than the Gist data, restore it
-				restoreData();
+				await restoreData();
 			} else {
 				// If the local data is newer than the Gist data, back it up
-				backupData();
+				await backupData();
 			}
 		}
 	}
