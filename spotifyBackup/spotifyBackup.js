@@ -293,7 +293,8 @@
 			Spicetify.React.createElement(
 				"div",
 				{
-					className: "x-settings-row"
+					className: "x-settings-row",
+					"data-settings-row": ""
 				},
 				[
 					Spicetify.React.createElement("div", { className: "x-settings-firstColumn" }, [
@@ -533,4 +534,5 @@
 	Spicetify.Platform.History.listen(event => {
 		insertOption(event.pathname);
 	});
+	insertOption(Spicetify.Platform.History.location.pathname);
 })();
