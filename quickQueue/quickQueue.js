@@ -7,13 +7,10 @@
 		!(
 			Spicetify.React &&
 			Spicetify.ReactDOM &&
-			Spicetify.SVGIcons &&
 			Spicetify.showNotification &&
-			Spicetify.Platform.PlayerAPI &&
+			Spicetify.Platform?.PlayerAPI &&
 			Spicetify.Tippy &&
-			Spicetify.TippyProps &&
-			Spicetify.Locale._dictionary &&
-			Spicetify.Mousetrap
+			Spicetify.TippyProps
 		)
 	) {
 		setTimeout(quickQueue, 10);
@@ -34,6 +31,9 @@
 					self.setState(placeLeftSide);
 					Spicetify.LocalStorage.set(STORAGE_KEY_PLACE_LEFT, placeLeftSide ? "1" : "0");
 					Spicetify.showNotification(`Quick Queue placement is now ${placeLeftSide ? "on the left" : "in the right column"}`);
+
+					// Re-place the buttons of rows that are already rendered
+					refreshAll();
 				}
 			).register();
 		}
@@ -41,7 +41,7 @@
 		// no-op: menu might not be available in all environments
 	}
 
-	const QueueButton = Spicetify.React.memo(({ uri, classList, leftSide }) => {
+	const QueueButton = Spicetify.React.memo(({ uri, classList }) => {
 		const [isQueued, setIsQueued] = Spicetify.React.useState(Spicetify.Platform.PlayerAPI._queue._queueState.queued.some(item => item.uri === uri));
 		const [tippyInstance, setTippyInstance] = Spicetify.React.useState(null);
 		const [isShiftPressed, setIsShiftPressed] = Spicetify.React.useState(false);
@@ -62,16 +62,16 @@
 				Spicetify.showNotification("Added to next in queue");
 			} else {
 				Spicetify.Platform.PlayerAPI[isQueued ? "removeFromQueue" : "addToQueue"]([{ uri }]);
-				Spicetify.showNotification(isQueued ? "Removed from queue" : Spicetify.Locale._dictionary["queue.added-to-queue"] || "Added to queue");
+				Spicetify.showNotification(isQueued ? "Removed from queue" : Spicetify.Locale?._dictionary?.["queue.added-to-queue"] || "Added to queue");
 			}
 		};
 
 		const getTooltipContent = () => {
 			return isQueued
-				? Spicetify.Locale._dictionary["contextmenu.remove-from-queue"] || "Remove from queue"
+				? Spicetify.Locale?._dictionary?.["contextmenu.remove-from-queue"] || "Remove from queue"
 				: isShiftPressed
 				? "Play next in queue"
-				: Spicetify.Locale._dictionary["contextmenu.add-to-queue"] || "Add to queue";
+				: Spicetify.Locale?._dictionary?.["contextmenu.add-to-queue"] || "Add to queue";
 		};
 
 		Spicetify.React.useEffect(() => {
@@ -158,139 +158,184 @@
 		});
 	}
 
-	function getTracklistTrackUri(tracklistElement) {
-		// 1. Try specific known paths first (Fast & Reliable for standard rows)
-		const values = Object.values(tracklistElement);
-		const reactProps = values.find((v) => v?.pendingProps || v?.memoizedProps);
-		const props = reactProps?.pendingProps || reactProps?.memoizedProps;
+	// ---------------------------------------------------------------------
+	// Track URI lookup
+	// ---------------------------------------------------------------------
 
-		if (props) {
-			const specificUri =
-				props.children?.[0]?.props?.children?.props?.uri ||
-				props.children?.[0]?.props?.children?.props?.children?.props?.uri ||
-				props.children?.[0]?.props?.children?.[0]?.props?.uri ||
-				props.children?.props?.value?.item?.uri ||
-				props.value?.item?.uri;
+	const isTrackUri = uri => typeof uri === "string" && /^spotify:(track|episode|local):/.test(uri);
 
-			if (typeof specificUri === 'string' && specificUri.startsWith("spotify:"))
-				return specificUri;
-		}
-
-		// 2. Recursive fallback (For recommendations and new structures)
-		const findUri = (obj, seen = new WeakSet()) => {
-			if (!obj || typeof obj !== "object" || seen.has(obj)) return null;
-			seen.add(obj);
-
-			if (typeof obj.uri === 'string' && obj.uri.startsWith("spotify:")) return obj.uri;
-			if (typeof obj.item?.uri === 'string' && obj.item.uri.startsWith("spotify:"))
-				return obj.item.uri;
-			if (typeof obj.value?.item?.uri === 'string' && obj.value.item.uri.startsWith("spotify:"))
-				return obj.value.item.uri;
-
-			// Check children
-			const children = obj.children || obj.props?.children;
-			if (children) {
-				if (Array.isArray(children)) {
-					for (const child of children) {
-						const result = findUri(child.props || child, seen);
-						if (result) return result;
-					}
-				} else {
-					const result = findUri(children, seen);
-					if (result) return result;
-				}
-			}
-
-			if (obj.props && obj.props !== obj) {
-				const result = findUri(obj.props, seen);
-				if (result) return result;
-			}
-
-			return null;
-		};
-
-		return findUri(props || tracklistElement);
+	// Reads a track URI out of a props-like object, checking the known shapes.
+	function uriFromProps(props) {
+		if (!props || typeof props !== "object") return null;
+		const candidates = [props.uri, props.item?.uri, props.track?.uri, props.value?.item?.uri, props.value?.uri];
+		return candidates.find(isTrackUri) || null;
 	}
 
-	const observer = new MutationObserver(mutationList => {
-		mutationList.forEach(mutation => {
-			mutation.addedNodes.forEach(node => {
-				const nodeMatch =
-					node.attributes?.role?.value === "row"
-						? node.firstChild?.lastChild
-						: node.firstChild?.attributes?.role?.value === "row"
-						? node.firstChild?.firstChild.lastChild
-						: null;
+	// Recursive fallback: walks `children` / `props` looking for a track URI.
+	function findUriDeep(obj, seen = new WeakSet()) {
+		if (!obj || typeof obj !== "object" || seen.has(obj)) return null;
+		seen.add(obj);
 
-				if (nodeMatch) {
-					const entryPoint = nodeMatch.querySelector(":scope > button:not(:last-child):has([data-encore-id])");
+		const direct = uriFromProps(obj);
+		if (direct) return direct;
 
-					if (entryPoint) {
-						const trackListEle = node.querySelector(".main-trackList-trackListRow");
+		const children = obj.children || obj.props?.children;
+		if (children) {
+			for (const child of Array.isArray(children) ? children : [children]) {
+				const result = findUriDeep(child?.props || child, seen);
+				if (result) return result;
+			}
+		}
 
-						if (!trackListEle) {
-							console.error("Quick Queue: Failed to find tracklist element", node);
-							return;
-						}
+		if (obj.props && obj.props !== obj) return findUriDeep(obj.props, seen);
 
-						let uri = getTracklistTrackUri(trackListEle);
-						
-						if (!uri) {
-							console.error("Quick Queue: Failed to find URI", trackListEle);
-							return;
-						}
+		return null;
+	}
 
-						// Decide insertion target
-						let insertionParent = nodeMatch;
-						let referenceNode = entryPoint;
+	// Row class names are hashed and change between Spotify releases, so the URI
+	// is read from the React fiber attached to the row element instead.
+	function getRowUri(row) {
+		const elements = [row, row.firstElementChild, row.firstElementChild?.firstElementChild].filter(Boolean);
+		const getFiber = el => {
+			const key = Object.keys(el).find(k => k.startsWith("__reactFiber$"));
+			return key ? el[key] : null;
+		};
 
-						if (placeLeftSide) {
-							const rowGrid = nodeMatch.parentElement;
-							const startCell = rowGrid?.querySelector(':scope > .main-trackList-rowSectionStart[role="gridcell"]');
-							const coverImg = startCell?.querySelector(':scope img');
-							if (startCell) {
-								// Avoid duplicate injection in the left cell
-								if (!startCell.querySelector(':scope > .queueControl-wrapper')) {
-									insertionParent = startCell;
-									// If a cover image exists, insert before it. Otherwise insert at the start cell's beginning (some views like albums don't have them)
-									referenceNode = coverImg || startCell.firstElementChild;
-								}
-							}
-						}
+		// 1. Walk up the fiber tree and check the props at every level
+		for (const el of elements) {
+			let fiber = getFiber(el);
+			for (let depth = 0; fiber && depth < 20; depth++, fiber = fiber.return) {
+				const uri = uriFromProps(fiber.memoizedProps) || uriFromProps(fiber.pendingProps);
+				if (uri) return uri;
+			}
+		}
 
-						// Avoid duplicate injection in the right cell as well
-						if (insertionParent.querySelector(':scope > .queueControl-wrapper')) return;
+		// 2. Fallback: deep search through the props of the first fiber found
+		for (const el of elements) {
+			const props = getFiber(el)?.memoizedProps;
+			const uri = props && findUriDeep({ props });
+			if (uri) return uri;
+		}
 
-						const queueButtonWrapper = document.createElement("div");
-						queueButtonWrapper.className = "queueControl-wrapper";
-						queueButtonWrapper.style.display = "contents";
-						queueButtonWrapper.style.marginRight = 0;
+		return null;
+	}
 
-						// Safely insert: only use insertBefore if the reference node belongs to the same parent
-						let queueButtonElement;
-						if (referenceNode && referenceNode.parentNode === insertionParent) {
-							queueButtonElement = insertionParent.insertBefore(queueButtonWrapper, referenceNode);
-						} else if (insertionParent.firstChild) {
-							queueButtonElement = insertionParent.insertBefore(queueButtonWrapper, insertionParent.firstChild);
-						} else {
-							queueButtonElement = insertionParent.appendChild(queueButtonWrapper);
-						}
-						Spicetify.ReactDOM.render(
-							Spicetify.React.createElement(QueueButton, {
-								uri,
-								classList: entryPoint.classList,
-								leftSide: placeLeftSide
-							}),
-							queueButtonElement
-						);
-					}
-				}
-			});
+	// ---------------------------------------------------------------------
+	// Button placement
+	// ---------------------------------------------------------------------
+
+	function removeWrapper(wrapper) {
+		Spicetify.ReactDOM.unmountComponentAtNode?.(wrapper);
+		wrapper.remove();
+	}
+
+	// Removes every injected button and queues all rows to be processed again
+	function refreshAll() {
+		document.querySelectorAll(".queueControl-wrapper").forEach(removeWrapper);
+		document.querySelectorAll('[role="row"]').forEach(scheduleRow);
+	}
+
+	// A tracklist row is a grid of cells:
+	// [index | title (cover + text) | album | ... | actions (like, duration, more)]
+	// Returns where the button should be inserted for the current setting.
+	function getPlacement(row, actionsCell, likeButton) {
+		if (placeLeftSide) {
+			const titleCell = row.firstElementChild?.querySelector(':scope > [role="gridcell"][aria-colindex="2"]');
+			if (titleCell) {
+				// Insert before the cover image. Views without covers (e.g. albums) get it at the start of the cell.
+				const cover = titleCell.querySelector(":scope > img");
+				return { parent: titleCell, before: cover || titleCell.firstElementChild, side: "left" };
+			}
+			// The view has no title cell: fall back to the right side
+		}
+
+		return { parent: actionsCell, before: likeButton, side: "right" };
+	}
+
+	// Idempotent: safe to call any number of times for the same row
+	function processRow(row) {
+		const actionsCell = row.firstElementChild?.lastElementChild;
+		if (!actionsCell) return;
+
+		// The like button is always needed, its classes are reused for the queue button
+		const likeButton = actionsCell.querySelector(":scope > button:not(:last-child):has([data-encore-id])");
+		if (!likeButton) return; // Row is still rendering, it will be processed again on the next mutation
+
+		const uri = getRowUri(row);
+		if (!uri) return;
+
+		const { parent, before, side } = getPlacement(row, actionsCell, likeButton);
+
+		let wrapper = row.querySelector(".queueControl-wrapper");
+
+		// The setting changed or React moved the cell: rebuild in the right place
+		if (wrapper && (wrapper.dataset.side !== side || wrapper.parentElement !== parent)) {
+			removeWrapper(wrapper);
+			wrapper = null;
+		}
+
+		if (wrapper && wrapper.dataset.uri === uri) return; // Already up to date
+
+		if (!wrapper) {
+			wrapper = document.createElement("div");
+			wrapper.className = "queueControl-wrapper";
+			wrapper.style.display = "contents";
+			wrapper.dataset.side = side;
+			parent.insertBefore(wrapper, before?.parentNode === parent ? before : parent.firstChild);
+		}
+		wrapper.dataset.uri = uri;
+
+		// Rows are virtualized and recycled for other tracks, so the key remounts
+		// the button whenever the URI changes
+		Spicetify.ReactDOM.render(
+			Spicetify.React.createElement(QueueButton, {
+				key: uri,
+				uri,
+				classList: likeButton.classList
+			}),
+			wrapper
+		);
+	}
+
+	// ---------------------------------------------------------------------
+	// Row observer
+	// ---------------------------------------------------------------------
+
+	// Rows are inserted empty and filled in afterwards, so they are re-checked
+	// on every change inside them. Work is batched to one pass per frame.
+	const pendingRows = new Set();
+	let flushScheduled = false;
+
+	function scheduleRow(row) {
+		pendingRows.add(row);
+		if (flushScheduled) return;
+		flushScheduled = true;
+		requestAnimationFrame(() => {
+			flushScheduled = false;
+			const rows = [...pendingRows];
+			pendingRows.clear();
+			rows.forEach(row => row.isConnected && processRow(row));
 		});
+	}
+
+	const observer = new MutationObserver(mutations => {
+		for (const mutation of mutations) {
+			for (const node of [mutation.target, ...mutation.addedNodes]) {
+				if (node.nodeType !== 1) continue;
+				const parentRow = node.closest?.('[role="row"]');
+				if (parentRow) scheduleRow(parentRow);
+				else node.querySelectorAll?.('[role="row"]').forEach(scheduleRow);
+			}
+		}
 	});
 
 	observer.observe(document, {
 		subtree: true,
-		childList: true
+		childList: true,
+		attributes: true,
+		attributeFilter: ["aria-rowindex"] // Detects recycled rows while scrolling
 	});
+
+	// Rows that were already rendered before the extension loaded
+	document.querySelectorAll('[role="row"]').forEach(scheduleRow);
 })();
